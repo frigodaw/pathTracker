@@ -27,6 +27,7 @@
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include <string.h>
+#include "neoGps.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -36,7 +37,7 @@
 
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
-#define UART_GPS_MSG_SIZE 100u
+
 /* USER CODE END PD */
 
 /* Private macro -------------------------------------------------------------*/
@@ -67,7 +68,6 @@ osThreadId defaultTaskHandle;
 osThreadId ltdcTaskHandle;
 /* USER CODE BEGIN PV */
 uint16_t cnt = 0;
-uint8_t gpsBuff[UART_GPS_MSG_SIZE];
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -96,7 +96,7 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
 {
 	if(huart->Instance == UART5)
 	{
-		memset(gpsBuff, 0 , UART_GPS_MSG_SIZE);
+		//memset(gpsBuff, 0 , UART_GPS_MSG_SIZE);
 		HAL_UART_Receive_IT(&huart5, gpsBuff, UART_GPS_MSG_SIZE);
 	}
 }
@@ -165,11 +165,11 @@ int main(void)
 
   /* Create the thread(s) */
   /* definition and creation of defaultTask */
-  osThreadDef(defaultTask, StartDefaultTask, osPriorityNormal, 0, 1024);
+  osThreadDef(defaultTask, StartDefaultTask, osPriorityNormal, 0, 256);
   defaultTaskHandle = osThreadCreate(osThread(defaultTask), NULL);
 
   /* definition and creation of ltdcTask */
-  osThreadDef(ltdcTask, StartLtdcTask, osPriorityHigh, 0, 1024);
+  osThreadDef(ltdcTask, StartLtdcTask, osPriorityAboveNormal, 0, 256);
   ltdcTaskHandle = osThreadCreate(osThread(ltdcTask), NULL);
 
   /* USER CODE BEGIN RTOS_THREADS */
@@ -398,7 +398,7 @@ static void MX_LTDC_Init(void)
   pLayerCfg.Alpha0 = 0;
   pLayerCfg.BlendingFactor1 = LTDC_BLENDING_FACTOR1_CA;
   pLayerCfg.BlendingFactor2 = LTDC_BLENDING_FACTOR2_CA;
-  pLayerCfg.FBStartAdress = 0xD0000000;
+  pLayerCfg.FBStartAdress = 0xd0000000;
   pLayerCfg.ImageWidth = 240;
   pLayerCfg.ImageHeight = 320;
   pLayerCfg.Backcolor.Blue = 0;
