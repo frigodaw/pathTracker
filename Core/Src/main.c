@@ -22,12 +22,13 @@
 #include "main.h"
 #include "cmsis_os.h"
 #include "app_touchgfx.h"
-#include "usb_host.h"
+#include "usb_device.h"
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include <string.h>
 #include "neoGps.h"
+#include "usbd_cdc_if.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -96,7 +97,8 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
 {
 	if(huart->Instance == UART5)
 	{
-		//memset(gpsBuff, 0 , UART_GPS_MSG_SIZE);
+	    Gps_SplitFrame();
+		memset(gpsBuff, 0 , UART_GPS_MSG_SIZE);
 		HAL_UART_Receive_IT(&huart5, gpsBuff, UART_GPS_MSG_SIZE);
 	}
 }
@@ -740,8 +742,8 @@ static void MX_GPIO_Init(void)
 /* USER CODE END Header_StartDefaultTask */
 void StartDefaultTask(void const * argument)
 {
-  /* init code for USB_HOST */
-  MX_USB_HOST_Init();
+  /* init code for USB_DEVICE */
+  MX_USB_DEVICE_Init();
   /* USER CODE BEGIN 5 */
   /* Infinite loop */
   for(;;)
@@ -789,6 +791,10 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
   /* USER CODE BEGIN Callback 1 */
   if (htim->Instance == TIM10) {
     cnt++;
+
+    uint8_t sendBuff[32] = {0};
+    sprintf((char*)sendBuff, "Time: %s \n", timeGpsBuff);
+    CDC_Transmit_HS(sendBuff, 32);
   }
 
   /* USER CODE END Callback 1 */
