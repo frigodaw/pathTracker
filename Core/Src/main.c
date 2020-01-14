@@ -67,6 +67,8 @@ SDRAM_HandleTypeDef hsdram1;
 
 osThreadId defaultTaskHandle;
 osThreadId ltdcTaskHandle;
+osThreadId gpsTaskHandle;
+osTimerId rtosTimerHandle;
 /* USER CODE BEGIN PV */
 uint16_t cnt = 0;
 /* USER CODE END PV */
@@ -84,8 +86,10 @@ static void MX_TIM1_Init(void);
 static void MX_USART1_UART_Init(void);
 static void MX_TIM10_Init(void);
 static void MX_UART5_Init(void);
-void StartDefaultTask(void const * argument);
-void StartLtdcTask(void const * argument);
+void DefaultTask(void const * argument);
+void LtdcTask(void const * argument);
+void GpsTask(void const * argument);
+void rtosTimerCallback(void const * argument);
 
 /* USER CODE BEGIN PFP */
 
@@ -98,8 +102,8 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
 	if(huart->Instance == UART5)
 	{
 	    Gps_SplitFrame();
-		memset(gpsBuff, 0 , UART_GPS_MSG_SIZE);
-		HAL_UART_Receive_IT(&huart5, gpsBuff, UART_GPS_MSG_SIZE);
+		memset(gpsBuff, 0 , GPS_MSG_MAX_SIZE);
+		HAL_UART_Receive_IT(&huart5, gpsBuff, GPS_MSG_MAX_SIZE);
 	}
 }
 /* USER CODE END 0 */
@@ -146,7 +150,7 @@ int main(void)
   MX_TouchGFX_Init();
   /* USER CODE BEGIN 2 */
   HAL_TIM_Base_Start_IT(&htim10);								//start timer 10 -> 1s
-  HAL_UART_Receive_IT(&huart5, gpsBuff, UART_GPS_MSG_SIZE);		//start gps uart
+  HAL_UART_Receive_IT(&huart5, gpsBuff, GPS_MSG_MAX_SIZE);		//start gps uart
   /* USER CODE END 2 */
 
   /* USER CODE BEGIN RTOS_MUTEX */
@@ -156,6 +160,11 @@ int main(void)
   /* USER CODE BEGIN RTOS_SEMAPHORES */
   /* add semaphores, ... */
   /* USER CODE END RTOS_SEMAPHORES */
+
+  /* Create the timer(s) */
+  /* definition and creation of rtosTimer */
+  osTimerDef(rtosTimer, rtosTimerCallback);
+  rtosTimerHandle = osTimerCreate(osTimer(rtosTimer), osTimerPeriodic, NULL);
 
   /* USER CODE BEGIN RTOS_TIMERS */
   /* start timers, add new ones, ... */
@@ -167,12 +176,16 @@ int main(void)
 
   /* Create the thread(s) */
   /* definition and creation of defaultTask */
-  osThreadDef(defaultTask, StartDefaultTask, osPriorityNormal, 0, 512);
+  osThreadDef(defaultTask, DefaultTask, osPriorityNormal, 0, 512);
   defaultTaskHandle = osThreadCreate(osThread(defaultTask), NULL);
 
   /* definition and creation of ltdcTask */
-  osThreadDef(ltdcTask, StartLtdcTask, osPriorityAboveNormal, 0, 512);
+  osThreadDef(ltdcTask, LtdcTask, osPriorityAboveNormal, 0, 512);
   ltdcTaskHandle = osThreadCreate(osThread(ltdcTask), NULL);
+
+  /* definition and creation of gpsTask */
+  osThreadDef(gpsTask, GpsTask, osPriorityAboveNormal, 0, 512);
+  gpsTaskHandle = osThreadCreate(osThread(gpsTask), NULL);
 
   /* USER CODE BEGIN RTOS_THREADS */
   /* add threads, ... */
@@ -733,14 +746,14 @@ static void MX_GPIO_Init(void)
 
 /* USER CODE END 4 */
 
-/* USER CODE BEGIN Header_StartDefaultTask */
+/* USER CODE BEGIN Header_DefaultTask */
 /**
   * @brief  Function implementing the defaultTask thread.
   * @param  argument: Not used 
   * @retval None
   */
-/* USER CODE END Header_StartDefaultTask */
-void StartDefaultTask(void const * argument)
+/* USER CODE END Header_DefaultTask */
+void DefaultTask(void const * argument)
 {
   /* init code for USB_DEVICE */
   MX_USB_DEVICE_Init();
@@ -753,23 +766,50 @@ void StartDefaultTask(void const * argument)
   /* USER CODE END 5 */ 
 }
 
-/* USER CODE BEGIN Header_StartLtdcTask */
+/* USER CODE BEGIN Header_LtdcTask */
 /**
 * @brief Function implementing the ltdcTask thread.
 * @param argument: Not used
 * @retval None
 */
-/* USER CODE END Header_StartLtdcTask */
-void StartLtdcTask(void const * argument)
+/* USER CODE END Header_LtdcTask */
+void LtdcTask(void const * argument)
 {
-  /* USER CODE BEGIN StartLtdcTask */
-  MX_TouchGFX_Process();
+  /* USER CODE BEGIN LtdcTask */
   /* Infinite loop */
   for(;;)
   {
+    MX_TouchGFX_Process();
     osDelay(1);
   }
-  /* USER CODE END StartLtdcTask */
+  /* USER CODE END LtdcTask */
+}
+
+/* USER CODE BEGIN Header_GpsTask */
+/**
+* @brief Function implementing the gpsTask thread.
+* @param argument: Not used
+* @retval None
+*/
+/* USER CODE END Header_GpsTask */
+void GpsTask(void const * argument)
+{
+  /* USER CODE BEGIN GpsTask */
+  /* Infinite loop */
+  for(;;)
+  {
+	Gps_Main();
+    osDelay(1);
+  }
+  /* USER CODE END GpsTask */
+}
+
+/* rtosTimerCallback function */
+void rtosTimerCallback(void const * argument)
+{
+  /* USER CODE BEGIN rtosTimerCallback */
+  
+  /* USER CODE END rtosTimerCallback */
 }
 
 /**

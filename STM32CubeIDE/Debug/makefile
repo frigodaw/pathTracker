@@ -66,7 +66,7 @@ all: pathTracker.elf secondary-outputs
 
 # Tool invocations
 pathTracker.elf: $(OBJS) $(USER_OBJS) C:\STM\pathTracker\STM32CubeIDE\STM32F429ZITX_FLASH.ld
-	arm-none-eabi-g++ -o "pathTracker.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m4 -T"C:\STM\pathTracker\STM32CubeIDE\STM32F429ZITX_FLASH.ld" --specs=nosys.specs -Wl,-Map="pathTracker.map" -Wl,--gc-sections -static -L"C:/STM/pathTracker/Middlewares/ST/touchgfx/lib/core/cortex_m4f/gcc" --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -lstdc++ -lsupc++ -Wl,--end-group
+	arm-none-eabi-g++ -o "pathTracker.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m4 -T"C:\STM\pathTracker\STM32CubeIDE\STM32F429ZITX_FLASH.ld" --specs=nosys.specs -Wl,-Map="pathTracker.map" -Wl,--gc-sections -static -L"C:/STM/pathTracker/Middlewares/ST/touchgfx/lib/core/cortex_m4f/gcc" -u _printf_float -u _scanf_float --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -lstdc++ -lsupc++ -Wl,--end-group
 	@echo 'Finished building target: $@'
 	@echo ' '
 
