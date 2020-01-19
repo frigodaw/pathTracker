@@ -17,14 +17,8 @@ extern "C" {
 
 
 //define area
-#define GPS_MSG_MAX_SIZE        85u   //max size of gps uart message
-#define GPS_FIELD_BUFF_SIZE     16u   //size of field buffer 
-
-#define GPS_VAR_LEN             8u    //buff size for storing gps variables
-
-# define GPS_SENTENCELENGTH     6u
-# define GPS_GPGGA              (const char*)("$GPGGA")
-# define GPS_GPRMC                    (const char*)("$GPRMC")
+#define GPS_RING_BUFFER_SIZE    512u   //size of ring buffer
+#define GPS_MAX_NMEA_SIZE       83u    //max size of gps nmea message
 
 # define GPS_GPPGA_DIV_VALUE    100.f
 # define GPS_GPPGA_MUL_VALUE    (double)(100.f/60.f)
@@ -44,15 +38,32 @@ enum Gps_gpggaDataSequence
     GPS_GPGGA_ALTITUDE
 };
 
+enum Gps_bufferState
+{
+    GPS_OK,
+    GPS_FULL
+};
+
+enum Gps_msgType
+{
+    GPS_GPRMC,
+    GPS_GPVTG,
+    GPS_GPGGA,
+    GPS_GPGSA,
+    GPS_GPGSV,
+    GPS_GPGLL,
+    GPS_ERROR = 255u
+};
+
+
 //typedef to store all gps data
 typedef struct GpsUartData_Tag
 {
-    uint8_t read;
-    uint8_t write;
-    uint8_t fieldBuff[GPS_FIELD_BUFF_SIZE];
-    uint8_t fieldPos;
+    uint16_t read;
+    uint16_t write;
+    uint8_t state;
+    uint8_t ringBuff[GPS_RING_BUFFER_SIZE];
 
-    uint8_t dataBuff[GPS_MSG_MAX_SIZE];
     uint8_t dateDay;
     uint8_t dateMon;
     uint8_t dateYear;
@@ -61,33 +72,22 @@ typedef struct GpsUartData_Tag
     uint8_t timeSec;
 
     float latitude;
-    char latDir;
     float longitude;
-    char lonDir;
     float altitude;
+    char latDir;
+    char lonDir;
 
     uint8_t fixQuality;
     uint8_t satelitesNum;
 } GpsUartData_T;
 
 //variables declaration area
-extern uint8_t gpsBuff[GPS_MSG_MAX_SIZE];
-extern char  lonGpsBuff[GPS_VAR_LEN];
-extern char  latGpsBuff[GPS_VAR_LEN];
-extern char  timeGpsBuff[GPS_VAR_LEN];
 extern GpsUartData_T gpsData;
-extern volatile uint8_t recvChar;
-
 
 //functions declaration area
-void Gps_SplitFrame(void);
 void Gps_Main(void);
-void Gps_ProcessLine(void);
-void Gps_ReadField(void);
-void Gps_ProcessReadout_GPRMC(void);
-void Gps_ProcessReadout_GPVTG(void);
-void Gps_ProcessReadout_GPGGA(void);
-void Gps_ProcessReadout_GPGSA(void);
+void Gps_PrepareWrite(void);
+uint8_t Gps_SelectMsg(void);
 
 
 # ifdef __cplusplus

@@ -5,113 +5,149 @@
 ******************************************************************************/
 
 #include "neoGps.h"
+#include "stm32f4xx_hal.h"
 #include <string.h>
-#include <stdio.h>
 
-uint8_t gpsBuff[GPS_MSG_MAX_SIZE] = {0};
-char lonGpsBuff[GPS_VAR_LEN] = {0};
-char latGpsBuff[GPS_VAR_LEN] = {0};
-char timeGpsBuff[GPS_VAR_LEN] = {0};
 
-GpsUartData_T gpsData = {0};
-volatile uint8_t recvChar = 0;
+/*  Global variables to store all GPS-related data */
+GpsUartData_T gpsData = {0u};
 
-void Gps_SplitFrame(void)
+
+/*  Function called to set write pointer to proper value
+    every time before HAL_UART_Receive_DMA(). 
+*/
+void Gps_PrepareWrite(void)
 {
-    char* gpsBuffPtr = strstr((char*)gpsBuff, GPS_GPGGA);
-    char* tmpBuffer;
-    uint8_t sequence = GPS_GPGGA_ID;
-    if(gpsBuffPtr)
+    if(gpsData.write >= gpsData.read)
     {
-        while(NULL != (tmpBuffer = strsep(&gpsBuffPtr, ",")))
+        /* Data fits between the write pointer and the end of the buffer */
+        if((gpsData.write + GPS_MAX_NMEA_SIZE) <= GPS_RING_BUFFER_SIZE)
         {
-            switch (sequence)
-            {
-            case GPS_GPGGA_TIME:
-                strncpy(timeGpsBuff, tmpBuffer, 6);
-                break;
-            case GPS_GPGGA_LATITUDE:
-                //strncpy(latGpsBuff, tmpBuffer, 8);
-                //sscanf(tmpBuffer, "%lf", latGpsBuff);
-                //Gps_FormatConverter(&Gps_mainData.data[*idx].latitude);
-                break;
-            case GPS_GPGGA_NS:
-                //sscanf(tmpBuffer, "%c", &Gps_mainData.data[*idx].NS);
-                break;
-            case GPS_GPGGA_LONGITUDE:
-                //strncpy(lonGpsBuff, tmpBuffer, 8);
-                //sscanf(tmpBuffer, "%lf", lonGpsBuff);
-                //Gps_FormatConverter(&Gps_mainData.data[*idx].longitude);
-                break;
-            case GPS_GPGGA_WE:
-                //sscanf(tmpBuffer, "%c", &Gps_mainData.data[*idx].WE);
-                break;
-            case GPS_GPGGA_FIXQUALITY:
-                //sscanf(tmpBuffer, "%d", &Gps_mainData.data[*idx].fixQuality);
-                break;
-            case GPS_GPGGA_SATELITESNUM:
-                //sscanf(tmpBuffer, "%d", &Gps_mainData.data[*idx].satelitesNum);
-                break;
-            case GPS_GPGGA_DILUTION:
-                //sscanf(tmpBuffer, "%f", &Gps_mainData.data[*idx].dilution);
-                break;
-            case GPS_GPGGA_ALTITUDE:
-                //sscanf(tmpBuffer, "%f", &Gps_mainData.data[*idx].altitude);
-                break;
-            default:
-                break;
-            }
-            sequence++;
+            gpsData.state = GPS_OK;
+        }
+        /* Data fits between start of the buffer and the read pointer */
+        else if(gpsData.read >= GPS_MAX_NMEA_SIZE)
+        {
+            gpsData.write = 0u;
+            gpsData.state = GPS_OK;
+        }
+        /* There is no space for data */
+        else
+        {
+            gpsData.state = GPS_FULL;
+        }
+    }
+    else    /* read > write */
+    {
+        /* Data fits between write and read pointer */
+        if((gpsData.write + GPS_MAX_NMEA_SIZE) <= gpsData.read)
+        {
+            gpsData.state = GPS_OK;
+        }
+        /* There is no space for data */
+        else
+        {
+            gpsData.state = GPS_FULL;
         }
     }
 }
 
+
+/*  Main function for GPS module. It reads the data from buffer
+    and divides them into separates variables.
+*/
 void Gps_Main(void)
 {
-    Gps_ProcessLine();
-}
-
-void Gps_ProcessLine(void)
-{
-    gpsData.read = 0u;
-    Gps_ReadField();
-
-         if(strcmp((char*)gpsData.fieldBuff, "GPRMC") == 0) Gps_ProcessReadout_GPRMC();
-    else if(strcmp((char*)gpsData.fieldBuff, "GPVTG") == 0) Gps_ProcessReadout_GPVTG();
-    else if(strcmp((char*)gpsData.fieldBuff, "GPGGA") == 0) Gps_ProcessReadout_GPGGA();
-    else if(strcmp((char*)gpsData.fieldBuff, "GPGSA") == 0) Gps_ProcessReadout_GPGSA();
-    
-}
-
-void Gps_ReadField(void)
-{
-    gpsData.fieldPos = 0u;
-
-    while((gpsData.dataBuff[gpsData.read] != ',')
-        && (gpsData.dataBuff[gpsData.read] != '\0')
-        && (gpsData.fieldPos < GPS_FIELD_BUFF_SIZE))
+    /* Set write pointer to the start of the data */
+    while(gpsData.ringBuff[gpsData.read] != '$')
     {
-        gpsData.fieldBuff[gpsData.fieldPos] = gpsData.dataBuff[gpsData.read];
+        if(gpsData.read < (GPS_RING_BUFFER_SIZE - 1u))
+        {
+            gpsData.read++;
+        }
+        else
+        {
+            gpsData.read = 0u;
+        }
+    }
+
+    /* Only when character was found */
+    if((gpsData.ringBuff[gpsData.read] == '$') && (gpsData.ringBuff[gpsData.read + 1u] == 'G') && (gpsData.ringBuff[gpsData.read + 2u] == 'P'))
+    {
+        gpsData.read += 3u;
+        switch(Gps_SelectMsg())
+        {
+            case GPS_GPRMC:
+                break;
+            case GPS_GPVTG:
+                break;
+            case GPS_GPGGA:
+                break;
+            case GPS_GPGSA:
+                break;
+            case GPS_GPGSV:
+                break;
+            case GPS_GPGLL:
+                break;
+            case GPS_ERROR:
+                break;
+            default:
+                break;
+        }
+    }
+    else
+    {
         gpsData.read++;
-        gpsData.fieldPos++;
     }
-
-    gpsData.dataBuff[gpsData.fieldPos] = '\0';
-    gpsData.read++;
 }
 
-void Gps_ProcessReadout_GPRMC(void) {}
-void Gps_ProcessReadout_GPVTG(void) {}
-void Gps_ProcessReadout_GPGSA(void) {}
-void Gps_ProcessReadout_GPGGA(void) 
+
+/*  Function called to distinguish which type of data
+    is already encountered.
+*/
+uint8_t Gps_SelectMsg(void)
 {
-    Gps_ReadField();
-    if(strlen((char*)gpsData.fieldBuff) > 0)
+    uint8_t msgType = GPS_ERROR;
+
+    switch(gpsData.ringBuff[gpsData.read])
     {
-        uint32_t tmp;
-        sscanf(gpsData.fieldBuff, "%d", tmp);
-        gpsData.timeSec = tmp % 100;
-        gpsData.timeMin = (tmp / 100) % 100;
-        gpsData.timeHr = (tmp / 10000) % 100;
+        case 'R':
+            msgType = GPS_GPRMC;
+            break;
+        case 'V':
+            msgType = GPS_GPVTG;
+            break;
+        case 'G':
+            switch(gpsData.ringBuff[gpsData.read + 1u])
+            {
+                case 'G':
+                    msgType = GPS_GPGGA;
+                    break;
+                case 'L':
+                    msgType = GPS_GPGLL;
+                    break;
+                case 'S':
+                    switch(gpsData.ringBuff[gpsData.read + 2u])
+                    {
+                        case 'A':
+                            msgType = GPS_GPGSA;
+                            break;
+                        case 'V':
+                            msgType = GPS_GPGSV;
+                            break;
+                        default:
+                            msgType = GPS_ERROR;
+                            break;
+                    }
+                    break;
+                default:
+                    msgType = GPS_ERROR;
+                    break;
+            }
+            break;
+        default:
+            msgType = GPS_ERROR;
+            break;
     }
+    return msgType;
 }

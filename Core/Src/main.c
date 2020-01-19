@@ -26,7 +26,6 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-#include <string.h>
 #include "neoGps.h"
 #include "usbd_cdc_if.h"
 /* USER CODE END Includes */
@@ -62,13 +61,13 @@ TIM_HandleTypeDef htim10;
 
 UART_HandleTypeDef huart5;
 UART_HandleTypeDef huart1;
+DMA_HandleTypeDef hdma_uart5_rx;
 
 SDRAM_HandleTypeDef hsdram1;
 
 osThreadId defaultTaskHandle;
 osThreadId ltdcTaskHandle;
 osThreadId gpsTaskHandle;
-osTimerId rtosTimerHandle;
 /* USER CODE BEGIN PV */
 uint16_t cnt = 0;
 /* USER CODE END PV */
@@ -76,6 +75,7 @@ uint16_t cnt = 0;
 /* Private function prototypes -----------------------------------------------*/
 void SystemClock_Config(void);
 static void MX_GPIO_Init(void);
+static void MX_DMA_Init(void);
 static void MX_CRC_Init(void);
 static void MX_DMA2D_Init(void);
 static void MX_FMC_Init(void);
@@ -89,22 +89,52 @@ static void MX_UART5_Init(void);
 void DefaultTask(void const * argument);
 void LtdcTask(void const * argument);
 void GpsTask(void const * argument);
-void rtosTimerCallback(void const * argument);
 
 /* USER CODE BEGIN PFP */
+void Main_Init(void);
+void Main_RetriggerUartGps(void);
 
+
+void Main_Init(void)
+{
+  /* Start timer 10 -> 1s */
+  HAL_TIM_Base_Start_IT(&htim10);
+
+  /* Start gps uart */
+  HAL_UART_Receive_DMA(&huart5, &gpsData.ringBuff[gpsData.write], GPS_MAX_NMEA_SIZE);
+}
+
+void Main_RetriggerUartGps(void)
+{
+  static uint8_t lastWrite = 0u;
+  
+  if((gpsData.state != GPS_OK) || (lastWrite == gpsData.write))
+  {
+    Gps_PrepareWrite();
+    if(gpsData.state == GPS_OK)
+    {
+      HAL_UART_Receive_DMA(&huart5, &gpsData.ringBuff[gpsData.write], GPS_MAX_NMEA_SIZE);
+    }
+  }
+
+  lastWrite = gpsData.write;
+}
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
 void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
 {
-	if(huart->Instance == UART5)
-	{
-	    Gps_SplitFrame();
-		memset(gpsBuff, 0 , GPS_MSG_MAX_SIZE);
-		HAL_UART_Receive_IT(&huart5, gpsBuff, GPS_MSG_MAX_SIZE);
-	}
+  if(huart->Instance == UART5)
+  {
+    gpsData.write += GPS_MAX_NMEA_SIZE;
+
+    Gps_PrepareWrite();
+    if(gpsData.state == GPS_OK)
+    {
+      HAL_UART_Receive_DMA(&huart5, &gpsData.ringBuff[gpsData.write], GPS_MAX_NMEA_SIZE);
+    }
+  }
 }
 /* USER CODE END 0 */
 
@@ -137,6 +167,7 @@ int main(void)
 
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
+  MX_DMA_Init();
   MX_CRC_Init();
   MX_DMA2D_Init();
   MX_FMC_Init();
@@ -149,8 +180,7 @@ int main(void)
   MX_UART5_Init();
   MX_TouchGFX_Init();
   /* USER CODE BEGIN 2 */
-  HAL_TIM_Base_Start_IT(&htim10);								//start timer 10 -> 1s
-  HAL_UART_Receive_IT(&huart5, gpsBuff, GPS_MSG_MAX_SIZE);		//start gps uart
+  Main_Init();
   /* USER CODE END 2 */
 
   /* USER CODE BEGIN RTOS_MUTEX */
@@ -160,11 +190,6 @@ int main(void)
   /* USER CODE BEGIN RTOS_SEMAPHORES */
   /* add semaphores, ... */
   /* USER CODE END RTOS_SEMAPHORES */
-
-  /* Create the timer(s) */
-  /* definition and creation of rtosTimer */
-  osTimerDef(rtosTimer, rtosTimerCallback);
-  rtosTimerHandle = osTimerCreate(osTimer(rtosTimer), osTimerPeriodic, NULL);
 
   /* USER CODE BEGIN RTOS_TIMERS */
   /* start timers, add new ones, ... */
@@ -176,11 +201,11 @@ int main(void)
 
   /* Create the thread(s) */
   /* definition and creation of defaultTask */
-  osThreadDef(defaultTask, DefaultTask, osPriorityNormal, 0, 512);
+  osThreadDef(defaultTask, DefaultTask, osPriorityBelowNormal, 0, 512);
   defaultTaskHandle = osThreadCreate(osThread(defaultTask), NULL);
 
   /* definition and creation of ltdcTask */
-  osThreadDef(ltdcTask, LtdcTask, osPriorityAboveNormal, 0, 512);
+  osThreadDef(ltdcTask, LtdcTask, osPriorityNormal, 0, 512);
   ltdcTaskHandle = osThreadCreate(osThread(ltdcTask), NULL);
 
   /* definition and creation of gpsTask */
@@ -564,7 +589,7 @@ static void MX_UART5_Init(void)
   huart5.Init.WordLength = UART_WORDLENGTH_8B;
   huart5.Init.StopBits = UART_STOPBITS_1;
   huart5.Init.Parity = UART_PARITY_NONE;
-  huart5.Init.Mode = UART_MODE_TX_RX;
+  huart5.Init.Mode = UART_MODE_RX;
   huart5.Init.HwFlowCtl = UART_HWCONTROL_NONE;
   huart5.Init.OverSampling = UART_OVERSAMPLING_16;
   if (HAL_UART_Init(&huart5) != HAL_OK)
@@ -607,6 +632,22 @@ static void MX_USART1_UART_Init(void)
   /* USER CODE BEGIN USART1_Init 2 */
 
   /* USER CODE END USART1_Init 2 */
+
+}
+
+/** 
+  * Enable DMA controller clock
+  */
+static void MX_DMA_Init(void) 
+{
+
+  /* DMA controller clock enable */
+  __HAL_RCC_DMA1_CLK_ENABLE();
+
+  /* DMA interrupt init */
+  /* DMA1_Stream0_IRQn interrupt configuration */
+  HAL_NVIC_SetPriority(DMA1_Stream0_IRQn, 5, 0);
+  HAL_NVIC_EnableIRQ(DMA1_Stream0_IRQn);
 
 }
 
@@ -804,14 +845,6 @@ void GpsTask(void const * argument)
   /* USER CODE END GpsTask */
 }
 
-/* rtosTimerCallback function */
-void rtosTimerCallback(void const * argument)
-{
-  /* USER CODE BEGIN rtosTimerCallback */
-  
-  /* USER CODE END rtosTimerCallback */
-}
-
 /**
   * @brief  Period elapsed callback in non blocking mode
   * @note   This function is called  when TIM6 interrupt took place, inside
@@ -831,10 +864,9 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
   /* USER CODE BEGIN Callback 1 */
   if (htim->Instance == TIM10) {
     cnt++;
-
-    uint8_t sendBuff[32] = {0};
-    sprintf((char*)sendBuff, "Time: %s \n", timeGpsBuff);
-    CDC_Transmit_HS(sendBuff, 32);
+    //gpsData.read = ((gpsData.read + 10) > GPS_RING_BUFFER_SIZE) ? 0 : (gpsData.read + 10);
+    Main_RetriggerUartGps();
+    //CDC_Transmit_HS(sendBuff, 32);
   }
 
   /* USER CODE END Callback 1 */
