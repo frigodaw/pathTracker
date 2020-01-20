@@ -6,8 +6,8 @@
 
 #include "neoGps.h"
 #include "stm32f4xx_hal.h"
+#include <stdio.h>
 #include <string.h>
-
 
 /*  Global variables to store all GPS-related data */
 GpsUartData_T gpsData = {0u};
@@ -74,7 +74,7 @@ void Gps_Main(void)
     /* Only when character was found */
     if((gpsData.ringBuff[gpsData.read] == '$') && (gpsData.ringBuff[gpsData.read + 1u] == 'G') && (gpsData.ringBuff[gpsData.read + 2u] == 'P'))
     {
-        gpsData.read += 3u;
+        gpsData.read += 2u;
         switch(Gps_SelectMsg())
         {
             case GPS_GPRMC:
@@ -82,6 +82,7 @@ void Gps_Main(void)
             case GPS_GPVTG:
                 break;
             case GPS_GPGGA:
+                Gps_ReadGPGGA();
                 break;
             case GPS_GPGSA:
                 break;
@@ -109,7 +110,7 @@ uint8_t Gps_SelectMsg(void)
 {
     uint8_t msgType = GPS_ERROR;
 
-    switch(gpsData.ringBuff[gpsData.read])
+    switch(gpsData.ringBuff[gpsData.read + 1u])
     {
         case 'R':
             msgType = GPS_GPRMC;
@@ -118,7 +119,7 @@ uint8_t Gps_SelectMsg(void)
             msgType = GPS_GPVTG;
             break;
         case 'G':
-            switch(gpsData.ringBuff[gpsData.read + 1u])
+            switch(gpsData.ringBuff[gpsData.read + 2u])
             {
                 case 'G':
                     msgType = GPS_GPGGA;
@@ -127,7 +128,7 @@ uint8_t Gps_SelectMsg(void)
                     msgType = GPS_GPGLL;
                     break;
                 case 'S':
-                    switch(gpsData.ringBuff[gpsData.read + 2u])
+                    switch(gpsData.ringBuff[gpsData.read + 3u])
                     {
                         case 'A':
                             msgType = GPS_GPGSA;
@@ -149,5 +150,92 @@ uint8_t Gps_SelectMsg(void)
             msgType = GPS_ERROR;
             break;
     }
+    gpsData.read += 3u;     //read points on the last letter of the NMEA msg string
+
     return msgType;
+}
+
+
+/* Function called to get data from GPGGA msg. Example:
+   $GPGGA,160915.00,5003.42292,N,01855.72499,E,1,08,1.01,240.5,M,40.7,M,,*5F 
+*/
+void Gps_ReadGPGGA(void)
+{
+    uint8_t fieldBuff[GPS_FIELD_BUFFER_SIZE] = {0u};
+    uint8_t elementNum = GPS_GPGGA_TIME;
+
+    /* Set the read indicator to first ',' and write value to local variable newRead */
+    uint16_t newRead = ++gpsData.read;
+    uint8_t len = 0u;
+    uint32_t timeLinked = 0u;
+
+
+    while(elementNum < GPS_GPPGA_ELEMENTS)
+    {
+        /* Move endRead to the next ',' */
+        do
+        {
+            newRead++;
+        }
+        while((gpsData.ringBuff[newRead] != ',') && (newRead < GPS_RING_BUFFER_SIZE));
+
+        /* Found ',' character. */
+        if(gpsData.ringBuff[newRead] == ',')
+        {
+            len = newRead - gpsData.read;
+
+            /* Omit empty data */
+            if(len > 1u)
+            {
+                /* Check whether data fits into the ring buffer */
+                if((gpsData.read + len <= GPS_RING_BUFFER_SIZE) && (len <= GPS_FIELD_BUFFER_SIZE))
+                {
+                    memset(fieldBuff, 0u, GPS_FIELD_BUFFER_SIZE);
+                    for(uint8_t i=0u; i < len; i++)
+                    {
+                        fieldBuff[i] = gpsData.ringBuff[gpsData.read + 1u + i];
+                    }
+
+                    switch(elementNum)
+                    {
+                        case GPS_GPGGA_TIME:
+                            memset(&fieldBuff[GPS_GPPGA_TIME_LEN], 0u, GPS_FIELD_BUFFER_SIZE - GPS_GPPGA_TIME_LEN);
+                            sscanf((char*)fieldBuff, "%ld", &timeLinked);
+                            gpsData.timeSec  = timeLinked % GPS_GPPGA_TIME_COEFF1;
+                            gpsData.timeMin = (timeLinked / GPS_GPPGA_TIME_COEFF1) % GPS_GPPGA_TIME_COEFF1;
+                            gpsData.timeHr = (timeLinked / GPS_GPPGA_TIME_COEFF2) % GPS_GPPGA_TIME_COEFF1;
+                            break;
+                        case GPS_GPGGA_LATITUDE:
+                            sscanf((char*)fieldBuff, "%lf", &gpsData.latitude);
+                            break;
+                        case GPS_GPGGA_NS:
+                            sscanf((char*)fieldBuff, "%c", &gpsData.latDir);
+                            break;
+                        case GPS_GPGGA_LONGITUDE:
+                            sscanf((char*)fieldBuff, "%lf", &gpsData.longitude);
+                            break;
+                        case GPS_GPGGA_WE:
+                            sscanf((char*)fieldBuff, "%c", &gpsData.lonDir);
+                            break;
+                        default:
+                            break;
+                    }
+                }
+                /* If there is no space for whole field buffer reset gpsData.read to 0u and finish the function. */
+                else
+                {
+                    gpsData.read = 0u;
+                    elementNum = GPS_GPPGA_ELEMENTS;
+                }
+            }
+
+            gpsData.read += len;
+            elementNum++;
+        }
+        /* Cannot find character, do not process the data. */
+        else
+        {
+            elementNum = GPS_GPPGA_ELEMENTS;
+        }
+    }
 }

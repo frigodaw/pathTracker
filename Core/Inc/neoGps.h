@@ -17,16 +17,18 @@ extern "C" {
 
 
 //define area
-#define GPS_RING_BUFFER_SIZE    512u   //size of ring buffer
-#define GPS_MAX_NMEA_SIZE       83u    //max size of gps nmea message
+#define GPS_RING_BUFFER_SIZE    512u    //size of ring buffer
+#define GPS_MAX_NMEA_SIZE       83u     //max size of gps nmea message
+#define GPS_FIELD_BUFFER_SIZE   16u     //size of the temporary filed buffer
 
-# define GPS_GPPGA_DIV_VALUE    100.f
-# define GPS_GPPGA_MUL_VALUE    (double)(100.f/60.f)
+#define GPS_GPPGA_ELEMENTS      14u
+#define GPS_GPPGA_TIME_LEN      6u
+#define GPS_GPPGA_TIME_COEFF1   100u
+#define GPS_GPPGA_TIME_COEFF2   10000u
 
 //enums area
 enum Gps_gpggaDataSequence
 {
-    GPS_GPGGA_ID,
     GPS_GPGGA_TIME,
     GPS_GPGGA_LATITUDE,
     GPS_GPGGA_NS,
@@ -59,10 +61,14 @@ enum Gps_msgType
 //typedef to store all gps data
 typedef struct GpsUartData_Tag
 {
+    double latitude;
+    double longitude;
+    float altitude;
+
     uint16_t read;
     uint16_t write;
-    uint8_t state;
     uint8_t ringBuff[GPS_RING_BUFFER_SIZE];
+    uint8_t state;
 
     uint8_t dateDay;
     uint8_t dateMon;
@@ -71,9 +77,7 @@ typedef struct GpsUartData_Tag
     uint8_t timeMin;
     uint8_t timeSec;
 
-    float latitude;
-    float longitude;
-    float altitude;
+
     char latDir;
     char lonDir;
 
@@ -88,6 +92,7 @@ extern GpsUartData_T gpsData;
 void Gps_Main(void);
 void Gps_PrepareWrite(void);
 uint8_t Gps_SelectMsg(void);
+void Gps_ReadGPGGA(void);
 
 
 # ifdef __cplusplus
