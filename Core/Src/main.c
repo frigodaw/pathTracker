@@ -119,7 +119,7 @@ void Main_Init(void)
   HAL_TIM_Base_Start_IT(&htim10);
 
   /* Start gps uart */
-  HAL_UART_Receive_DMA(&huart5, &gpsData.ringBuff[gpsData.write], GPS_MAX_NMEA_SIZE);
+  HAL_UART_Receive_DMA(&huart5, (uint8_t*)&gpsData.ringBuff[gpsData.write], GPS_MAX_NMEA_SIZE);
 }
 
 void Main_RetriggerUartGps(void)
@@ -131,7 +131,7 @@ void Main_RetriggerUartGps(void)
     Gps_PrepareWrite();
     if(gpsData.state == GPS_OK)
     {
-      HAL_UART_Receive_DMA(&huart5, &gpsData.ringBuff[gpsData.write], GPS_MAX_NMEA_SIZE);
+      HAL_UART_Receive_DMA(&huart5, (uint8_t*)&gpsData.ringBuff[gpsData.write], GPS_MAX_NMEA_SIZE);
     }
   }
 
@@ -150,7 +150,7 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
     Gps_PrepareWrite();
     if(gpsData.state == GPS_OK)
     {
-      HAL_UART_Receive_DMA(&huart5, &gpsData.ringBuff[gpsData.write], GPS_MAX_NMEA_SIZE);
+      HAL_UART_Receive_DMA(&huart5, (uint8_t*)&gpsData.ringBuff[gpsData.write], GPS_MAX_NMEA_SIZE);
     }
   }
 }
@@ -170,7 +170,7 @@ int main(void)
   /* MCU Configuration--------------------------------------------------------*/
 
   /* Reset of all peripherals, Initializes the Flash interface and the Systick. */
-  HAL_Init();
+   HAL_Init();
 
   /* USER CODE BEGIN Init */
 
@@ -881,9 +881,8 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
   /* USER CODE BEGIN Callback 1 */
   if (htim->Instance == TIM10) {
     cnt++;
-    //gpsData.read = ((gpsData.read + 10) > GPS_RING_BUFFER_SIZE) ? 0 : (gpsData.read + 10);
     Main_RetriggerUartGps();
-    //CDC_Transmit_HS(sendBuff, 32);
+    CDC_Transmit_HS(gpsDebug.buffer, gpsDebug.size);
   }
 
   /* USER CODE END Callback 1 */
