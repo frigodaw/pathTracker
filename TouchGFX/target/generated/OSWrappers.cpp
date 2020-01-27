@@ -16,29 +16,29 @@
   */
 #include <touchgfx/hal/OSWrappers.hpp>
 #include <stm32f4xx_hal.h>
+#include <touchgfx/hal/GPIO.hpp>
 #include <touchgfx/hal/HAL.hpp>
-#include <assert.h>
-#include <cmsis_os2.h>
+#include "FreeRTOS.h"
+#include "task.h"
+#include "queue.h"
+#include "semphr.h"
 
-static osSemaphoreId_t frame_buffer_sem = 0;
-static osMessageQueueId_t vsync_queue = 0;
-
-// Just a dummy value to insert in the VSYNC queue.
-static uint32_t dummy = 0x5a;
+static xSemaphoreHandle frame_buffer_sem;
+static xQueueHandle vsync_q = 0;
 
 using namespace touchgfx;
+
+// Just a dummy value to insert in the VSYNC queue.
+static uint8_t dummy = 0x5a;
 
 /*
  * Initialize frame buffer semaphore and queue/mutex for VSYNC signal.
  */
 void OSWrappers::initialize()
 {
+    vSemaphoreCreateBinary(frame_buffer_sem);
     // Create a queue of length 1
-    frame_buffer_sem = osSemaphoreNew(1, 1, NULL); // Binary semaphore
-    osSemaphoreAcquire(frame_buffer_sem, osWaitForever); // take the lock
-
-    // Create a queue of length 1
-    vsync_queue = osMessageQueueNew(1, 4, NULL);
+    vsync_q = xQueueGenericCreate(1, 1, 0);
 }
 
 /*
@@ -46,8 +46,7 @@ void OSWrappers::initialize()
  */
 void OSWrappers::takeFrameBufferSemaphore()
 {
-    assert(frame_buffer_sem);
-    osSemaphoreAcquire(frame_buffer_sem, osWaitForever);
+    xSemaphoreTake(frame_buffer_sem, portMAX_DELAY);
 }
 
 /*
@@ -55,8 +54,7 @@ void OSWrappers::takeFrameBufferSemaphore()
  */
 void OSWrappers::giveFrameBufferSemaphore()
 {
-    assert(frame_buffer_sem);
-    osSemaphoreRelease(frame_buffer_sem);
+    xSemaphoreGive(frame_buffer_sem);
 }
 
 /*
@@ -68,8 +66,7 @@ void OSWrappers::giveFrameBufferSemaphore()
  */
 void OSWrappers::tryTakeFrameBufferSemaphore()
 {
-    assert(frame_buffer_sem);
-    osSemaphoreAcquire(frame_buffer_sem, 0);
+    xSemaphoreTake(frame_buffer_sem, 0);
 }
 
 /*
@@ -81,8 +78,11 @@ void OSWrappers::tryTakeFrameBufferSemaphore()
  */
 void OSWrappers::giveFrameBufferSemaphoreFromISR()
 {
-    assert(frame_buffer_sem);
-    osSemaphoreRelease(frame_buffer_sem);
+    // Since this is called from an interrupt, FreeRTOS requires special handling to trigger a
+    // re-scheduling. May be applicable for other OSes as well.
+    portBASE_TYPE px = pdFALSE;
+    xSemaphoreGiveFromISR(frame_buffer_sem, &px);
+    portEND_SWITCHING_ISR(px);
 }
 
 /*
@@ -93,9 +93,13 @@ void OSWrappers::giveFrameBufferSemaphoreFromISR()
  */
 void OSWrappers::signalVSync()
 {
-    if (vsync_queue)
+    if (vsync_q)
     {
-        osMessageQueuePut(vsync_queue, &dummy, 0, 0);
+        // Since this is called from an interrupt, FreeRTOS requires special handling to trigger a
+        // re-scheduling. May be applicable for other OSes as well.
+        portBASE_TYPE px = pdFALSE;
+        xQueueSendFromISR(vsync_q, &dummy, &px);
+        portEND_SWITCHING_ISR(px);
     }
 }
 
@@ -107,15 +111,11 @@ void OSWrappers::signalVSync()
  */
 void OSWrappers::waitForVSync()
 {
-    if (vsync_queue)
-    {
-      uint32_t dummyGet;
-      // First make sure the queue is empty, by trying to remove an element with 0 timeout.
-      osMessageQueueGet(vsync_queue, &dummyGet, 0, 0);
+    // First make sure the queue is empty, by trying to remove an element with 0 timeout.
+    xQueueReceive(vsync_q, &dummy, 0);
 
-      // Then, wait for next VSYNC to occur.
-      osMessageQueueGet(vsync_queue, &dummyGet, 0, osWaitForever);
-    }
+    // Then, wait for next VSYNC to occur.
+    xQueueReceive(vsync_q, &dummy, portMAX_DELAY);
 }
 
 /*
@@ -133,7 +133,7 @@ void OSWrappers::waitForVSync()
  */
 void OSWrappers::taskDelay(uint16_t ms)
 {
-    osDelay(static_cast<uint32_t>(ms));
+    vTaskDelay(ms);
 }
 
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/

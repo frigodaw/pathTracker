@@ -65,27 +65,9 @@ DMA_HandleTypeDef hdma_uart5_rx;
 
 SDRAM_HandleTypeDef hsdram1;
 
-/* Definitions for defaultTask */
-osThreadId_t defaultTaskHandle;
-const osThreadAttr_t defaultTask_attributes = {
-  .name = "defaultTask",
-  .priority = (osPriority_t) osPriorityBelowNormal,
-  .stack_size = 512
-};
-/* Definitions for ltdcTask */
-osThreadId_t ltdcTaskHandle;
-const osThreadAttr_t ltdcTask_attributes = {
-  .name = "ltdcTask",
-  .priority = (osPriority_t) osPriorityNormal,
-  .stack_size = 512
-};
-/* Definitions for gpsTask */
-osThreadId_t gpsTaskHandle;
-const osThreadAttr_t gpsTask_attributes = {
-  .name = "gpsTask",
-  .priority = (osPriority_t) osPriorityAboveNormal,
-  .stack_size = 512
-};
+osThreadId defaultTaskHandle;
+osThreadId ltdcTaskHandle;
+osThreadId gpsTaskHandle;
 /* USER CODE BEGIN PV */
 uint16_t cnt = 0;
 /* USER CODE END PV */
@@ -104,9 +86,9 @@ static void MX_TIM1_Init(void);
 static void MX_USART1_UART_Init(void);
 static void MX_TIM10_Init(void);
 static void MX_UART5_Init(void);
-void DefaultTask(void *argument);
-void LtdcTask(void *argument);
-void GpsTask(void *argument);
+void DefaultTask(void const * argument);
+void LtdcTask(void const * argument);
+void GpsTask(void const * argument);
 
 /* USER CODE BEGIN PFP */
 void Main_Init(void);
@@ -170,7 +152,7 @@ int main(void)
   /* MCU Configuration--------------------------------------------------------*/
 
   /* Reset of all peripherals, Initializes the Flash interface and the Systick. */
-   HAL_Init();
+  HAL_Init();
 
   /* USER CODE BEGIN Init */
 
@@ -200,8 +182,6 @@ int main(void)
   /* USER CODE BEGIN 2 */
   Main_Init();
   /* USER CODE END 2 */
-  /* Init scheduler */
-  osKernelInitialize();
 
   /* USER CODE BEGIN RTOS_MUTEX */
   /* add mutexes, ... */
@@ -220,14 +200,17 @@ int main(void)
   /* USER CODE END RTOS_QUEUES */
 
   /* Create the thread(s) */
-  /* creation of defaultTask */
-  defaultTaskHandle = osThreadNew(DefaultTask, NULL, &defaultTask_attributes);
+  /* definition and creation of defaultTask */
+  osThreadDef(defaultTask, DefaultTask, osPriorityBelowNormal, 0, 512);
+  defaultTaskHandle = osThreadCreate(osThread(defaultTask), NULL);
 
-  /* creation of ltdcTask */
-  ltdcTaskHandle = osThreadNew(LtdcTask, NULL, &ltdcTask_attributes);
+  /* definition and creation of ltdcTask */
+  osThreadDef(ltdcTask, LtdcTask, osPriorityNormal, 0, 512);
+  ltdcTaskHandle = osThreadCreate(osThread(ltdcTask), NULL);
 
-  /* creation of gpsTask */
-  gpsTaskHandle = osThreadNew(GpsTask, NULL, &gpsTask_attributes);
+  /* definition and creation of gpsTask */
+  osThreadDef(gpsTask, GpsTask, osPriorityAboveNormal, 0, 512);
+  gpsTaskHandle = osThreadCreate(osThread(gpsTask), NULL);
 
   /* USER CODE BEGIN RTOS_THREADS */
   /* add threads, ... */
@@ -811,7 +794,7 @@ static void MX_GPIO_Init(void)
   * @retval None
   */
 /* USER CODE END Header_DefaultTask */
-void DefaultTask(void *argument)
+void DefaultTask(void const * argument)
 {
   /* init code for USB_DEVICE */
   MX_USB_DEVICE_Init();
@@ -831,7 +814,7 @@ void DefaultTask(void *argument)
 * @retval None
 */
 /* USER CODE END Header_LtdcTask */
-void LtdcTask(void *argument)
+void LtdcTask(void const * argument)
 {
   /* USER CODE BEGIN LtdcTask */
   /* Infinite loop */
@@ -850,7 +833,7 @@ void LtdcTask(void *argument)
 * @retval None
 */
 /* USER CODE END Header_GpsTask */
-void GpsTask(void *argument)
+void GpsTask(void const * argument)
 {
   /* USER CODE BEGIN GpsTask */
   /* Infinite loop */
