@@ -73,8 +73,10 @@ enum Gps_nmeaOffset
 //typedef to store all gps data
 typedef struct GpsUartData_Tag
 {
-    double latitude;
-    double longitude;
+    double latitudeD;
+    double longitudeD;
+    float latitude;
+    float longitude;
     float dilution;
     float altitude;
 

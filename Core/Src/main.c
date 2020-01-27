@@ -70,6 +70,7 @@ osThreadId ltdcTaskHandle;
 osThreadId gpsTaskHandle;
 /* USER CODE BEGIN PV */
 uint16_t cnt = 0;
+static FMC_SDRAM_CommandTypeDef Command;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -93,32 +94,8 @@ void GpsTask(void const * argument);
 /* USER CODE BEGIN PFP */
 void Main_Init(void);
 void Main_RetriggerUartGps(void);
-
-
-void Main_Init(void)
-{
-  /* Start timer 10 -> 1s */
-  HAL_TIM_Base_Start_IT(&htim10);
-
-  /* Start gps uart */
-  HAL_UART_Receive_DMA(&huart5, (uint8_t*)&gpsData.ringBuff[gpsData.write], GPS_MAX_NMEA_SIZE);
-}
-
-void Main_RetriggerUartGps(void)
-{
-  static uint8_t lastWrite = 0u;
-  
-  if((gpsData.state != GPS_OK) || (lastWrite == gpsData.write))
-  {
-    Gps_PrepareWrite();
-    if(gpsData.state == GPS_OK)
-    {
-      HAL_UART_Receive_DMA(&huart5, (uint8_t*)&gpsData.ringBuff[gpsData.write], GPS_MAX_NMEA_SIZE);
-    }
-  }
-
-  lastWrite = gpsData.write;
-}
+void Main_WriteReg(uint8_t);
+void Main_WriteData(uint8_t);
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
@@ -487,7 +464,122 @@ static void MX_SPI5_Init(void)
     Error_Handler();
   }
   /* USER CODE BEGIN SPI5_Init 2 */
+  Main_WriteReg(0xCA);
+  Main_WriteData(0xC3);
+  Main_WriteData(0x08);
+  Main_WriteData(0x50);
+  Main_WriteReg(0xCF);
+  Main_WriteData(0x00);
+  Main_WriteData(0xC1);
+  Main_WriteData(0x30);
+  Main_WriteReg(0xED);
+  Main_WriteData(0x64);
+  Main_WriteData(0x03);
+  Main_WriteData(0x12);
+  Main_WriteData(0x81);
+  Main_WriteReg(0xE8);
+  Main_WriteData(0x85);
+  Main_WriteData(0x00);
+  Main_WriteData(0x78);
+  Main_WriteReg(0xCB);
+  Main_WriteData(0x39);
+  Main_WriteData(0x2C);
+  Main_WriteData(0x00);
+  Main_WriteData(0x34);
+  Main_WriteData(0x02);
+  Main_WriteReg(0xF7);
+  Main_WriteData(0x20);
+  Main_WriteReg(0xEA);
+  Main_WriteData(0x00);
+  Main_WriteData(0x00);
+  Main_WriteReg(0xB1);
+  Main_WriteData(0x00);
+  Main_WriteData(0x1B);
+  Main_WriteReg(0xB6);
+  Main_WriteData(0x0A);
+  Main_WriteData(0xA2);
+  Main_WriteReg(0xC0);
+  Main_WriteData(0x10);
+  Main_WriteReg(0xC1);
+  Main_WriteData(0x10);
+  Main_WriteReg(0xC5);
+  Main_WriteData(0x45);
+  Main_WriteData(0x15);
+  Main_WriteReg(0xC7);
+  Main_WriteData(0x90);
+  Main_WriteReg(0x36);
+  Main_WriteData(0xC8);
+  Main_WriteReg(0xF2);
+  Main_WriteData(0x00);
+  Main_WriteReg(0xB0);
+  Main_WriteData(0xC2);
+  Main_WriteReg(0xB6);
+  Main_WriteData(0x0A);
+  Main_WriteData(0xA7);
+  Main_WriteData(0x27);
+  Main_WriteData(0x04);
 
+  /* Colomn address set */
+  Main_WriteReg(0x2A);
+  Main_WriteData(0x00);
+  Main_WriteData(0x00);
+  Main_WriteData(0x00);
+  Main_WriteData(0xEF);
+  /* Page address set */
+  Main_WriteReg(0x2B);
+  Main_WriteData(0x00);
+  Main_WriteData(0x00);
+  Main_WriteData(0x01);
+  Main_WriteData(0x3F);
+  Main_WriteReg(0xF6);
+  Main_WriteData(0x01);
+  Main_WriteData(0x00);
+  Main_WriteData(0x06);
+
+  Main_WriteReg(0x2C);
+  HAL_Delay(200);
+
+  Main_WriteReg(0x26);
+  Main_WriteData(0x01);
+
+  Main_WriteReg(0xE0);
+  Main_WriteData(0x0F);
+  Main_WriteData(0x29);
+  Main_WriteData(0x24);
+  Main_WriteData(0x0C);
+  Main_WriteData(0x0E);
+  Main_WriteData(0x09);
+  Main_WriteData(0x4E);
+  Main_WriteData(0x78);
+  Main_WriteData(0x3C);
+  Main_WriteData(0x09);
+  Main_WriteData(0x13);
+  Main_WriteData(0x05);
+  Main_WriteData(0x17);
+  Main_WriteData(0x11);
+  Main_WriteData(0x00);
+  Main_WriteReg(0xE1);
+  Main_WriteData(0x00);
+  Main_WriteData(0x16);
+  Main_WriteData(0x1B);
+  Main_WriteData(0x04);
+  Main_WriteData(0x11);
+  Main_WriteData(0x07);
+  Main_WriteData(0x31);
+  Main_WriteData(0x33);
+  Main_WriteData(0x42);
+  Main_WriteData(0x05);
+  Main_WriteData(0x0C);
+  Main_WriteData(0x0A);
+  Main_WriteData(0x28);
+  Main_WriteData(0x2F);
+  Main_WriteData(0x0F);
+
+  Main_WriteReg(0x11);
+  HAL_Delay(200);
+  Main_WriteReg(0x29);
+  /* GRAM start writing */
+  Main_WriteReg(0x2C);
   /* USER CODE END SPI5_Init 2 */
 
 }
@@ -694,7 +786,57 @@ static void MX_FMC_Init(void)
   }
 
   /* USER CODE BEGIN FMC_Init 2 */
+  __IO uint32_t tmpmrd = 0;
 
+  /* Step 1: Configure a clock configuration enable command */
+  Command.CommandMode            = FMC_SDRAM_CMD_CLK_ENABLE;
+  Command.CommandTarget          =  FMC_SDRAM_CMD_TARGET_BANK2;
+  Command.AutoRefreshNumber      = 1;
+  Command.ModeRegisterDefinition = 0;
+
+  /* Send the command */
+  HAL_SDRAM_SendCommand(&hsdram1, &Command, SDRAM_TIMEOUT);
+
+  /* Step 2: Insert 100 us minimum delay */
+  /* Inserted delay is equal to 1 ms due to systick time base unit (ms) */
+  HAL_Delay(100);
+
+  /* Step 3: Configure a PALL (precharge all) command */
+  Command.CommandMode            = FMC_SDRAM_CMD_PALL;
+  Command.CommandTarget          = FMC_SDRAM_CMD_TARGET_BANK2;
+  Command.AutoRefreshNumber      = 1;
+  Command.ModeRegisterDefinition = 0;
+
+  /* Send the command */
+  HAL_SDRAM_SendCommand(&hsdram1, &Command, SDRAM_TIMEOUT);
+
+  /* Step 4: Configure an Auto Refresh command */
+  Command.CommandMode            = FMC_SDRAM_CMD_AUTOREFRESH_MODE;
+  Command.CommandTarget          = FMC_SDRAM_CMD_TARGET_BANK2;
+  Command.AutoRefreshNumber      = 4;
+  Command.ModeRegisterDefinition = 0;
+
+  /* Send the command */
+  HAL_SDRAM_SendCommand(&hsdram1, &Command, SDRAM_TIMEOUT);
+
+  /* Step 5: Program the external memory mode register */
+  tmpmrd = (uint32_t)SDRAM_MODEREG_BURST_LENGTH_1          |\
+                     SDRAM_MODEREG_BURST_TYPE_SEQUENTIAL   |\
+                     SDRAM_MODEREG_CAS_LATENCY_3           |\
+                     SDRAM_MODEREG_OPERATING_MODE_STANDARD |\
+                     SDRAM_MODEREG_WRITEBURST_MODE_SINGLE;
+
+  Command.CommandMode            = FMC_SDRAM_CMD_LOAD_MODE;
+  Command.CommandTarget          = FMC_SDRAM_CMD_TARGET_BANK2;
+  Command.AutoRefreshNumber      = 1;
+  Command.ModeRegisterDefinition = tmpmrd;
+
+  /* Send the command */
+  HAL_SDRAM_SendCommand(&hsdram1, &Command, SDRAM_TIMEOUT);
+
+  /* Step 6: Set the refresh rate counter */
+  /* Set the device refresh rate */
+  HAL_SDRAM_ProgramRefreshRate(&hsdram1, REFRESH_COUNT);
   /* USER CODE END FMC_Init 2 */
 }
 
@@ -784,7 +926,49 @@ static void MX_GPIO_Init(void)
 }
 
 /* USER CODE BEGIN 4 */
+void Main_Init(void)
+{
+  /* Start timer 10 -> 1s */
+  HAL_TIM_Base_Start_IT(&htim10);
 
+  /* Start gps uart */
+  HAL_UART_Receive_DMA(&huart5, (uint8_t*)&gpsData.ringBuff[gpsData.write], GPS_MAX_NMEA_SIZE);
+}
+
+
+void Main_RetriggerUartGps(void)
+{
+  static uint8_t lastWrite = 0u;
+
+  if((gpsData.state != GPS_OK) || (lastWrite == gpsData.write))
+  {
+    Gps_PrepareWrite();
+    if(gpsData.state == GPS_OK)
+    {
+      HAL_UART_Receive_DMA(&huart5, (uint8_t*)&gpsData.ringBuff[gpsData.write], GPS_MAX_NMEA_SIZE);
+    }
+  }
+
+  lastWrite = gpsData.write;
+}
+
+
+void Main_WriteReg(uint8_t reg)
+{
+  HAL_GPIO_WritePin(WRX_DCX_GPIO_Port, WRX_DCX_Pin, GPIO_PIN_RESET);
+  HAL_GPIO_WritePin(CSX_GPIO_Port, CSX_Pin, GPIO_PIN_RESET);
+  HAL_SPI_Transmit(&hspi5, &reg, 1, 10);
+  HAL_GPIO_WritePin(CSX_GPIO_Port, CSX_Pin, GPIO_PIN_SET);
+}
+
+
+void Main_WriteData(uint8_t data)
+{
+  HAL_GPIO_WritePin(WRX_DCX_GPIO_Port, WRX_DCX_Pin, GPIO_PIN_SET);
+  HAL_GPIO_WritePin(CSX_GPIO_Port, CSX_Pin, GPIO_PIN_RESET);
+  HAL_SPI_Transmit(&hspi5, &data, 1, 10);
+  HAL_GPIO_WritePin(CSX_GPIO_Port, CSX_Pin, GPIO_PIN_SET);
+}
 /* USER CODE END 4 */
 
 /* USER CODE BEGIN Header_DefaultTask */

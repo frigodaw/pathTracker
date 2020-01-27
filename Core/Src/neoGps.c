@@ -193,13 +193,15 @@ void Gps_ReadGPGGA(void)
                             gpsData.timeHr = (timeLinked / GPS_GPPGA_TIME_COEFF2) % GPS_GPPGA_TIME_COEFF1;
                             break;
                         case GPS_GPGGA_LATITUDE:
-                            sscanf((char*)fieldBuff, "%lf", &gpsData.latitude);
+                            sscanf((char*)fieldBuff, "%f", &gpsData.latitude);
+                            sscanf((char*)fieldBuff, "%lf", &gpsData.latitudeD);
                             break;
                         case GPS_GPGGA_NS:
                             sscanf((char*)fieldBuff, "%c", &gpsData.latDir);
                             break;
                         case GPS_GPGGA_LONGITUDE:
-                            sscanf((char*)fieldBuff, "%lf", &gpsData.longitude);
+                            sscanf((char*)fieldBuff, "%f", &gpsData.longitude);
+                            sscanf((char*)fieldBuff, "%lf", &gpsData.longitudeD);
                             break;
                         case GPS_GPGGA_WE:
                             sscanf((char*)fieldBuff, "%c", &gpsData.lonDir);
