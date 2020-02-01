@@ -107,7 +107,7 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart)
     gpsData.write += GPS_MAX_NMEA_SIZE;
 
     Gps_PrepareWrite();
-    if(gpsData.state == GPS_OK)
+    if(gpsData.state != GPS_FULL)
     {
       HAL_UART_Receive_DMA(&huart5, (uint8_t*)&gpsData.ringBuff[gpsData.write], GPS_MAX_NMEA_SIZE);
     }
@@ -581,7 +581,6 @@ static void MX_SPI5_Init(void)
   /* GRAM start writing */
   Main_WriteReg(0x2C);
   /* USER CODE END SPI5_Init 2 */
-
 }
 
 /**
@@ -940,10 +939,10 @@ void Main_RetriggerUartGps(void)
 {
   static uint8_t lastWrite = 0u;
 
-  if((gpsData.state != GPS_OK) || (lastWrite == gpsData.write))
+  if((gpsData.state == GPS_FULL) || (lastWrite == gpsData.write))
   {
     Gps_PrepareWrite();
-    if(gpsData.state == GPS_OK)
+    if(gpsData.state != GPS_FULL)
     {
       HAL_UART_Receive_DMA(&huart5, (uint8_t*)&gpsData.ringBuff[gpsData.write], GPS_MAX_NMEA_SIZE);
     }

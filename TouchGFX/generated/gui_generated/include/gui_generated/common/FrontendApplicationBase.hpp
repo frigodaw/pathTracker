@@ -18,6 +18,9 @@ public:
     // StartScreen
     void gotoStartScreenScreenNoTransition();
 
+    // GpsDataScreen
+    void gotoGpsDataScreenScreenSlideTransitionEast();
+
 protected:
     touchgfx::Callback<FrontendApplicationBase> transitionCallback;
     FrontendHeap& frontendHeap;
@@ -25,6 +28,9 @@ protected:
 
     // StartScreen
     void gotoStartScreenScreenNoTransitionImpl();
+
+    // GpsDataScreen
+    void gotoGpsDataScreenScreenSlideTransitionEastImpl();
 };
 
 #endif // FRONTENDAPPLICATIONBASE_HPP

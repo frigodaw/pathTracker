@@ -2,6 +2,7 @@
 #define MODELLISTENER_HPP
 
 #include <gui/model/Model.hpp>
+#include <touchgfx/hal/Types.hpp>
 
 class ModelListener
 {
@@ -14,6 +15,9 @@ public:
     {
         model = m;
     }
+
+    virtual void updateGpsDataContainer(){}
+
 protected:
     Model* model;
 };

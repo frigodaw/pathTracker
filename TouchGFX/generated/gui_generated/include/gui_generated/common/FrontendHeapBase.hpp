@@ -8,11 +8,15 @@
 #include <common/Partition.hpp>
 #include <mvp/MVPHeap.hpp>
 #include <touchgfx/transitions/NoTransition.hpp>
+#include <touchgfx/transitions/SlideTransition.hpp>
+
 #include <gui/common/FrontendApplication.hpp>
 #include <gui/model/Model.hpp>
 
 #include <gui/startscreen_screen/StartScreenView.hpp>
 #include <gui/startscreen_screen/StartScreenPresenter.hpp>
+#include <gui/gpsdatascreen_screen/GpsDataScreenView.hpp>
+#include <gui/gpsdatascreen_screen/GpsDataScreenPresenter.hpp>
 
 
 /**
@@ -36,7 +40,8 @@ public:
      * @note All view types used in the application MUST be added to this list!
      */
     typedef touchgfx::meta::TypeList< StartScreenView,
-            touchgfx::meta::Nil
+            touchgfx::meta::TypeList< GpsDataScreenView,
+            touchgfx::meta::Nil >
             > GeneratedViewTypes;
 
     /**
@@ -49,7 +54,8 @@ public:
      * @note All presenter types used in the application MUST be added to this list!
      */
     typedef touchgfx::meta::TypeList< StartScreenPresenter,
-            touchgfx::meta::Nil
+            touchgfx::meta::TypeList< GpsDataScreenPresenter,
+            touchgfx::meta::Nil >
             > GeneratedPresenterTypes;
 
     /**
@@ -62,7 +68,8 @@ public:
      * @note All transition types used in the application MUST be added to this list!
      */
     typedef touchgfx::meta::TypeList< touchgfx::NoTransition,
-            touchgfx::meta::Nil
+            touchgfx::meta::TypeList< SlideTransition<EAST>,
+            touchgfx::meta::Nil >
             > GeneratedTransitionTypes;
 
     /**

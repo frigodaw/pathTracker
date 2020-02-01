@@ -172,6 +172,18 @@
     <Filter Include="Header Files\generated\gui_generated\startscreen_screen">
       <UniqueIdentifier>BCBF16DB-B38A-8B22-52E1-7C84D6697EA4</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\gui\gpsdatascreen_screen">
+      <UniqueIdentifier>3DF84684-1B54-5996-DDCF-8EF5774BB4B6</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\gui\gpsdatascreen_screen">
+      <UniqueIdentifier>1F349F38-7A1C-DEDD-8A97-EAC5A908E16E</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\generated\gui_generated\gpsdatascreen_screen">
+      <UniqueIdentifier>970CDBC0-43D6-DE46-CB62-96150775C272</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\generated\gui_generated\gpsdatascreen_screen">
+      <UniqueIdentifier>4B5C2206-C509-89D1-4B91-1F3B12E1C467</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="$(TouchGFXReleasePath)\framework\source\platform\driver\touch\SDL2TouchController.cpp">
@@ -209,6 +221,15 @@
     </ClCompile>
     <ClCompile Include="..\..\generated\gui_generated\src\startscreen_screen\StartScreenViewBase.cpp">
       <Filter>Source Files\generated\gui_generated\startscreen_screen</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\gui\src\gpsdatascreen_screen\GpsDataScreenPresenter.cpp">
+      <Filter>Source Files\gui\gpsdatascreen_screen</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\gui\src\gpsdatascreen_screen\GpsDataScreenView.cpp">
+      <Filter>Source Files\gui\gpsdatascreen_screen</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\generated\gui_generated\src\gpsdatascreen_screen\GpsDataScreenViewBase.cpp">
+      <Filter>Source Files\generated\gui_generated\gpsdatascreen_screen</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -651,6 +672,15 @@
     </ClInclude>
     <ClInclude Include="..\..\generated\gui_generated\include\gui_generated\startscreen_screen\StartScreenViewBase.hpp">
       <Filter>Header Files\generated\gui_generated\startscreen_screen</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\gui\include\gui\gpsdatascreen_screen\GpsDataScreenPresenter.hpp">
+      <Filter>Header Files\gui\gpsdatascreen_screen</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\gui\include\gui\gpsdatascreen_screen\GpsDataScreenView.hpp">
+      <Filter>Header Files\gui\gpsdatascreen_screen</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\generated\gui_generated\include\gui_generated\gpsdatascreen_screen\GpsDataScreenViewBase.hpp">
+      <Filter>Header Files\generated\gui_generated\gpsdatascreen_screen</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

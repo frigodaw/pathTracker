@@ -23,6 +23,9 @@
     <ClCompile Include="..\..\gui\src\startscreen_screen\StartScreenPresenter.cpp"/>
     <ClCompile Include="..\..\gui\src\startscreen_screen\StartScreenView.cpp"/>
     <ClCompile Include="..\..\generated\gui_generated\src\startscreen_screen\StartScreenViewBase.cpp"/>
+    <ClCompile Include="..\..\gui\src\gpsdatascreen_screen\GpsDataScreenPresenter.cpp"/>
+    <ClCompile Include="..\..\gui\src\gpsdatascreen_screen\GpsDataScreenView.cpp"/>
+    <ClCompile Include="..\..\generated\gui_generated\src\gpsdatascreen_screen\GpsDataScreenViewBase.cpp"/>
   </ItemGroup>
   <ItemGroup>
     <None Include="$(ApplicationRoot)\assets\texts\texts.xlsx"/>
@@ -173,6 +176,9 @@
     <ClInclude Include="..\..\gui\include\gui\startscreen_screen\StartScreenPresenter.hpp"/>
     <ClInclude Include="..\..\gui\include\gui\startscreen_screen\StartScreenView.hpp"/>
     <ClInclude Include="..\..\generated\gui_generated\include\gui_generated\startscreen_screen\StartScreenViewBase.hpp"/>
+    <ClInclude Include="..\..\gui\include\gui\gpsdatascreen_screen\GpsDataScreenPresenter.hpp"/>
+    <ClInclude Include="..\..\gui\include\gui\gpsdatascreen_screen\GpsDataScreenView.hpp"/>
+    <ClInclude Include="..\..\generated\gui_generated\include\gui_generated\gpsdatascreen_screen\GpsDataScreenViewBase.hpp"/>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="$(ApplicationRoot)\generated\simulator\touchgfx.rc"/>

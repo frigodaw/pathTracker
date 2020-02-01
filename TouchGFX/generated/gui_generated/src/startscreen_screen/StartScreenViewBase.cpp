@@ -5,22 +5,48 @@
 #include <touchgfx/Color.hpp>
 #include <texts/TextKeysAndLanguages.hpp>
 
-StartScreenViewBase::StartScreenViewBase()
+StartScreenViewBase::StartScreenViewBase() :
+    waitHalfSecondCounter(0)
 {
 
     background.setPosition(0, 0, 240, 320);
-    background.setColor(touchgfx::Color::getColorFrom24BitRGB(181, 41, 41));
+    background.setColor(touchgfx::Color::getColorFrom24BitRGB(100, 160, 200));
 
-    textBox.setXY(8, 136);
-    textBox.setColor(touchgfx::Color::getColorFrom24BitRGB(0, 0, 0));
-    textBox.setLinespacing(0);
-    textBox.setTypedText(touchgfx::TypedText(T_SINGLEUSEID1));
+    ProjectName.setXY(17, 139);
+    ProjectName.setColor(touchgfx::Color::getColorFrom24BitRGB(0, 0, 0));
+    ProjectName.setLinespacing(0);
+    ProjectName.setTypedText(touchgfx::TypedText(T_SINGLEUSEID1));
 
     add(background);
-    add(textBox);
+    add(ProjectName);
 }
 
 void StartScreenViewBase::setupScreen()
 {
 
+}
+
+//Handles delays
+void StartScreenViewBase::handleTickEvent()
+{
+    if(waitHalfSecondCounter > 0)
+    {
+        waitHalfSecondCounter--;
+        if(waitHalfSecondCounter == 0)
+        {
+            //GoToGpsDataScreen
+            //When WaitHalfSecond completed change screen to GpsDataScreen
+            //Go to GpsDataScreen with screen transition towards East
+            application().gotoGpsDataScreenScreenSlideTransitionEast();
+        }
+    }
+}
+
+//Called when the screen is done with transition/load
+void StartScreenViewBase::afterTransition()
+{
+    //WaitHalfSecond
+    //When screen is entered delay
+    //Delay for 500 ms (30 Ticks)
+    waitHalfSecondCounter = WAITHALFSECOND_DURATION;
 }

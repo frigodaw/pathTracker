@@ -46,8 +46,9 @@ enum Gps_gpggaDataSequence
 
 enum Gps_bufferState
 {
-    GPS_OK,
-    GPS_FULL
+    GPS_OK_AHEAD,
+    GPS_OK_BEHIND,
+    GPS_FULL = 255
 };
 
 enum Gps_msgType
@@ -73,8 +74,6 @@ enum Gps_nmeaOffset
 //typedef to store all gps data
 typedef struct GpsUartData_Tag
 {
-    double latitudeD;
-    double longitudeD;
     float latitude;
     float longitude;
     float dilution;
@@ -83,7 +82,7 @@ typedef struct GpsUartData_Tag
     uint16_t read;
     volatile uint16_t write;
     volatile uint8_t ringBuff[GPS_RING_BUFFER_SIZE];
-    volatile uint8_t state;
+    volatile enum Gps_bufferState state;
 
     uint8_t dateDay;
     uint8_t dateMon;
@@ -97,6 +96,7 @@ typedef struct GpsUartData_Tag
 
     uint8_t fixQuality;
     uint8_t satelitesNum;
+    uint8_t dummy;
 } GpsUartData_T;
 
 //typedef to send gps debug data

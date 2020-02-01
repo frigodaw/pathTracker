@@ -24,13 +24,13 @@ void Gps_PrepareWrite(void)
         /* Data fits between the write pointer and the end of the buffer */
         if((gpsData.write + GPS_MAX_NMEA_SIZE) <= GPS_RING_BUFFER_SIZE)
         {
-            gpsData.state = GPS_OK;
+            gpsData.state = GPS_OK_AHEAD;
         }
         /* Data fits between start of the buffer and the read pointer */
         else if(gpsData.read > GPS_MAX_NMEA_SIZE)
         {
             gpsData.write = 0u;
-            gpsData.state = GPS_OK;
+            gpsData.state = GPS_OK_BEHIND;
         }
         /* There is no space for data */
         else
@@ -43,7 +43,7 @@ void Gps_PrepareWrite(void)
         /* Data fits between write and read pointer */
         if((gpsData.write + GPS_MAX_NMEA_SIZE) < gpsData.read)
         {
-            gpsData.state = GPS_OK;
+            gpsData.state = GPS_OK_BEHIND;
         }
         /* There is no space for data */
         else
@@ -62,20 +62,26 @@ void Gps_Main(void)
     /* Set read pointer to the start of the data */
     while((gpsData.ringBuff[gpsData.read] != '$') && (gpsData.read != gpsData.write))
     {
-        if(gpsData.read < GPS_RING_BUFFER_SIZE)
+        if((gpsData.state == GPS_OK_AHEAD) && (gpsData.read < gpsData.write))
         {
             gpsData.read++;
         }
+        else if((gpsData.state == GPS_OK_BEHIND) && (gpsData.read > gpsData.write))
+        {
+            gpsData.read = ((gpsData.read + 1u) < GPS_RING_BUFFER_SIZE) ? (gpsData.read + 1u) : 0u;
+        }
         else
         {
-            gpsData.read = 0u;
+            /* Should not get here */
+            gpsData.dummy++;
         }
     }
     
     if(gpsData.read != gpsData.write)
     {
         /* Only when character was found */
-        if((gpsData.ringBuff[gpsData.read] == '$') && 
+        if(((gpsData.read + GPS_NMEA_OFFSET_FIVE) < GPS_RING_BUFFER_SIZE) &&
+            (gpsData.ringBuff[gpsData.read] == '$') && 
             (gpsData.ringBuff[gpsData.read + GPS_NMEA_OFFSET_ONE] == 'G') && 
             (gpsData.ringBuff[gpsData.read + GPS_NMEA_OFFSET_TWO] == 'P'))
         {
@@ -102,7 +108,7 @@ void Gps_Main(void)
         }
         else
         {
-            gpsData.read++;
+            gpsData.read = ((gpsData.read + 1u) < GPS_RING_BUFFER_SIZE) ? (gpsData.read + 1u) : 0u;
         }
     }
     else
@@ -148,7 +154,6 @@ void Gps_ReadGPGGA(void)
     uint16_t len = 0u;
     uint32_t timeLinked = 0u;
 
-
     while(elementNum < GPS_GPPGA_ELEMENTS)
     {
         /* Increment to the next ',' */
@@ -156,14 +161,27 @@ void Gps_ReadGPGGA(void)
         {
             newRead++;
         }
-        while((gpsData.ringBuff[newRead] != ',') && (gpsData.ringBuff[newRead] != '&') && 
-            (gpsData.ringBuff[newRead] != '*') && (newRead < GPS_RING_BUFFER_SIZE));
+        while((newRead < GPS_RING_BUFFER_SIZE) &&
+             (gpsData.ringBuff[newRead] != '$') && (gpsData.ringBuff[newRead] != '*') &&
+             (gpsData.ringBuff[newRead] != ','));
 
         /* Calculate field length */
         len = newRead - gpsData.read;
 
-        /* Check for the end of a message */
-        if((gpsData.ringBuff[newRead] == '$') || (gpsData.ringBuff[newRead] == '*'))
+        /* Check whether the read is not too high */
+        if(newRead >= GPS_RING_BUFFER_SIZE)
+        {
+            gpsData.read = 0u;
+            elementNum = GPS_GPPGA_ELEMENTS;
+        }
+        /* Check whether newRead is not higher then write during AHEAD state */
+        else if((newRead > gpsData.write) && (gpsData.state == GPS_OK_AHEAD))
+        {
+            gpsData.read = gpsData.write;
+            elementNum = GPS_GPPGA_ELEMENTS;
+        }
+        /* Check for the end of current message */
+        else if((gpsData.ringBuff[newRead] == '$') || (gpsData.ringBuff[newRead] == '*'))
         {
             gpsData.read += len;
             elementNum = GPS_GPPGA_ELEMENTS;
@@ -194,14 +212,12 @@ void Gps_ReadGPGGA(void)
                             break;
                         case GPS_GPGGA_LATITUDE:
                             sscanf((char*)fieldBuff, "%f", &gpsData.latitude);
-                            sscanf((char*)fieldBuff, "%lf", &gpsData.latitudeD);
                             break;
                         case GPS_GPGGA_NS:
                             sscanf((char*)fieldBuff, "%c", &gpsData.latDir);
                             break;
                         case GPS_GPGGA_LONGITUDE:
                             sscanf((char*)fieldBuff, "%f", &gpsData.longitude);
-                            sscanf((char*)fieldBuff, "%lf", &gpsData.longitudeD);
                             break;
                         case GPS_GPGGA_WE:
                             sscanf((char*)fieldBuff, "%c", &gpsData.lonDir);

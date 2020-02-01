@@ -16,6 +16,8 @@ public:
     StartScreenViewBase();
     virtual ~StartScreenViewBase() {}
     virtual void setupScreen();
+    virtual void handleTickEvent();
+    virtual void afterTransition();
 
 protected:
     FrontendApplication& application() {
@@ -26,9 +28,15 @@ protected:
      * Member Declarations
      */
     touchgfx::Box background;
-    touchgfx::TextArea textBox;
+    touchgfx::TextArea ProjectName;
 
 private:
+
+    /*
+     * Delay Variable Declarations
+     */
+    static const uint16_t WAITHALFSECOND_DURATION = 30;
+    uint16_t waitHalfSecondCounter;
 
 };
 

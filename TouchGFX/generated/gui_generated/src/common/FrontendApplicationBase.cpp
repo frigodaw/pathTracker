@@ -11,6 +11,8 @@
 #include <platform/driver/lcd/LCD16bpp.hpp>
 #include <gui/startscreen_screen/StartScreenView.hpp>
 #include <gui/startscreen_screen/StartScreenPresenter.hpp>
+#include <gui/gpsdatascreen_screen/GpsDataScreenView.hpp>
+#include <gui/gpsdatascreen_screen/GpsDataScreenPresenter.hpp>
 
 using namespace touchgfx;
 
@@ -40,4 +42,17 @@ void FrontendApplicationBase::gotoStartScreenScreenNoTransition()
 void FrontendApplicationBase::gotoStartScreenScreenNoTransitionImpl()
 {
     touchgfx::makeTransition<StartScreenView, StartScreenPresenter, touchgfx::NoTransition, Model >(&currentScreen, &currentPresenter, frontendHeap, &currentTransition, &model);
+}
+
+// GpsDataScreen
+
+void FrontendApplicationBase::gotoGpsDataScreenScreenSlideTransitionEast()
+{
+    transitionCallback = touchgfx::Callback<FrontendApplicationBase>(this, &FrontendApplication::gotoGpsDataScreenScreenSlideTransitionEastImpl);
+    pendingScreenTransitionCallback = &transitionCallback;
+}
+
+void FrontendApplicationBase::gotoGpsDataScreenScreenSlideTransitionEastImpl()
+{
+    touchgfx::makeTransition<GpsDataScreenView, GpsDataScreenPresenter, touchgfx::SlideTransition<EAST>, Model >(&currentScreen, &currentPresenter, frontendHeap, &currentTransition, &model);
 }
