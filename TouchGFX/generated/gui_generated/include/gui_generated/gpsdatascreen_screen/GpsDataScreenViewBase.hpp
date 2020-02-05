@@ -42,11 +42,11 @@ protected:
     touchgfx::Unicode::UnicodeChar TimeTextBoxBuffer[TIMETEXTBOX_SIZE];
     static const uint16_t LATTEXTBOXBUFFER1_SIZE = 16;
     touchgfx::Unicode::UnicodeChar LatTextBoxBuffer1[LATTEXTBOXBUFFER1_SIZE];
-    static const uint16_t LATTEXTBOXBUFFER2_SIZE = 1;
+    static const uint16_t LATTEXTBOXBUFFER2_SIZE = 4;
     touchgfx::Unicode::UnicodeChar LatTextBoxBuffer2[LATTEXTBOXBUFFER2_SIZE];
     static const uint16_t LONTEXTBOXBUFFER1_SIZE = 16;
     touchgfx::Unicode::UnicodeChar LonTextBoxBuffer1[LONTEXTBOXBUFFER1_SIZE];
-    static const uint16_t LONTEXTBOXBUFFER2_SIZE = 1;
+    static const uint16_t LONTEXTBOXBUFFER2_SIZE = 4;
     touchgfx::Unicode::UnicodeChar LonTextBoxBuffer2[LONTEXTBOXBUFFER2_SIZE];
     static const uint16_t ALTITEXTBOX_SIZE = 8;
     touchgfx::Unicode::UnicodeChar AltiTextBoxBuffer[ALTITEXTBOX_SIZE];

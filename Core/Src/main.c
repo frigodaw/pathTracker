@@ -581,6 +581,7 @@ static void MX_SPI5_Init(void)
   /* GRAM start writing */
   Main_WriteReg(0x2C);
   /* USER CODE END SPI5_Init 2 */
+
 }
 
 /**

@@ -146,7 +146,7 @@
                 },
                 "Wildcard2": {
                   "UseBuffer": true,
-                  "BufferSize": 1
+                  "BufferSize": 4
                 },
                 "Name": "LatTextBox",
                 "X": 20,
@@ -178,7 +178,7 @@
                 },
                 "Wildcard2": {
                   "UseBuffer": true,
-                  "BufferSize": 1
+                  "BufferSize": 4
                 },
                 "Name": "LonTextBox",
                 "X": 20,

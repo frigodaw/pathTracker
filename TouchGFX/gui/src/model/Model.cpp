@@ -12,6 +12,7 @@ void Model::tick()
     if(modelTicks >= MODEL_GPSDATA_TIME_INTERVAL)
     {
         modelListener->updateGpsDataContainer();
+        modelTicks = 0u;
     }
     else
     {

@@ -1,7 +1,7 @@
 /******************************************************************************
 * @file   : neoGps.h
-* @brief             : Header for neoGps.c file.
-*                         This file contains the common defines of the neoGps.
+* @brief  : Header for neoGps.c file.
+*           This file contains the common defines of the neoGps.
 ******************************************************************************/
 
 #ifndef NEOGPS_H
@@ -9,28 +9,55 @@
 
 # ifdef __cplusplus
 extern "C" {
-# endif
+# endif /* __cplusplus */
 
 
-//include area
+/* START OF THE INCLUDE AREA */
 #include "stm32f4xx_hal.h"
+/* END OF THE DEFINE AREA */
 
 
-//define area
-#define GPS_RING_BUFFER_SIZE    1024u   //size of ring buffer
-#define GPS_MAX_NMEA_SIZE       83u     //max size of gps nmea message
-#define GPS_FIELD_BUFFER_SIZE   16u     //size of the temporary filed buffer
-#define GPS_DEBUG_BUFF_SIZE     128u
+/* START OF THE DEFINE AREA */
+#define GPS_RING_BUFFER_SIZE        1024u   //size of ring buffer
+#define GPS_MAX_NMEA_SIZE           83u     //max size of gps nmea message
+#define GPS_FIELD_BUFFER_SIZE       16u     //size of the temporary filed buffer
+#define GPS_DEBUG_BUFF_SIZE         128u
 
-#define GPS_NMEA_WORD_LEN       5u      //length of 'GPxxx' word
-#define GPS_NMEA_MSG_NUM        6u      //number of NMEA messages
+#define GPS_NMEA_WORD_LEN           5u      //length of 'GPxxx' word
+#define GPS_NMEA_MSG_NUM            6u      //number of NMEA messages
 
-#define GPS_GPPGA_ELEMENTS      14u
-#define GPS_GPPGA_TIME_LEN      6u
-#define GPS_GPPGA_TIME_COEFF1   100u
-#define GPS_GPPGA_TIME_COEFF2   10000u
+#define GPS_TIME_LEN                6u
+#define GPS_TIME_COEFF1             100u
+#define GPS_TIME_COEFF2             10000u
+#define GPS_DATE_COEFF1             100u
+#define GPS_DATE_COEFF2             10000u
+#define GPS_TIMEZONE_OFFSET         1u
 
-//enums area
+#define GPS_SIZE_GPRMC              11u     //12    ???
+#define GPS_SIZE_GPVTG              8u      //9     ???
+#define GPS_SIZE_GPPGA              14u     //14
+#define GPS_SIZE_GPGSA              17u     //17
+#define GPS_SIZE_GPGSV              19u     //7     ??? 3x?
+#define GPS_SIZE_GPGLL              7u      //7
+/* END OF THE DEFINE AREA */
+
+
+/* START OF THE ENUM AREA */
+enum Gps_gprmcDataSequence
+{
+    GPS_GPRMC_TIME,
+    GPS_GPRMC_WARNING,
+    GPS_GPRMC_LATITUDE,
+    GPS_GPRMC_NS,
+    GPS_GPRMC_LONGITUDE,
+    GPS_GPRMC_WE,
+    GPS_GPRMC_SPEEDGROUNDKNOTS,
+    GPS_GPRMC_COURSEMADEGOOD,
+    GPS_GPRMC_DATE,
+    GPS_GPRMC_MAGNETICVAR,
+    GPS_GPRMC_MAGNETICDIR
+};
+
 enum Gps_gpggaDataSequence
 {
     GPS_GPGGA_TIME,
@@ -44,11 +71,22 @@ enum Gps_gpggaDataSequence
     GPS_GPGGA_ALTITUDE
 };
 
+enum Gps_gpgllDataSequence
+{
+    GPS_GPGLL_LATITUDE,
+    GPS_GPGLL_NS,
+    GPS_GPGLL_LONGITUDE,
+    GPS_GPGLL_WE,
+    GPS_GPGLL_TIME,
+    GPS_GPGLL_WARNING,
+    GPS_GPGLL_MODEINDICATOR
+};
+
 enum Gps_bufferState
 {
     GPS_OK_AHEAD,
     GPS_OK_BEHIND,
-    GPS_FULL = 255
+    GPS_FULL = 255u
 };
 
 enum Gps_msgType
@@ -70,7 +108,9 @@ enum Gps_nmeaOffset
     GPS_NMEA_OFFSET_FOUR,
     GPS_NMEA_OFFSET_FIVE,
 };
+/* END OF THE ENUM AREA */
 
+/* START OF THE TYPEDEF AREA */
 //typedef to store all gps data
 typedef struct GpsUartData_Tag
 {
@@ -96,7 +136,7 @@ typedef struct GpsUartData_Tag
 
     uint8_t fixQuality;
     uint8_t satelitesNum;
-    uint8_t dummy;
+    uint8_t errorCnt;
 } GpsUartData_T;
 
 //typedef to send gps debug data
@@ -106,20 +146,36 @@ typedef struct GpsDebugData_Tag
     uint16_t size;
 } GpsDebugData_T;
 
-//variables declaration area
+//typedef to store information about actual read message
+typedef struct GpsMsgInfo_Tag
+{
+    enum Gps_msgType type;
+    uint8_t maxElements;
+    uint8_t currentElement;
+}GpsMsgInfo_T;
+/* END OF THE TYPEDEF AREA */
+
+/* START OF THE EXTERN VARIABLES AREA */
 extern GpsUartData_T gpsData;
 extern GpsDebugData_T gpsDebug;
+/* END OF THE EXTERN VARIABLES AREA */
 
-//functions declaration area
-void Gps_Main(void);
-void Gps_PrepareWrite(void);
-uint8_t Gps_SelectMsg(void);
-void Gps_ReadGPGGA(void);
-void Gps_PrepareDebugData(void);
 
+/* START OF THE FUNCTIONS PROTOTYPES AREA */
+uint8_t Gps_Main(void);
+uint8_t Gps_PrepareWrite(void);
+uint8_t Gps_SelectMsg(GpsMsgInfo_T* messageInfo);
+uint8_t Gps_ReadMessage(GpsMsgInfo_T* messageInfo);
+uint8_t Gps_ReadMessage_GPRMC(uint8_t currentElement, uint8_t* fieldBuff);
+uint8_t Gps_ReadMessage_GPVTG(uint8_t currentElement, uint8_t* fieldBuff);
+uint8_t Gps_ReadMessage_GPGGA(uint8_t currentElement, uint8_t* fieldBuff);
+uint8_t Gps_ReadMessage_GPGSA(uint8_t currentElement, uint8_t* fieldBuff);
+uint8_t Gps_ReadMessage_GPGSV(uint8_t currentElement, uint8_t* fieldBuff);
+uint8_t Gps_ReadMessage_GPGLL(uint8_t currentElement, uint8_t* fieldBuff);
+uint8_t Gps_PrepareDebugData(void);
+/* END OF THE FUNCTIONS PROTOTYPES AREA */
 
 # ifdef __cplusplus
 }
-# endif
-
-#endif
+# endif /* __cplusplus */
+#endif  /* NEOGPS_H */
