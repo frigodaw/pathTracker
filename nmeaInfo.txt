@@ -1,0 +1,65 @@
+$GPRMC,225446,A,4916.45,N,12311.12,W,000.5,054.7,191194,020.3,E*68
+    0.  225446       Time of fix 22:54:46 UTC
+    1.  A            Position status: A-valid, V-invalid
+    2.  4916.45      Latitude 49 deg. 16.45 min
+    3.  N            Direction NS
+    4.  12311.12     Longitude 123 deg. 11.12 min
+    5.  W            Direction WE
+    6.  000.5        Speed over ground, Knots
+    7.  054.7        Course Made Good, True
+    8.  191194       Date of fix: 19 November 1994
+    9.  020.3        Magnetic variation 20.3 deg 
+   10.  E            Magnetic direction WE 
+   11.  A            Mode indicator: A-autonomous, D-differential, E-estimated, M-manual input, N-data not valid
+   12.  *68          Checksum
+
+
+$GPVTG,360.0,T,348.7,M,000.0,N,000.0,K,A*43
+    0.  360.0        Track made good (degrees true)
+    1.  T            Fixed text 'T' indicates that track made good is relative to true north
+    2.  348.7        Track made good (degrees magnetic)
+    3.  M            M: track made good is relative to magnetic north
+    4.  000.0        Speed over ground in knots
+    5.  N            Fixed text 'N' indicates that speed over ground in in knots
+    6.  000.0        Speed over ground in kilometers/hour
+    7.  K            Fixed text 'K' indicates that speed over ground is in kilometers/hour
+    8.  A            Mode indicator: A-autonomous, D-differential, E-estimated, M-manual input, N-data not valid
+    9.  *43          Checksum
+
+$GPGGA,160915.00,5003.42292,N,01855.72499,E,1,08,1.01,240.5,M,40.7,M,,*5F 
+    0.  160915.00       Time of fix 16:09:15 UTC
+    1.  5003.42292      Latitude
+    2.  N               Direction NS
+    3.  01855.72499     Longitude
+    4.  E               Direction WE
+    5.  1               GPS quality indicator
+    6.  08              Number of satelites
+    7.  1.01            Horizontal dilution of precision
+    8.  240.5           Altitude
+    9.  M               Units, meters
+   10.  40.7            Geoidal separation
+   11.  M               Units, meters 
+   12.                  [--]
+   13.                  [--]
+   14.  *5F             Checksum
+
+$GPGSA,A,3,26,31,05,16,29,,,,,,,,3.6,2.1,2.2*3C 
+    0.  A               Mode: M=Manual, forced to operate in 2D or 3D, A=Automatic, 3D/2D
+    1.  3               Mode: 1-Fix no available, 2=2D, 3=3D
+ 2-13.  ...             IDs of SVs used in position fix (null for unused fields)
+   14.  3.6             PDOP: position accuracy factor
+   15.  2.1             HDOP: position accuracy factor horizontal
+   16.  2.2             VDOP: position accuracy factor vertical
+   17.  *3C             Checksum
+
+GPGSV:
+
+$GPGLL,3751.65,S,14507.36,E,225444,A,A*6E
+    0.  3751.65         Latitude
+    1.  S               Direction NS
+    2.  14507.36        Longitude
+    3.  E               Direction WE
+    4.  225444          Time of fix 22:54:44 UTC
+    5.  A               Position status: A-valid, V-invalid
+    6.  A               Mode indicator: A-autonomous, D-differential, E-estimated, M-manual input, N-data not valid
+    7.  *6E             Checksum

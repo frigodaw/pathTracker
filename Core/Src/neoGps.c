@@ -96,7 +96,7 @@ uint8_t Gps_Main(void)
         }
         
         /* Go ahead if searching messages fails */
-        if(messageInfo.type == GPS_ERROR)
+        if(messageInfo.type == GPS_INVALID)
         {
             gpsData.read = ((gpsData.read + 1u) < GPS_RING_BUFFER_SIZE) ? (gpsData.read + 1u) : 0u;
         }
@@ -127,7 +127,7 @@ uint8_t Gps_SelectMsg(GpsMsgInfo_T* messageInfo)
     const char *msgTypeArray[GPS_NMEA_MSG_NUM] = {"GPRMC", "GPVTG", "GPGGA", "GPGSA", "GPGSV", "GPGLL"};
     const uint8_t msgSizeArray[GPS_NMEA_MSG_NUM] = {GPS_SIZE_GPRMC, GPS_SIZE_GPVTG, GPS_SIZE_GPPGA, GPS_SIZE_GPGSA, GPS_SIZE_GPGSV, GPS_SIZE_GPGLL};
 
-    messageInfo->type = GPS_ERROR;
+    messageInfo->type = GPS_INVALID;
     messageInfo->maxElements = 0u;
 
     for(enum Gps_msgType msgId=0u; msgId < GPS_NMEA_MSG_NUM; msgId++)
@@ -165,7 +165,7 @@ uint8_t Gps_ReadMessage(GpsMsgInfo_T* messageInfo)
         }
         while((newRead < GPS_RING_BUFFER_SIZE) &&
              (gpsData.ringBuff[newRead] != '$') && (gpsData.ringBuff[newRead] != '\n') &&
-             (gpsData.ringBuff[newRead] != ','));
+             (gpsData.ringBuff[newRead] != ',') && (gpsData.ringBuff[newRead] != '*'));
 
         /* Calculate field length */
         len = newRead - gpsData.read;
@@ -188,8 +188,8 @@ uint8_t Gps_ReadMessage(GpsMsgInfo_T* messageInfo)
             gpsData.read += len;
             messageInfo->currentElement = messageInfo->maxElements;
         }
-        /* Found ',' character. */
-        else if(gpsData.ringBuff[newRead] == ',')
+        /* Found ',' or '*' character. */
+        else if((gpsData.ringBuff[newRead] == ',') || (gpsData.ringBuff[newRead] == '*'))
         {
             /* Omit empty data */
             if(len > 1u)
@@ -259,32 +259,29 @@ uint8_t Gps_ReadMessage(GpsMsgInfo_T* messageInfo)
 /* Function called to get data from GPRMC msg. Example:
    $GPRMC,225446,A,4916.45,N,12311.12,W,000.5,054.7,191194,020.3,E*68
     0.  225446       Time of fix 22:54:46 UTC
-    1.  A            Navigation receiver warning A = OK, V = warning
+    1.  A            Position status: A-valid, V-invalid
     2.  4916.45      Latitude 49 deg. 16.45 min
     3.  N            Direction NS
     4.  12311.12     Longitude 123 deg. 11.12 min
     5.  W            Direction WE
     6.  000.5        Speed over ground, Knots
     7.  054.7        Course Made Good, True
-    8.  191194       Date of fix  19 November 1994
+    8.  191194       Date of fix: 19 November 1994
     9.  020.3        Magnetic variation 20.3 deg 
-   10.  E            Magnetic direction WE + checksum
+   10.  E            Magnetic direction WE 
+   11.  A            Mode indicator: A-autonomous, D-differential, E-estimated, M-manual input, N-data not valid
+   12.  *68          Checksum
 */
 uint8_t Gps_ReadMessage_GPRMC(uint8_t currentElement, uint8_t* fieldBuff)
 {
-    uint32_t timeLinked = 0u;
     uint32_t dateLinked = 0u;
 
     switch (currentElement)
     {
         case GPS_GPRMC_TIME:
-            memset(&fieldBuff[GPS_TIME_LEN], 0u, GPS_FIELD_BUFFER_SIZE - GPS_TIME_LEN);
-            sscanf((char*)fieldBuff, "%ld", &timeLinked);
-            gpsData.timeSec  = timeLinked % GPS_TIME_COEFF1;
-            gpsData.timeMin = (timeLinked / GPS_TIME_COEFF1) % GPS_TIME_COEFF1;
-            gpsData.timeHr = ((timeLinked / GPS_TIME_COEFF2) % GPS_TIME_COEFF1) + GPS_TIMEZONE_OFFSET;
+            Gps_ReadMessageElement_Time(fieldBuff);
             break;
-        case GPS_GPRMC_WARNING:
+        case GPS_GPRMC_POSITIONSTATUS:
             break;
         case GPS_GPRMC_LATITUDE:
             sscanf((char*)fieldBuff, "%f", &gpsData.latitude);
@@ -300,7 +297,7 @@ uint8_t Gps_ReadMessage_GPRMC(uint8_t currentElement, uint8_t* fieldBuff)
             break;
         case GPS_GPRMC_SPEEDGROUNDKNOTS:
             break;
-        case GPS_GPRMC_COURSEMADEGOOD:
+        case GPS_GPRMC_TRACKMADEGOODDEGREES:
             break;
         case GPS_GPRMC_DATE:
             sscanf((char*)fieldBuff, "%ld", &dateLinked);
@@ -308,9 +305,14 @@ uint8_t Gps_ReadMessage_GPRMC(uint8_t currentElement, uint8_t* fieldBuff)
             gpsData.dateMon = (dateLinked / GPS_DATE_COEFF1) % GPS_DATE_COEFF1;
             gpsData.dateDay = ((dateLinked / GPS_DATE_COEFF2) % GPS_DATE_COEFF1);
             break;
-        case GPS_GPRMC_MAGNETICVAR:
+        case GPS_GPRMC_MAGNETICVARIATION:
             break;
-        case GPS_GPRMC_MAGNETICDIR:
+        case GPS_GPRMC_MAGNETICVARIATIONDIR:
+            break;
+        case GPS_GPRMC_MODEINDICATOR:
+            Gps_ReadMessageElement_ModeIndicator(fieldBuff);
+            break;
+        case GPS_GPRMC_CHECKSUM:
             break;
         default:
             break;
@@ -320,8 +322,8 @@ uint8_t Gps_ReadMessage_GPRMC(uint8_t currentElement, uint8_t* fieldBuff)
 }
 
 
-/* Function called to get data from GPRMC msg. Example:
-   $GPVTG,360.0,T,348.7,M,000.0,N,000.0,K*43
+/* Function called to get data from GPVTG msg. Example:
+   $GPVTG,360.0,T,348.7,M,000.0,N,000.0,K,A*43
     0.  360.0        Track made good (degrees true)
     1.  T            Fixed text 'T' indicates that track made good is relative to true north
     2.  348.7        Track made good (degrees magnetic)
@@ -329,11 +331,39 @@ uint8_t Gps_ReadMessage_GPRMC(uint8_t currentElement, uint8_t* fieldBuff)
     4.  000.0        Speed over ground in knots
     5.  N            Fixed text 'N' indicates that speed over ground in in knots
     6.  000.0        Speed over ground in kilometers/hour
-    7.  K*43         Fixed text 'K' indicates that speed over ground is in kilometers/hour + checksum
+    7.  K            Fixed text 'K' indicates that speed over ground is in kilometers/hour
+    8.  A            Mode indicator: A-autonomous, D-differential, E-estimated, M-manual input, N-data not valid
+    9.  *43          Checksum
 */
 uint8_t Gps_ReadMessage_GPVTG(uint8_t currentElement, uint8_t* fieldBuff)
 {
-    return RET_OK;  //length mismatch
+    switch (currentElement)
+    {
+        case GPS_GPVTG_TRACKMADEGOODDEGREES:
+            break;
+        case GPS_GPVTG_RELATIVENORTH:
+            break;
+        case GPS_GPVTG_TRACKMADEGOODDEGREESMAGNETIC:
+            break;
+        case GPS_GPVTG_RELATIVEMAGNETICNORTH:
+            break;
+        case GPS_GPVTG_GROUNDSPEEDKNOTS:
+            break;
+        case GPS_GPVTG_SPEEDUNITKNOTS:
+            break;
+        case GPS_GPVTG_GROUNDSPEEDKMH:
+            sscanf((char*)fieldBuff, "%f", &gpsData.groundSpeedKmh);
+            break;
+        case GPS_GPVTG_SPEEDUNITKMH:
+            break;
+        case GPS_GPVTG_MODEINDICATOR:
+            Gps_ReadMessageElement_ModeIndicator(fieldBuff);
+            break;
+        default:
+            break;
+    }
+
+    return RET_OK;
 }
 
 
@@ -346,26 +376,21 @@ uint8_t Gps_ReadMessage_GPVTG(uint8_t currentElement, uint8_t* fieldBuff)
     4.  E               Direction WE
     5.  1               GPS quality indicator
     6.  08              Number of satelites
-    7.  1.01            Horizontal dilution of horizon
+    7.  1.01            Horizontal dilution of precision
     8.  240.5           Altitude
     9.  M               Units, meters
    10.  40.7            Geoidal separation
    11.  M               Units, meters 
    12.                  [--]
-   13.  *5F             Checksum
+   13.                  [--]
+   14.  *5F             Checksum
 */
 uint8_t Gps_ReadMessage_GPGGA(uint8_t currentElement, uint8_t* fieldBuff)
 {
-    uint32_t timeLinked = 0u;
-
     switch(currentElement)
     {
         case GPS_GPGGA_TIME:
-            memset(&fieldBuff[GPS_TIME_LEN], 0u, GPS_FIELD_BUFFER_SIZE - GPS_TIME_LEN);
-            sscanf((char*)fieldBuff, "%ld", &timeLinked);
-            gpsData.timeSec  = timeLinked % GPS_TIME_COEFF1;
-            gpsData.timeMin = (timeLinked / GPS_TIME_COEFF1) % GPS_TIME_COEFF1;
-            gpsData.timeHr = ((timeLinked / GPS_TIME_COEFF2) % GPS_TIME_COEFF1) + GPS_TIMEZONE_OFFSET;
+            Gps_ReadMessageElement_Time(fieldBuff);
             break;
         case GPS_GPGGA_LATITUDE:
             sscanf((char*)fieldBuff, "%f", &gpsData.latitude);
@@ -385,11 +410,23 @@ uint8_t Gps_ReadMessage_GPGGA(uint8_t currentElement, uint8_t* fieldBuff)
         case GPS_GPGGA_SATELITESNUM:
             sscanf((char*)fieldBuff, "%hhu", &gpsData.satelitesNum);
             break;
-        case GPS_GPGGA_DILUTION:
-            sscanf((char*)fieldBuff, "%f", &gpsData.dilution);
+        case GPS_GPGGA_HDOP:
+            sscanf((char*)fieldBuff, "%f", &gpsData.hdop);
             break;
         case GPS_GPGGA_ALTITUDE:
             sscanf((char*)fieldBuff, "%f", &gpsData.altitude);
+            break;
+        case GPS_GPGGA_ALTITUDEUNITSMETERS:
+            break;
+        case GPS_GPGGA_GEOIDALSEPARATION:
+            break;
+        case GPS_GPGGA_GEOIDALSEPARATIONUNITMETERS:
+            break;
+        case GPS_GPGGA_EMPTYSLOTONE:
+            break;
+        case GPS_GPGGA_EMPTYSLOTTWO:
+            break;
+        case GPS_GPGGA_CHECKSUM:
             break;
         default:
             break;
@@ -400,16 +437,63 @@ uint8_t Gps_ReadMessage_GPGGA(uint8_t currentElement, uint8_t* fieldBuff)
 
 
 /* Function called to get data from GPGSA msg. Example:
-   $GPGSA,A,3,,,,,,16,18,,22,24,,,3.6,2.1,2.2*3C 
+   $GPGSA,A,3,26,31,05,16,29,,,,,,,,3.6,2.1,2.2*3C 
     0.  A               Mode: M=Manual, forced to operate in 2D or 3D, A=Automatic, 3D/2D
     1.  3               Mode: 1-Fix no available, 2=2D, 3=3D
  2-13.  ...             IDs of SVs used in position fix (null for unused fields)
-   14.  3.6             PDOP
-   15.  2.1             HDOP
-   16.  2.2*3C          VDOP + checksum
+   14.  3.6             PDOP: position accuracy factor
+   15.  2.1             HDOP: position accuracy factor horizontal
+   16.  2.2             VDOP: position accuracy factor vertical
+   17.  *3C             Checksum
 */
 uint8_t Gps_ReadMessage_GPGSA(uint8_t currentElement, uint8_t* fieldBuff)
 {
+    switch(currentElement)
+    {
+        case GPS_GPGSA_MODEONE:
+            Gps_ReadMessageElement_ModeOne(fieldBuff);
+            break;
+        case GPS_GPGSA_MODETWO:
+            sscanf((char*)fieldBuff, "%hhu", &gpsData.modeTwo);
+            break;
+        case GPS_GPGSA_SATELLITEIDONE:
+            break;
+        case GPS_GPGSA_SATELLITEIDTWO:
+            break;
+        case GPS_GPGSA_SATELLITEIDTHREE:
+            break;
+        case GPS_GPGSA_SATELLITEIDFOUR:
+            break;
+        case GPS_GPGSA_SATELLITEIDFIVE:
+            break;
+        case GPS_GPGSA_SATELLITEIDSIX:
+            break;
+        case GPS_GPGSA_SATELLITEIDSEVEN:
+            break;
+        case GPS_GPGSA_SATELLITEIDEIGTH:
+            break;
+        case GPS_GPGSA_SATELLITEIDNINE:
+            break;
+        case GPS_GPGSA_SATELLITEIDTEN:
+            break;
+        case GPS_GPGSA_SATELLITEIDELEVEN:
+            break;
+        case GPS_GPGSA_SATELLITEIDTWELVE:
+            break;
+        case GPS_GPGSA_PDOP:
+            break;
+        case GPS_GPGSA_HDOP:
+            sscanf((char*)fieldBuff, "%f", &gpsData.hdop);
+            break;
+        case GPS_GPGSA_VDOP:
+            sscanf((char*)fieldBuff, "%f", &gpsData.vdop);
+            break;
+        case GPS_GPGSA_CHECKSUM:
+            break;
+        default:
+            break;
+    }
+
     return RET_OK;
 }
 
@@ -433,20 +517,19 @@ uint8_t Gps_ReadMessage_GPGSV(uint8_t currentElement, uint8_t* fieldBuff)
 }
 
 
-/* Function called to get data from GPGSA msg. Example:
+/* Function called to get data from GPGLL msg. Example:
    $GPGLL,3751.65,S,14507.36,E,225444,A,A*6E
     0.  3751.65         Latitude
     1.  S               Direction NS
     2.  14507.36        Longitude
     3.  E               Direction WE
     4.  225444          Time of fix 22:54:44 UTC
-    5.  A               Data status A-valid, V-invalid
-    6.  A*6E            Positioning system mode indicator + checksum
+    5.  A               Position status: A-valid, V-invalid
+    6.  A               Mode indicator: A-autonomous, D-differential, E-estimated, M-manual input, N-data not valid
+    7.  *6E             Checksum
 */
 uint8_t Gps_ReadMessage_GPGLL(uint8_t currentElement, uint8_t* fieldBuff)
 {
-    uint32_t timeLinked = 0u;
-
     switch (currentElement)
     {
         case GPS_GPGLL_LATITUDE:
@@ -462,15 +545,14 @@ uint8_t Gps_ReadMessage_GPGLL(uint8_t currentElement, uint8_t* fieldBuff)
             sscanf((char*)fieldBuff, "%c", &gpsData.lonDir);
             break;
         case GPS_GPGLL_TIME:
-            memset(&fieldBuff[GPS_TIME_LEN], 0u, GPS_FIELD_BUFFER_SIZE - GPS_TIME_LEN);
-            sscanf((char*)fieldBuff, "%ld", &timeLinked);
-            gpsData.timeSec  = timeLinked % GPS_TIME_COEFF1;
-            gpsData.timeMin = (timeLinked / GPS_TIME_COEFF1) % GPS_TIME_COEFF1;
-            gpsData.timeHr = ((timeLinked / GPS_TIME_COEFF2) % GPS_TIME_COEFF1) + GPS_TIMEZONE_OFFSET;
+            Gps_ReadMessageElement_Time(fieldBuff);
             break;
-        case GPS_GPGLL_WARNING:
+        case GPS_GPGLL_POSITIONSTATUS:
             break;
         case GPS_GPGLL_MODEINDICATOR:
+            Gps_ReadMessageElement_ModeIndicator(fieldBuff);
+            break;
+        case GPS_GPGLL_CHECKSUM:
             break;
         default:
             break;
@@ -492,3 +574,80 @@ uint8_t Gps_PrepareDebugData(void)
 
     return RET_OK;
 }
+
+/* Function called to read time given in different
+   gps frames.
+*/
+uint8_t Gps_ReadMessageElement_Time(uint8_t* fieldBuff)
+{
+    uint32_t timeLinked = 0u;
+    uint8_t tmpHr = 0u;
+
+    memset(&fieldBuff[GPS_TIME_LEN], 0u, GPS_FIELD_BUFFER_SIZE - GPS_TIME_LEN);
+    sscanf((char*)fieldBuff, "%ld", &timeLinked);
+    gpsData.timeSec  = timeLinked % GPS_TIME_COEFF1;
+    gpsData.timeMin = (timeLinked / GPS_TIME_COEFF1) % GPS_TIME_COEFF1;
+    /* Add 1 hour to adjust time to polish timezone */
+    tmpHr = ((timeLinked / GPS_TIME_COEFF2) % GPS_TIME_COEFF1) + GPS_TIMEZONE_OFFSET;
+    gpsData.timeHr = (tmpHr > GPS_TIME_MAXHOUR) ? 0u : tmpHr;
+
+    return RET_OK;
+}
+
+/* Function called to read modeIndicator given in different
+   gps frames.
+*/
+uint8_t Gps_ReadMessageElement_ModeOne(uint8_t* fieldBuff)
+{
+    char readModeOne = '0';
+    sscanf((char*)fieldBuff, "%c", &readModeOne);
+
+    switch(readModeOne)
+    {
+        case 'A':
+            gpsData.modeOne = GPS_MODEONE_AUTOMATIC;
+            break;
+        case 'M':
+            gpsData.modeOne = GPS_MODEONE_MANUAL;
+            break;
+        default:
+            gpsData.modeOne = GPS_MODEONE_INVALID;
+            break;
+    }
+
+    return RET_OK;
+}
+
+
+
+/* Function called to read modeIndicator given in different
+   gps frames.
+*/
+uint8_t Gps_ReadMessageElement_ModeIndicator(uint8_t* fieldBuff)
+{
+    char readModeIndicator = '0';
+    sscanf((char*)fieldBuff, "%c", &readModeIndicator);
+
+    switch(readModeIndicator)
+    {
+        case 'A':
+            gpsData.modeIndicator = GPS_MODEINDICATOR_AUTONOMOUS;
+            break;
+        case 'D':
+            gpsData.modeIndicator = GPS_MODEINDICATOR_DIFFERENTIAL;
+            break;
+        case 'E':
+            gpsData.modeIndicator = GPS_MODEINDICATOR_ESTIMATED;
+            break;
+        case 'M':
+            gpsData.modeIndicator = GPS_MODEINDICATOR_MANUALINPUT;
+            break;
+        case 'N':
+        default:
+            gpsData.modeIndicator = GPS_MODEINDICATOR_DATANOTVALID;
+            break;
+    }
+
+    return RET_OK;
+}
+
