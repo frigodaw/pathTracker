@@ -10,6 +10,7 @@
 #include <touchgfx/widgets/Box.hpp>
 #include <touchgfx/containers/Container.hpp>
 #include <touchgfx/widgets/TextAreaWithWildcard.hpp>
+#include <touchgfx/widgets/ButtonWithLabel.hpp>
 
 class GpsDataScreenViewBase : public touchgfx::View<GpsDataScreenPresenter>
 {
@@ -34,6 +35,7 @@ protected:
     touchgfx::TextAreaWithOneWildcard AltiTextBox;
     touchgfx::TextAreaWithOneWildcard FixTextBox;
     touchgfx::TextAreaWithOneWildcard SatTextBox;
+    touchgfx::ButtonWithLabel GoToDrawScreenButton;
 
     /*
      * Wildcard Buffers
@@ -56,6 +58,16 @@ protected:
     touchgfx::Unicode::UnicodeChar SatTextBoxBuffer[SATTEXTBOX_SIZE];
 
 private:
+
+    /*
+     * Callback Declarations
+     */
+    touchgfx::Callback<GpsDataScreenViewBase, const touchgfx::AbstractButton&> buttonCallback;
+
+    /*
+     * Callback Handler Declarations
+     */
+    void buttonCallbackHandler(const touchgfx::AbstractButton& src);
 
 };
 

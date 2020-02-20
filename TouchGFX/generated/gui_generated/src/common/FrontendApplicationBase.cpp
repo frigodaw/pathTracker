@@ -13,6 +13,8 @@
 #include <gui/startscreen_screen/StartScreenPresenter.hpp>
 #include <gui/gpsdatascreen_screen/GpsDataScreenView.hpp>
 #include <gui/gpsdatascreen_screen/GpsDataScreenPresenter.hpp>
+#include <gui/drawscreen_screen/DrawScreenView.hpp>
+#include <gui/drawscreen_screen/DrawScreenPresenter.hpp>
 
 using namespace touchgfx;
 
@@ -55,4 +57,28 @@ void FrontendApplicationBase::gotoGpsDataScreenScreenSlideTransitionEast()
 void FrontendApplicationBase::gotoGpsDataScreenScreenSlideTransitionEastImpl()
 {
     touchgfx::makeTransition<GpsDataScreenView, GpsDataScreenPresenter, touchgfx::SlideTransition<EAST>, Model >(&currentScreen, &currentPresenter, frontendHeap, &currentTransition, &model);
+}
+
+void FrontendApplicationBase::gotoGpsDataScreenScreenCoverTransitionEast()
+{
+    transitionCallback = touchgfx::Callback<FrontendApplicationBase>(this, &FrontendApplication::gotoGpsDataScreenScreenCoverTransitionEastImpl);
+    pendingScreenTransitionCallback = &transitionCallback;
+}
+
+void FrontendApplicationBase::gotoGpsDataScreenScreenCoverTransitionEastImpl()
+{
+    touchgfx::makeTransition<GpsDataScreenView, GpsDataScreenPresenter, touchgfx::CoverTransition<EAST>, Model >(&currentScreen, &currentPresenter, frontendHeap, &currentTransition, &model);
+}
+
+// DrawScreen
+
+void FrontendApplicationBase::gotoDrawScreenScreenSlideTransitionEast()
+{
+    transitionCallback = touchgfx::Callback<FrontendApplicationBase>(this, &FrontendApplication::gotoDrawScreenScreenSlideTransitionEastImpl);
+    pendingScreenTransitionCallback = &transitionCallback;
+}
+
+void FrontendApplicationBase::gotoDrawScreenScreenSlideTransitionEastImpl()
+{
+    touchgfx::makeTransition<DrawScreenView, DrawScreenPresenter, touchgfx::SlideTransition<EAST>, Model >(&currentScreen, &currentPresenter, frontendHeap, &currentTransition, &model);
 }

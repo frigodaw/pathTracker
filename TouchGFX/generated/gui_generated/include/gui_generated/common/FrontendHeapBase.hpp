@@ -9,6 +9,8 @@
 #include <mvp/MVPHeap.hpp>
 #include <touchgfx/transitions/NoTransition.hpp>
 #include <touchgfx/transitions/SlideTransition.hpp>
+#include <touchgfx/transitions/SlideTransition.hpp>
+#include <touchgfx/transitions/CoverTransition.hpp>
 
 #include <gui/common/FrontendApplication.hpp>
 #include <gui/model/Model.hpp>
@@ -17,6 +19,8 @@
 #include <gui/startscreen_screen/StartScreenPresenter.hpp>
 #include <gui/gpsdatascreen_screen/GpsDataScreenView.hpp>
 #include <gui/gpsdatascreen_screen/GpsDataScreenPresenter.hpp>
+#include <gui/drawscreen_screen/DrawScreenView.hpp>
+#include <gui/drawscreen_screen/DrawScreenPresenter.hpp>
 
 
 /**
@@ -41,7 +45,8 @@ public:
      */
     typedef touchgfx::meta::TypeList< StartScreenView,
             touchgfx::meta::TypeList< GpsDataScreenView,
-            touchgfx::meta::Nil >
+            touchgfx::meta::TypeList< DrawScreenView,
+            touchgfx::meta::Nil > >
             > GeneratedViewTypes;
 
     /**
@@ -55,7 +60,8 @@ public:
      */
     typedef touchgfx::meta::TypeList< StartScreenPresenter,
             touchgfx::meta::TypeList< GpsDataScreenPresenter,
-            touchgfx::meta::Nil >
+            touchgfx::meta::TypeList< DrawScreenPresenter,
+            touchgfx::meta::Nil > >
             > GeneratedPresenterTypes;
 
     /**
@@ -69,7 +75,8 @@ public:
      */
     typedef touchgfx::meta::TypeList< touchgfx::NoTransition,
             touchgfx::meta::TypeList< SlideTransition<EAST>,
-            touchgfx::meta::Nil >
+            touchgfx::meta::TypeList< CoverTransition<EAST>,
+            touchgfx::meta::Nil > >
             > GeneratedTransitionTypes;
 
     /**

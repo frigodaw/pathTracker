@@ -4,8 +4,10 @@
 #include <gui_generated/gpsdatascreen_screen/GpsDataScreenViewBase.hpp>
 #include <touchgfx/Color.hpp>
 #include <texts/TextKeysAndLanguages.hpp>
+#include "BitmapDatabase.hpp"
 
-GpsDataScreenViewBase::GpsDataScreenViewBase()
+GpsDataScreenViewBase::GpsDataScreenViewBase() :
+    buttonCallback(this, &GpsDataScreenViewBase::buttonCallbackHandler)
 {
 
     background.setPosition(0, 0, 240, 320);
@@ -65,11 +67,30 @@ GpsDataScreenViewBase::GpsDataScreenViewBase()
     SatTextBox.setTypedText(touchgfx::TypedText(T_SINGLEUSEID15));
     GpsDataContainer.add(SatTextBox);
 
+    GoToDrawScreenButton.setXY(35, 245);
+    GoToDrawScreenButton.setBitmaps(touchgfx::Bitmap(BITMAP_BLUE_BUTTONS_ROUND_EDGE_SMALL_ID), touchgfx::Bitmap(BITMAP_BLUE_BUTTONS_ROUND_EDGE_SMALL_PRESSED_ID));
+    GoToDrawScreenButton.setLabelText(touchgfx::TypedText(T_SINGLEUSEID17));
+    GoToDrawScreenButton.setLabelColor(touchgfx::Color::getColorFrom24BitRGB(255, 255, 255));
+    GoToDrawScreenButton.setLabelColorPressed(touchgfx::Color::getColorFrom24BitRGB(255, 255, 255));
+    GoToDrawScreenButton.setAction(buttonCallback);
+
     add(background);
     add(GpsDataContainer);
+    add(GoToDrawScreenButton);
 }
 
 void GpsDataScreenViewBase::setupScreen()
 {
 
+}
+
+void GpsDataScreenViewBase::buttonCallbackHandler(const touchgfx::AbstractButton& src)
+{
+    if (&src == &GoToDrawScreenButton)
+    {
+        //GoToDrawScreen
+        //When GoToDrawScreenButton clicked change screen to DrawScreen
+        //Go to DrawScreen with screen transition towards East
+        application().gotoDrawScreenScreenSlideTransitionEast();
+    }
 }

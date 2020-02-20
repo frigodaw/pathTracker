@@ -21,6 +21,11 @@ public:
     // GpsDataScreen
     void gotoGpsDataScreenScreenSlideTransitionEast();
 
+    void gotoGpsDataScreenScreenCoverTransitionEast();
+
+    // DrawScreen
+    void gotoDrawScreenScreenSlideTransitionEast();
+
 protected:
     touchgfx::Callback<FrontendApplicationBase> transitionCallback;
     FrontendHeap& frontendHeap;
@@ -31,6 +36,11 @@ protected:
 
     // GpsDataScreen
     void gotoGpsDataScreenScreenSlideTransitionEastImpl();
+
+    void gotoGpsDataScreenScreenCoverTransitionEastImpl();
+
+    // DrawScreen
+    void gotoDrawScreenScreenSlideTransitionEastImpl();
 };
 
 #endif // FRONTENDAPPLICATIONBASE_HPP
