@@ -91,6 +91,6 @@ void GpsDataScreenViewBase::buttonCallbackHandler(const touchgfx::AbstractButton
         //GoToDrawScreen
         //When GoToDrawScreenButton clicked change screen to DrawScreen
         //Go to DrawScreen with screen transition towards East
-        application().gotoDrawScreenScreenSlideTransitionEast();
+        application().gotoDrawScreenScreenCoverTransitionEast();
     }
 }

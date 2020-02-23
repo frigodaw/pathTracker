@@ -8,10 +8,13 @@ RM := rm -rf
 
 # All of the sources participating in the build are defined here
 -include sources.mk
+-include STM32F429I-Discovery/subdir.mk
 -include Middlewares/USB_Device_Library/subdir.mk
 -include Middlewares/FreeRTOS/subdir.mk
 -include Drivers/STM32F4xx_HAL_Driver/subdir.mk
 -include Drivers/CMSIS/subdir.mk
+-include Components/stmpe811/subdir.mk
+-include Components/l3gd20/subdir.mk
 -include Application/User/gui/subdir.mk
 -include Application/User/generated/subdir.mk
 -include Application/User/USB_DEVICE/Target/subdir.mk

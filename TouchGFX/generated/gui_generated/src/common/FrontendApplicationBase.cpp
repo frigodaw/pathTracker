@@ -72,13 +72,13 @@ void FrontendApplicationBase::gotoGpsDataScreenScreenCoverTransitionEastImpl()
 
 // DrawScreen
 
-void FrontendApplicationBase::gotoDrawScreenScreenSlideTransitionEast()
+void FrontendApplicationBase::gotoDrawScreenScreenCoverTransitionEast()
 {
-    transitionCallback = touchgfx::Callback<FrontendApplicationBase>(this, &FrontendApplication::gotoDrawScreenScreenSlideTransitionEastImpl);
+    transitionCallback = touchgfx::Callback<FrontendApplicationBase>(this, &FrontendApplication::gotoDrawScreenScreenCoverTransitionEastImpl);
     pendingScreenTransitionCallback = &transitionCallback;
 }
 
-void FrontendApplicationBase::gotoDrawScreenScreenSlideTransitionEastImpl()
+void FrontendApplicationBase::gotoDrawScreenScreenCoverTransitionEastImpl()
 {
-    touchgfx::makeTransition<DrawScreenView, DrawScreenPresenter, touchgfx::SlideTransition<EAST>, Model >(&currentScreen, &currentPresenter, frontendHeap, &currentTransition, &model);
+    touchgfx::makeTransition<DrawScreenView, DrawScreenPresenter, touchgfx::CoverTransition<EAST>, Model >(&currentScreen, &currentPresenter, frontendHeap, &currentTransition, &model);
 }

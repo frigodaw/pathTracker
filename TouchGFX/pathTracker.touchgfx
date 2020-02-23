@@ -329,7 +329,7 @@
               "Type": "TriggerClicked"
             },
             "Action": {
-              "ScreenTransitionType": "ScreenTransitionSlide",
+              "ScreenTransitionType": "ScreenTransitionCover",
               "ScreenTransitionDirection": "East",
               "ActionComponent": "DrawScreen",
               "Type": "ActionGotoScreen"
@@ -380,7 +380,7 @@
             "Style": "Style4",
             "Name": "GoToGpsDataScreenButton",
             "X": 35,
-            "Y": 250,
+            "Y": 245,
             "Width": 170,
             "Height": 60,
             "Type": "ButtonWithLabel",

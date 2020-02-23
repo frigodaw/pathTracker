@@ -24,7 +24,7 @@ public:
     void gotoGpsDataScreenScreenCoverTransitionEast();
 
     // DrawScreen
-    void gotoDrawScreenScreenSlideTransitionEast();
+    void gotoDrawScreenScreenCoverTransitionEast();
 
 protected:
     touchgfx::Callback<FrontendApplicationBase> transitionCallback;
@@ -40,7 +40,7 @@ protected:
     void gotoGpsDataScreenScreenCoverTransitionEastImpl();
 
     // DrawScreen
-    void gotoDrawScreenScreenSlideTransitionEastImpl();
+    void gotoDrawScreenScreenCoverTransitionEastImpl();
 };
 
 #endif // FRONTENDAPPLICATIONBASE_HPP

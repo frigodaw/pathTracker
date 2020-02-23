@@ -9,7 +9,7 @@
 #include <mvp/MVPHeap.hpp>
 #include <touchgfx/transitions/NoTransition.hpp>
 #include <touchgfx/transitions/SlideTransition.hpp>
-#include <touchgfx/transitions/SlideTransition.hpp>
+#include <touchgfx/transitions/CoverTransition.hpp>
 #include <touchgfx/transitions/CoverTransition.hpp>
 
 #include <gui/common/FrontendApplication.hpp>

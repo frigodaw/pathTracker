@@ -13,7 +13,7 @@ DrawScreenViewBase::DrawScreenViewBase() :
     background.setPosition(0, 0, 240, 320);
     background.setColor(touchgfx::Color::getColorFrom24BitRGB(100, 160, 200));
 
-    GoToGpsDataScreenButton.setXY(35, 250);
+    GoToGpsDataScreenButton.setXY(35, 245);
     GoToGpsDataScreenButton.setBitmaps(touchgfx::Bitmap(BITMAP_BLUE_BUTTONS_ROUND_EDGE_SMALL_ID), touchgfx::Bitmap(BITMAP_BLUE_BUTTONS_ROUND_EDGE_SMALL_PRESSED_ID));
     GoToGpsDataScreenButton.setLabelText(touchgfx::TypedText(T_SINGLEUSEID18));
     GoToGpsDataScreenButton.setLabelColor(touchgfx::Color::getColorFrom24BitRGB(255, 255, 255));
