@@ -11,6 +11,7 @@ RM := rm -rf
 -include STM32F429I-Discovery/subdir.mk
 -include Middlewares/USB_Device_Library/subdir.mk
 -include Middlewares/FreeRTOS/subdir.mk
+-include Middlewares/FatFs/subdir.mk
 -include Drivers/STM32F4xx_HAL_Driver/subdir.mk
 -include Drivers/CMSIS/subdir.mk
 -include Components/stmpe811/subdir.mk
@@ -22,6 +23,8 @@ RM := rm -rf
 -include Application/User/TouchGFX/target/generated/subdir.mk
 -include Application/User/TouchGFX/target/subdir.mk
 -include Application/User/TouchGFX/App/subdir.mk
+-include Application/User/FATFS/Target/subdir.mk
+-include Application/User/FATFS/App/subdir.mk
 -include Application/User/subdir.mk
 -include Application/Startup/subdir.mk
 -include subdir.mk

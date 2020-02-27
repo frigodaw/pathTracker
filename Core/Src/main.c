@@ -21,6 +21,7 @@
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
 #include "cmsis_os.h"
+#include "fatfs.h"
 #include "app_touchgfx.h"
 #include "usb_device.h"
 
@@ -28,6 +29,8 @@
 /* USER CODE BEGIN Includes */
 #include "neoGps.h"
 #include "usbd_cdc_if.h"
+#include "fatfs_sd.h"
+#include "filesystem.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -54,6 +57,7 @@ I2C_HandleTypeDef hi2c3;
 
 LTDC_HandleTypeDef hltdc;
 
+SPI_HandleTypeDef hspi4;
 SPI_HandleTypeDef hspi5;
 
 TIM_HandleTypeDef htim1;
@@ -87,6 +91,7 @@ static void MX_TIM1_Init(void);
 static void MX_USART1_UART_Init(void);
 static void MX_TIM10_Init(void);
 static void MX_UART5_Init(void);
+static void MX_SPI4_Init(void);
 void DefaultTask(void const * argument);
 void LtdcTask(void const * argument);
 void GpsTask(void const * argument);
@@ -154,9 +159,12 @@ int main(void)
   MX_USART1_UART_Init();
   MX_TIM10_Init();
   MX_UART5_Init();
+  MX_SPI4_Init();
+  MX_FATFS_Init();
   MX_TouchGFX_Init();
   /* USER CODE BEGIN 2 */
   Main_Init();
+  FS_Init();
   /* USER CODE END 2 */
 
   /* USER CODE BEGIN RTOS_MUTEX */
@@ -426,6 +434,44 @@ static void MX_LTDC_Init(void)
   /* USER CODE BEGIN LTDC_Init 2 */
 
   /* USER CODE END LTDC_Init 2 */
+
+}
+
+/**
+  * @brief SPI4 Initialization Function
+  * @param None
+  * @retval None
+  */
+static void MX_SPI4_Init(void)
+{
+
+  /* USER CODE BEGIN SPI4_Init 0 */
+
+  /* USER CODE END SPI4_Init 0 */
+
+  /* USER CODE BEGIN SPI4_Init 1 */
+
+  /* USER CODE END SPI4_Init 1 */
+  /* SPI4 parameter configuration*/
+  hspi4.Instance = SPI4;
+  hspi4.Init.Mode = SPI_MODE_MASTER;
+  hspi4.Init.Direction = SPI_DIRECTION_2LINES;
+  hspi4.Init.DataSize = SPI_DATASIZE_8BIT;
+  hspi4.Init.CLKPolarity = SPI_POLARITY_LOW;
+  hspi4.Init.CLKPhase = SPI_PHASE_1EDGE;
+  hspi4.Init.NSS = SPI_NSS_SOFT;
+  hspi4.Init.BaudRatePrescaler = SPI_BAUDRATEPRESCALER_2;
+  hspi4.Init.FirstBit = SPI_FIRSTBIT_MSB;
+  hspi4.Init.TIMode = SPI_TIMODE_DISABLE;
+  hspi4.Init.CRCCalculation = SPI_CRCCALCULATION_DISABLE;
+  hspi4.Init.CRCPolynomial = 10;
+  if (HAL_SPI_Init(&hspi4) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  /* USER CODE BEGIN SPI4_Init 2 */
+
+  /* USER CODE END SPI4_Init 2 */
 
 }
 
@@ -848,14 +894,17 @@ static void MX_GPIO_Init(void)
   GPIO_InitTypeDef GPIO_InitStruct = {0};
 
   /* GPIO Ports Clock Enable */
+  __HAL_RCC_GPIOE_CLK_ENABLE();
   __HAL_RCC_GPIOC_CLK_ENABLE();
   __HAL_RCC_GPIOF_CLK_ENABLE();
   __HAL_RCC_GPIOH_CLK_ENABLE();
   __HAL_RCC_GPIOA_CLK_ENABLE();
   __HAL_RCC_GPIOB_CLK_ENABLE();
   __HAL_RCC_GPIOG_CLK_ENABLE();
-  __HAL_RCC_GPIOE_CLK_ENABLE();
   __HAL_RCC_GPIOD_CLK_ENABLE();
+
+  /*Configure GPIO pin Output Level */
+  HAL_GPIO_WritePin(SPI4_CS_GPIO_Port, SPI4_CS_Pin, GPIO_PIN_RESET);
 
   /*Configure GPIO pin Output Level */
   HAL_GPIO_WritePin(GPIOC, NCS_MEMS_SPI_Pin|CSX_Pin|OTG_FS_PSO_Pin, GPIO_PIN_RESET);
@@ -868,6 +917,13 @@ static void MX_GPIO_Init(void)
 
   /*Configure GPIO pin Output Level */
   HAL_GPIO_WritePin(GPIOG, LD3_Pin|LD4_Pin, GPIO_PIN_RESET);
+
+  /*Configure GPIO pin : SPI4_CS_Pin */
+  GPIO_InitStruct.Pin = SPI4_CS_Pin;
+  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+  HAL_GPIO_Init(SPI4_CS_GPIO_Port, &GPIO_InitStruct);
 
   /*Configure GPIO pins : NCS_MEMS_SPI_Pin CSX_Pin OTG_FS_PSO_Pin */
   GPIO_InitStruct.Pin = NCS_MEMS_SPI_Pin|CSX_Pin|OTG_FS_PSO_Pin;
@@ -984,6 +1040,7 @@ void DefaultTask(void const * argument)
   /* Infinite loop */
   for(;;)
   {
+    FS_Main();
     osDelay(1);
   }
   /* USER CODE END 5 */ 

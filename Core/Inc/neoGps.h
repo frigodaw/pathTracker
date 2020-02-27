@@ -180,6 +180,7 @@ enum Gps_modeIndicator
 };
 /* END OF THE ENUM AREA */
 
+
 /* START OF THE TYPEDEF AREA */
 //typedef to store all gps data
 typedef struct GpsUartData_Tag
@@ -231,6 +232,7 @@ typedef struct GpsMsgInfo_Tag
     uint8_t currentElement;
 }GpsMsgInfo_T;
 /* END OF THE TYPEDEF AREA */
+
 
 /* START OF THE EXTERN VARIABLES AREA */
 extern GpsUartData_T gpsData;

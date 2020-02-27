@@ -19,6 +19,10 @@ extern "C" {
 /* START OF THE DEFINE AREA */
 #define RET_OK          0u
 #define RET_NOK         1u
+
+#define TRUE            1u
+#define FALSE           0u
+#define bool BYTE
 /* END OF THE DEFINE AREA */
 
 

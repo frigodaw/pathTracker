@@ -4,6 +4,10 @@
         "neogps.h": "c",
         "stm32f4xx_hal.h": "c",
         "main.h": "c",
-        "stm32f429i_discovery_lcd.h": "c"
+        "stm32f429i_discovery_lcd.h": "c",
+        "fatfs_sd.h": "c",
+        "types.h": "c",
+        "usbd_cdc_if.h": "c",
+        "filesystem.h": "c"
     }
 }

@@ -55,6 +55,23 @@
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
 
+volatile uint8_t FatFsCnt = 0u;
+volatile uint8_t Timer1;
+volatile uint8_t Timer2;
+
+void SDTimer_Handler(void)
+{
+  if(Timer1 > 0u)
+  {
+    Timer1--;
+  }
+
+  if(Timer2 > 0u)
+  {
+    Timer2--;
+  }
+}
+
 /* USER CODE END 0 */
 
 /* External variables --------------------------------------------------------*/
@@ -281,6 +298,16 @@ void DMA2D_IRQHandler(void)
 }
 
 /* USER CODE BEGIN 1 */
+void HAL_SYSTICK_Callback(void)
+{
+  FatFsCnt++;
+  if(FatFsCnt >= 10u)
+  {
+    FatFsCnt = 0u;
+    SDTimer_Handler();
+  }
 
+  HAL_IncTick();
+}
 /* USER CODE END 1 */
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/
