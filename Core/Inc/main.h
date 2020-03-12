@@ -37,12 +37,22 @@ extern "C" {
 
 /* Exported types ------------------------------------------------------------*/
 /* USER CODE BEGIN ET */
+typedef struct
+{
+   uint16_t t_100ms;
+   uint16_t t_1s;
+} TimerTypeT;
 
+typedef struct
+{
+   uint16_t c_gpsTask;
+   uint16_t c_defaultTask;
+} CounterTypeT;
 /* USER CODE END ET */
 
 /* Exported constants --------------------------------------------------------*/
 /* USER CODE BEGIN EC */
-
+extern UART_HandleTypeDef huart5;
 /* USER CODE END EC */
 
 /* Exported macro ------------------------------------------------------------*/

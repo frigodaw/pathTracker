@@ -73,7 +73,8 @@ osThreadId defaultTaskHandle;
 osThreadId ltdcTaskHandle;
 osThreadId gpsTaskHandle;
 /* USER CODE BEGIN PV */
-uint16_t cnt = 0;
+TimerTypeT tim = {0u};
+CounterTypeT cnt = {0u};
 static FMC_SDRAM_CommandTypeDef Command;
 /* USER CODE END PV */
 
@@ -98,7 +99,6 @@ void GpsTask(void const * argument);
 
 /* USER CODE BEGIN PFP */
 void Main_Init(void);
-void Main_RetriggerUartGps(void);
 void Main_WriteReg(uint8_t);
 void Main_WriteData(uint8_t);
 /* USER CODE END PFP */
@@ -690,9 +690,9 @@ static void MX_TIM10_Init(void)
 
   /* USER CODE END TIM10_Init 1 */
   htim10.Instance = TIM10;
-  htim10.Init.Prescaler = 9999;
+  htim10.Init.Prescaler = 7999;
   htim10.Init.CounterMode = TIM_COUNTERMODE_UP;
-  htim10.Init.Period = 3599;
+  htim10.Init.Period = 899;
   htim10.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
   htim10.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_DISABLE;
   if (HAL_TIM_Base_Init(&htim10) != HAL_OK)
@@ -990,23 +990,6 @@ void Main_Init(void)
 }
 
 
-void Main_RetriggerUartGps(void)
-{
-  static uint8_t lastWrite = 0u;
-
-  if((gpsData.state == GPS_FULL) || (lastWrite == gpsData.write))
-  {
-    Gps_PrepareWrite();
-    if(gpsData.state != GPS_FULL)
-    {
-      HAL_UART_Receive_DMA(&huart5, (uint8_t*)&gpsData.ringBuff[gpsData.write], GPS_MAX_NMEA_SIZE);
-    }
-  }
-
-  lastWrite = gpsData.write;
-}
-
-
 void Main_WriteReg(uint8_t reg)
 {
   HAL_GPIO_WritePin(WRX_DCX_GPIO_Port, WRX_DCX_Pin, GPIO_PIN_RESET);
@@ -1041,7 +1024,8 @@ void DefaultTask(void const * argument)
   for(;;)
   {
     FS_Main();
-    osDelay(1);
+    cnt.c_defaultTask++;
+    osDelay(500);
   }
   /* USER CODE END 5 */ 
 }
@@ -1079,7 +1063,8 @@ void GpsTask(void const * argument)
   for(;;)
   {
     Gps_Main();
-    osDelay(1);
+    cnt.c_gpsTask++;
+    osDelay(20);
   }
   /* USER CODE END GpsTask */
 }
@@ -1097,14 +1082,16 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
   /* USER CODE BEGIN Callback 0 */
 
   /* USER CODE END Callback 0 */
-  if (htim->Instance == TIM6) {
+  if (htim->Instance == TIM6)
+  {
     HAL_IncTick();
   }
   /* USER CODE BEGIN Callback 1 */
-  if (htim->Instance == TIM10) {
-    cnt++;
-    Main_RetriggerUartGps();
-    CDC_Transmit_HS(gpsDebug.buffer, gpsDebug.size);
+  if (htim->Instance == TIM10)
+  {
+    tim.t_100ms++;
+    tim.t_1s = tim.t_100ms / 10u;
+    //CDC_Transmit_HS(gpsDebug.buffer, gpsDebug.size);
   }
 
   /* USER CODE END Callback 1 */

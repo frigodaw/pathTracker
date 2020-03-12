@@ -255,6 +255,7 @@ uint8_t Gps_ReadMessageElement_Time(uint8_t* fieldBuff);
 uint8_t Gps_ReadMessageElement_ModeOne(uint8_t* fieldBuff);
 uint8_t Gps_ReadMessageElement_ModeIndicator(uint8_t* fieldBuff);
 uint8_t Gps_PrepareDebugData(void);
+uint8_t Gps_RetriggerUartGps(void);
 /* END OF THE FUNCTIONS PROTOTYPES AREA */
 
 # ifdef __cplusplus

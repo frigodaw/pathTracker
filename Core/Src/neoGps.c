@@ -6,6 +6,7 @@
 
 #include "neoGps.h"
 #include "types.h"
+#include "main.h"
 #include <stdio.h>
 #include <string.h>
 
@@ -111,8 +112,9 @@ uint8_t Gps_Main(void)
     {
         /* Wait for new data. */
     }
-    
-    Gps_PrepareDebugData();
+
+    ret |= Gps_RetriggerUartGps();
+    ret |= Gps_PrepareDebugData();
 
     return ret;
 }
@@ -573,6 +575,26 @@ uint8_t Gps_PrepareDebugData(void)
         gpsData.latDir, gpsData.lonDir, gpsData.fixQuality);
 
     return RET_OK;
+}
+
+/* Functon called to retrigger gps uart
+   when it is stacked after overflow or lack of data */
+uint8_t Gps_RetriggerUartGps(void)
+{
+   static uint8_t lastWrite = 0u;
+
+   if((gpsData.state == GPS_FULL) || (lastWrite == gpsData.write))
+   {
+      Gps_PrepareWrite();
+      if(gpsData.state != GPS_FULL)
+      {
+        HAL_UART_Receive_DMA(&huart5, (uint8_t*)&gpsData.ringBuff[gpsData.write], GPS_MAX_NMEA_SIZE);
+      }
+   }
+
+   lastWrite = gpsData.write;
+
+   return RET_OK;
 }
 
 /* Function called to read time given in different

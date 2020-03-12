@@ -16,26 +16,43 @@ extern "C" {
 #include "stm32f4xx_hal.h"
 #include "fatfs.h"
 #include "fatfs_sd.h"
+#include "ffconf.h"
 /* END OF THE DEFINE AREA */
 
 
 /* START OF THE DEFINE AREA */
+#define FS_MAXBUFFSIZE      _MAX_SS
 /* END OF THE DEFINE AREA */
 
 
 /* START OF THE ENUM AREA */
+//enum to select sc card mount mdoe
+enum FS_mountMode
+{
+    FS_MOUNTLATER,
+    FS_MOUNTNOW
+};
+
+//enum to distinguish sd card initialization state
+enum FS_cardInitState
+{
+    FS_UNINITIALIZED,
+    FS_INITIALIZED
+};
 /* END OF THE ENUM AREA */
 
 
 /* START OF THE TYPEDEF AREA */
-//typedef to store information about SD card capacity
+//typedef to store information about SD card
 typedef struct
 {
     FATFS *ptrFS;
     DWORD numFreeClusters;
     uint32_t totalSpace;
     uint32_t freeSpace;
-}FS_SDcardCapacity_T;
+    enum FS_cardInitState state;
+
+}FS_SDcardInfo_T;
 /* END OF THE TYPEDEF AREA */
 
 
@@ -46,8 +63,9 @@ typedef struct
 /* START OF THE FUNCTIONS PROTOTYPES AREA */
 void FS_Init(void);
 void FS_Main(void);
-void FS_ReadFile(void);
+uint8_t FS_ReadFile(uint8_t *buff, uint8_t *len);
 FRESULT FS_GetSDcardCapacity(void);
+FRESULT FS_ReInit(void);
 /* END OF THE FUNCTIONS PROTOTYPES AREA */
 
 
