@@ -22,6 +22,11 @@ extern "C" {
 
 /* START OF THE DEFINE AREA */
 #define FS_MAXBUFFSIZE      _MAX_SS
+#define FS_MAXPATHCHARLEN   13u
+#define FS_MAXINPUTFILES    10u
+#define FS_MAXOUTPUTFILES   10u
+#define FS_INPUTPATH        "in"
+#define FS_OUTPUTPATH       "out"
 /* END OF THE DEFINE AREA */
 
 
@@ -51,8 +56,10 @@ typedef struct
     uint32_t totalSpace;
     uint32_t freeSpace;
     enum FS_cardInitState state;
-
 }FS_SDcardInfo_T;
+
+//typedef to store path to file or directory
+typedef char pathType[FS_MAXPATHCHARLEN];
 /* END OF THE TYPEDEF AREA */
 
 
@@ -64,7 +71,9 @@ typedef struct
 void FS_Init(void);
 void FS_Main(void);
 uint8_t FS_ReadFile(uint8_t *buff, uint8_t *len);
+FRESULT FS_ReadDir(pathType path, FILINFO fileInfo[], uint8_t len);
 FRESULT FS_GetSDcardCapacity(void);
+FRESULT FS_GetSdCardInfo(void);
 FRESULT FS_ReInit(void);
 /* END OF THE FUNCTIONS PROTOTYPES AREA */
 
