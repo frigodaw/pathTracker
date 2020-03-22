@@ -163,6 +163,7 @@ int main(void)
   MX_FATFS_Init();
   MX_TouchGFX_Init();
   /* USER CODE BEGIN 2 */
+  Gps_Init();
   Main_Init();
   FS_Init();
   /* USER CODE END 2 */
@@ -1064,7 +1065,7 @@ void GpsTask(void const * argument)
   {
     Gps_Main();
     cnt.c_gpsTask++;
-    osDelay(20);
+    osDelay(200);
   }
   /* USER CODE END GpsTask */
 }

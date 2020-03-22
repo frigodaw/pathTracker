@@ -15,6 +15,18 @@ GpsUartData_T gpsData = {0u};
 GpsDebugData_T gpsDebug = {0u};
 
 
+/* Function called to initialize GPS variables
+   during uC startup phase. */
+void Gps_Init(void)
+{
+    memset(&gpsData, 0u, sizeof(gpsData));
+    gpsData.state = GPS_FULL;
+    gpsData.modeOne = GPS_MODEONE_INVALID;
+    gpsData.modeTwo = GPS_MODETWO_INVALID;
+    gpsData.modeIndicator = GPS_MODEINDICATOR_DATANOTVALID;
+}
+
+
 /*  Function called to set write pointer to proper value
     every time before HAL_UART_Receive_DMA(). 
 */
@@ -65,52 +77,55 @@ uint8_t Gps_Main(void)
     uint8_t ret = RET_OK;
     GpsMsgInfo_T messageInfo;
 
-    /* Set read pointer to the start of the data */
-    while((ret == RET_OK) && (gpsData.ringBuff[gpsData.read] != '$') && (gpsData.read != gpsData.write))
+    /* Read data until read inidicator is not equal to write */
+    while(gpsData.read != gpsData.write)
     {
-        if((gpsData.state == GPS_OK_AHEAD) && (gpsData.read < gpsData.write))
+        while((ret == RET_OK) && (gpsData.ringBuff[gpsData.read] != '$') && (gpsData.read != gpsData.write))
         {
-            gpsData.read++;
+            if((gpsData.state == GPS_OK_AHEAD) && (gpsData.read < gpsData.write))
+            {
+                gpsData.read++;
+            }
+            else if((gpsData.state == GPS_OK_BEHIND) && (gpsData.read > gpsData.write))
+            {
+                gpsData.read = ((gpsData.read + 1u) < GPS_RING_BUFFER_SIZE) ? (gpsData.read + 1u) : 0u;
+            }
+            else
+            {
+                /* Should not get here */
+                gpsData.errorCnt++;
+                gpsData.read = gpsData.write;
+                ret = RET_NOK;
+            }
         }
-        else if((gpsData.state == GPS_OK_BEHIND) && (gpsData.read > gpsData.write))
+        
+        if((ret == RET_OK) && (gpsData.read != gpsData.write))
         {
-            gpsData.read = ((gpsData.read + 1u) < GPS_RING_BUFFER_SIZE) ? (gpsData.read + 1u) : 0u;
+            /* Only when character was found */
+            if(((gpsData.read + GPS_NMEA_OFFSET_FIVE) < GPS_RING_BUFFER_SIZE) &&
+                (gpsData.ringBuff[gpsData.read] == '$') && 
+                (gpsData.ringBuff[gpsData.read + GPS_NMEA_OFFSET_ONE] == 'G') && 
+                (gpsData.ringBuff[gpsData.read + GPS_NMEA_OFFSET_TWO] == 'P'))
+            {   
+                Gps_SelectMsg(&messageInfo);
+            }
+            
+            /* Go ahead if searching messages fails */
+            if(messageInfo.type == GPS_INVALID)
+            {
+                gpsData.read = ((gpsData.read + 1u) < GPS_RING_BUFFER_SIZE) ? (gpsData.read + 1u) : 0u;
+            }
+            /* Read proper message */
+            else
+            {
+                Gps_ReadMessage(&messageInfo);
+            }
+            
         }
         else
         {
-            /* Should not get here */
-            gpsData.errorCnt++;
-            gpsData.read = gpsData.write;
-            ret = RET_NOK;
+            /* End of the most outer while loop. */
         }
-    }
-    
-    if((ret == RET_OK) && (gpsData.read != gpsData.write))
-    {
-        /* Only when character was found */
-        if(((gpsData.read + GPS_NMEA_OFFSET_FIVE) < GPS_RING_BUFFER_SIZE) &&
-            (gpsData.ringBuff[gpsData.read] == '$') && 
-            (gpsData.ringBuff[gpsData.read + GPS_NMEA_OFFSET_ONE] == 'G') && 
-            (gpsData.ringBuff[gpsData.read + GPS_NMEA_OFFSET_TWO] == 'P'))
-        {   
-            Gps_SelectMsg(&messageInfo);
-        }
-        
-        /* Go ahead if searching messages fails */
-        if(messageInfo.type == GPS_INVALID)
-        {
-            gpsData.read = ((gpsData.read + 1u) < GPS_RING_BUFFER_SIZE) ? (gpsData.read + 1u) : 0u;
-        }
-        /* Read proper message */
-        else
-        {
-            Gps_ReadMessage(&messageInfo);
-        }
-        
-    }
-    else
-    {
-        /* Wait for new data. */
     }
 
     ret |= Gps_RetriggerUartGps();

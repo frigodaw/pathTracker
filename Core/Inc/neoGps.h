@@ -241,6 +241,7 @@ extern GpsDebugData_T gpsDebug;
 
 
 /* START OF THE FUNCTIONS PROTOTYPES AREA */
+void Gps_Init(void);
 uint8_t Gps_Main(void);
 uint8_t Gps_PrepareWrite(void);
 uint8_t Gps_SelectMsg(GpsMsgInfo_T* messageInfo);
