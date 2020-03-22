@@ -9,16 +9,21 @@
 #include <string.h>
 #include <stdio.h>
 
-/* Static fatFS variable */
-static FATFS fs      = {0u};
+/* Main file system variable */
+static FATFS fs = {0u};
 
-/* SD card variables*/
+/* The main info about current SD card */
 static FS_SDcardInfo_T sdCardInfo = {0u};
-static FS_DirInfo_T dirInfo = {0u};
 
-/* File variables */
+/* Variable with a list of directories and a files inside them */
+static FS_DirsCollection_T dirInfo = {0u};
+
+/* Component's buffer to read and write data to and from a test file */
 static uint8_t fsBuffer[FS_BUFFSIZE] = {0u};
-static FS_OpenFiles_T files = {0u};
+
+/* Variable to store currently opened read and write file */
+static FS_FilesCollection_T files = {0u};
+
 
 /* Init function for FS module to mount SD card and
    initialize varaibles */
@@ -27,8 +32,8 @@ void FS_Init(void)
     FRESULT fresult = FR_OK;
 
     /* Set path to 'in' and 'out' directories */
-    memcpy(&dirInfo.pathIn, FS_INPUTPATH, sizeof(FS_INPUTPATH));
-    memcpy(&dirInfo.pathOut, FS_OUTPUTPATH, sizeof(FS_OUTPUTPATH));
+    memcpy(&dirInfo.in.path, FS_INPUTPATH, strlen(FS_INPUTPATH) + 1u);
+    memcpy(&dirInfo.out.path, FS_OUTPUTPATH, strlen(FS_OUTPUTPATH) + 1u);
 
     /* Mount SD Card */
     fresult = f_mount(&fs, "", (uint8_t)FS_MOUNTNOW);
@@ -73,9 +78,9 @@ void FS_Main(void)
             retVal = FS_OpenFile(&files.out, "WRITE.TXT", FA_CREATE_ALWAYS | FA_WRITE);
             if(RET_OK == retVal)
             {
-                uint8_t str[] = "TEST_FILE";
+                char str[] = "TEST_FILE";
                 memset(fsBuffer, 0u, sizeof(fsBuffer));
-                memcpy(fsBuffer, str, sizeof(str));
+                memcpy(fsBuffer, str, strlen(str) + 1u);
 
                 retVal = FS_WriteFile(&files.out, fsBuffer);
                 retVal |= FS_CloseFile(&files.out);
@@ -105,37 +110,48 @@ FRESULT FS_GetSdCardInfo(void)
     FRESULT fresult = FR_OK;
 
     fresult |= FS_GetSDcardCapacity();
-    fresult |= FS_ReadDir(dirInfo.pathIn, dirInfo.in, FS_MAXINPUTFILES);
-    fresult |= FS_ReadDir(dirInfo.pathOut, dirInfo.out, FS_MAXOUTPUTFILES);
+    fresult |= FS_ReadDir(&dirInfo.in);
+    fresult |= FS_ReadDir(&dirInfo.out);
 
     return fresult;
 }
 
 
 /* Wrapper used to open a file.
-   Mode is defined user, its default value
+   Mode is defined by the user, its default value
    is FA_READ. */
-uint8_t FS_OpenFile(FS_File_T* file, FS_PathType path, uint8_t mode)
+uint8_t FS_OpenFile(FS_File_T* file, FS_FullPathType path, uint8_t mode)
 {
     uint8_t retVal = RET_OK;
     FRESULT fresult = FR_OK;
 
-    /* Set mode to default FA_READ if no mode was declared before */
-    if(0u == mode)
+    /* Check path length */
+    uint8_t len = strlen(path) + 1u;
+    if(FS_FULLCHARLEN >= len)
     {
-        mode = FA_READ;
-    }
+        /* Set mode to default FA_READ if no mode was declared before */
+        if(0u == mode)
+        {
+            mode = FA_READ;
+        }
 
-    fresult |= f_open(&file->object, (TCHAR*)path, (BYTE)mode);
-    if(FR_OK == fresult)
-    {
-        memcpy(file->name, "TO_BE_DONE", FS_MAXCHARLEN);
-        file->lastLineNumber = 0u;
-        file->isMoreLines = TRUE;
-        file->isOpen = TRUE;
+        fresult |= f_open(&file->object, (TCHAR*)path, (BYTE)mode);
+        if(FR_OK == fresult)
+        {
+            memcpy(file->name, path, len);
+            file->lastLineNumber = 0u;
+            file->isMoreLines = TRUE;
+            file->isOpen = TRUE;
+        }
+        else
+        {
+            /* File can not be opened */
+            retVal = RET_NOK;
+        }
     }
     else
     {
+        /* File path too long */
         retVal = RET_NOK;
     }
 
@@ -201,27 +217,47 @@ FRESULT FS_GetSDcardCapacity(void)
 }
 
 
-/* Function called to read directory
-   on a sd card */
-FRESULT FS_ReadDir(FS_PathType path, FILINFO fileInfo[], uint8_t len)
+/* Function called to read given directory
+   on a SD card. */
+FRESULT FS_ReadDir(FS_Dir_T* dir)
 {
     FRESULT fresult = FR_OK;
-    DIR dir;
+    DIR openedDir;
+    FILINFO fileInfo;
 
-    fresult |= f_opendir(&dir, path);
+    FS_FullPathType name[FS_SAVEDFILESNUM] = {0u};
+    uint8_t number = 0u;
 
+    fresult |= f_opendir(&openedDir, dir->path);
     if(FR_OK == fresult)
     {
-        for(uint8_t i = 0u; i < len; i++)
+        for(uint8_t i = 0u; i < FS_MAXFILESNUM; i++)
         {
-            fresult |= f_readdir(&dir, &fileInfo[i]);
-            if(0u == fileInfo[i].fsize)
+            memset(&fileInfo, 0u, sizeof(fileInfo));
+            fresult |= f_readdir(&openedDir, &fileInfo);
+
+            if(0u != fileInfo.fsize)
             {
+                /* Due to memory issues, save names only for the first FS_SAVEDFILESNUM files */
+                if(i < FS_SAVEDFILESNUM)
+                {
+                    memcpy(name[i], fileInfo.fname, strlen(fileInfo.fname) + 1u);
+                }
+                number++;
+            }
+            else
+            {
+                /* No file left */
                 break;
             }
+            
         }
-        fresult |= f_closedir(&dir);
+        fresult |= f_closedir(&openedDir);
     }
+
+    /* Replace local variables with the global ones */
+    memcpy(dir->fileName, name, sizeof(name));
+    dir->filesNum = number;
 
     return fresult;
 }

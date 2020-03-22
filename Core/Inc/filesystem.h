@@ -25,10 +25,16 @@ extern "C" {
 #define FS_MAXBUFFSIZE      _MAX_SS
 #define FS_BUFFSIZE         256u
 
-#define FS_MAXCHARLEN       13u
+#define FS_SHORTCHARLEN     13u
 
-#define FS_MAXINPUTFILES    5u
-#define FS_MAXOUTPUTFILES   5u
+#if ((_USE_LFN == 2u) || (_USE_LFN == 3u))
+# define FS_FULLCHARLEN     _MAX_LFN
+#else
+# define FS_FULLCHARLEN     FS_SHORTCHARLEN
+#endif
+
+#define FS_SAVEDFILESNUM    5u
+#define FS_MAXFILESNUM      255u
 
 #define FS_INPUTPATH        "in"
 #define FS_OUTPUTPATH       "out"
@@ -63,27 +69,32 @@ typedef struct
     enum FS_cardInitState state;
 }FS_SDcardInfo_T;
 
-//typedef to store path to file or directory
-typedef char FS_PathType[FS_MAXCHARLEN];
+//typedefs to store path to file or directory
+typedef char  FS_ShortPathType[FS_SHORTCHARLEN];
+typedef char  FS_FullPathType[FS_FULLCHARLEN];
 
-//typedef to store path to file name
-typedef char FS_NameType[FS_MAXCHARLEN];
-
-//typedef to store info about input and
-//output files in given directory
+//typedef to store info about files
+//in given directory
 typedef struct
 {
-    FILINFO in[FS_MAXINPUTFILES];
-    FILINFO out[FS_MAXOUTPUTFILES];
-    FS_PathType pathIn;
-    FS_PathType pathOut;
-}FS_DirInfo_T;
+    FS_ShortPathType path;
+    FS_FullPathType fileName[FS_SAVEDFILESNUM];
+    uint8_t filesNum;
+}FS_Dir_T;
+
+//typedef to store info about given
+//directories and files inside them
+typedef struct
+{
+    FS_Dir_T in;
+    FS_Dir_T out;
+}FS_DirsCollection_T;
 
 //typedef to store info about opened file
 typedef struct
 {
     FIL object;
-    FS_NameType name;
+    FS_FullPathType name;
     uint16_t lastLineNumber;
     bool isMoreLines;
     bool isOpen;
@@ -95,7 +106,7 @@ typedef struct
 {
     FS_File_T in;
     FS_File_T out;
-}FS_OpenFiles_T;
+}FS_FilesCollection_T;
 /* END OF THE TYPEDEF AREA */
 
 
@@ -106,11 +117,11 @@ typedef struct
 /* START OF THE FUNCTIONS PROTOTYPES AREA */
 void FS_Init(void);
 void FS_Main(void);
-uint8_t FS_OpenFile(FS_File_T* file, FS_PathType path, uint8_t mode);
+uint8_t FS_OpenFile(FS_File_T* file, FS_FullPathType path, uint8_t mode);
 uint8_t FS_CloseFile(FS_File_T* file);
 uint8_t FS_ReadFile(FS_File_T* file, uint8_t *buff, uint16_t len);
 uint8_t FS_WriteFile(FS_File_T* file, uint8_t *buff);
-FRESULT FS_ReadDir(FS_PathType path, FILINFO fileInfo[], uint8_t len);
+FRESULT FS_ReadDir(FS_Dir_T* dir);
 FRESULT FS_GetSDcardCapacity(void);
 FRESULT FS_GetSdCardInfo(void);
 FRESULT FS_ReInit(void);
