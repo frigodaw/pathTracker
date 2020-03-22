@@ -11,20 +11,24 @@
 
 /* Static fatFS variable */
 static FATFS fs      = {0u};
-static FIL fileRead  = {0u};
-static FIL fileWrite = {0u};
 
 /* SD card variables*/
 static FS_SDcardInfo_T sdCardInfo = {0u};
-static FILINFO inFileInfo[FS_MAXINPUTFILES] = {0u};
-static FILINFO outFileInfo[FS_MAXOUTPUTFILES] = {0u};
+static FS_DirInfo_T dirInfo = {0u};
 
+/* File variables */
+static uint8_t fsBuffer[FS_BUFFSIZE] = {0u};
+static FS_OpenFiles_T files = {0u};
 
 /* Init function for FS module to mount SD card and
    initialize varaibles */
 void FS_Init(void)
 {
     FRESULT fresult = FR_OK;
+
+    /* Set path to 'in' and 'out' directories */
+    memcpy(&dirInfo.pathIn, FS_INPUTPATH, sizeof(FS_INPUTPATH));
+    memcpy(&dirInfo.pathOut, FS_OUTPUTPATH, sizeof(FS_OUTPUTPATH));
 
     /* Mount SD Card */
     fresult = f_mount(&fs, "", (uint8_t)FS_MOUNTNOW);
@@ -43,27 +47,48 @@ void FS_Init(void)
 /* Main function for FS module */
 void FS_Main(void)
 {
-    uint8_t buffer[FS_MAXBUFFSIZE] = {0u};
-    uint8_t len = 0u;
-    FRESULT fresult;
-    FILINFO fileInfo;
+    FRESULT fresult = FR_OK;
 
     /* Proceed only with properly mounted SD card */
     if(FS_INITIALIZED == sdCardInfo.state)
     {   
         fresult = FS_GetSdCardInfo();
 
-        fresult = f_open(&fileRead, "TEST.TXT", FA_READ);
+        /* Reading info from SD card succeed. Everything is Ok. */
         if(FR_OK == fresult)
         {
-            fresult = f_stat("TEST.TXT", &fileInfo);
-            fresult = f_read(&fileRead, buffer, (UINT)FS_MAXBUFFSIZE, (UINT*)&len);
-            fresult = f_close(&fileRead);
+            /* Read from from a test file */
+            uint8_t retVal = FS_OpenFile(&files.in, "READ.TXT", FA_READ);
+            if(RET_OK == retVal)
+            {
+                while(TRUE == files.in.isMoreLines)
+                {
+                    retVal |= FS_ReadFile(&files.in, fsBuffer, FS_BUFFSIZE);
+                }
+
+                retVal |= FS_CloseFile(&files.in);
+            }
+
+            /* Write data to a test file */
+            retVal = FS_OpenFile(&files.out, "WRITE.TXT", FA_CREATE_ALWAYS | FA_WRITE);
+            if(RET_OK == retVal)
+            {
+                uint8_t str[] = "TEST_FILE";
+                memset(fsBuffer, 0u, sizeof(fsBuffer));
+                memcpy(fsBuffer, str, sizeof(str));
+
+                retVal = FS_WriteFile(&files.out, fsBuffer);
+                retVal |= FS_CloseFile(&files.out);
+            }
         }
-        else
+        else if(FR_DISK_ERR == fresult)
         {
             /* Set state to uninitialized. FS_Init will be trigger in the next call. */
             sdCardInfo.state = FS_UNINITIALIZED;
+        }
+        else
+        {
+            /* To be done */
         }
     }
     else
@@ -79,36 +104,87 @@ FRESULT FS_GetSdCardInfo(void)
 {
     FRESULT fresult = FR_OK;
 
-    fresult = FS_GetSDcardCapacity();
-    fresult = FS_ReadDir(FS_INPUTPATH, inFileInfo, FS_MAXINPUTFILES);
-    fresult = FS_ReadDir(FS_OUTPUTPATH, outFileInfo, FS_MAXOUTPUTFILES);
+    fresult |= FS_GetSDcardCapacity();
+    fresult |= FS_ReadDir(dirInfo.pathIn, dirInfo.in, FS_MAXINPUTFILES);
+    fresult |= FS_ReadDir(dirInfo.pathOut, dirInfo.out, FS_MAXOUTPUTFILES);
 
     return fresult;
 }
 
 
-/* Function called get one line from
-   the file. */
-uint8_t FS_ReadFile(uint8_t *buff, uint8_t *len)
+/* Wrapper used to open a file.
+   Mode is defined user, its default value
+   is FA_READ. */
+uint8_t FS_OpenFile(FS_File_T* file, FS_PathType path, uint8_t mode)
 {
-    uint8_t ret = RET_NOK;
-    uint8_t read = 0u;
-    FRESULT fresult;
+    uint8_t retVal = RET_OK;
+    FRESULT fresult = FR_OK;
 
-    /* Open file to read */
-    fresult = f_open(&fileRead, "TEST.TXT", FA_READ);
-
-    if(FR_OK == fresult)
+    /* Set mode to default FA_READ if no mode was declared before */
+    if(0u == mode)
     {
-        /* Read string from the file */
-        //f_gets(buffer, f_size(&fil), &fil);
-        fresult = f_read(&fileRead, buff, (UINT)FS_MAXBUFFSIZE, (UINT*)&read);
-
-        /* Close file */
-        fresult = f_close(&fileRead);
+        mode = FA_READ;
     }
 
-    return ret;
+    fresult |= f_open(&file->object, (TCHAR*)path, (BYTE)mode);
+    if(FR_OK == fresult)
+    {
+        memcpy(file->name, "TO_BE_DONE", FS_MAXCHARLEN);
+        file->lastLineNumber = 0u;
+        file->isMoreLines = TRUE;
+        file->isOpen = TRUE;
+    }
+    else
+    {
+        retVal = RET_NOK;
+    }
+
+    return retVal;
+}
+
+
+/* Wrapper used to clse a file */
+uint8_t FS_CloseFile(FS_File_T* file)
+{
+    uint8_t retVal = RET_OK;
+    FRESULT fresult = FR_OK;
+
+    fresult |= f_close(&file->object);
+    if(FR_OK == fresult)
+    {
+        memset(file, 0u, sizeof(*file));
+    }
+    else
+    {
+        retVal = RET_NOK;
+    }
+
+    return retVal;
+}
+
+
+/* Function called to get one line from the file.
+   It checks also whether there is more data to read. */
+uint8_t FS_ReadFile(FS_File_T* file, uint8_t *buff, uint16_t len)
+{
+    memset(buff, 0u, len);
+    TCHAR* bytesRead = f_gets((TCHAR*)buff, len, &file->object);
+
+    file->isMoreLines = (bytesRead != NULL) ? TRUE : FALSE;
+    file->lastLineNumber++;
+
+    return RET_OK;
+}
+
+
+/* Function called to write data from the buffer 
+   to the file.*/
+uint8_t FS_WriteFile(FS_File_T* file, uint8_t *buff)
+{
+    int8_t wroteBytes = f_puts((TCHAR*)buff, &file->object);
+    uint8_t retVal = (wroteBytes > 0) ? RET_OK : RET_NOK;
+
+    return retVal;
 }
 
 
@@ -127,23 +203,24 @@ FRESULT FS_GetSDcardCapacity(void)
 
 /* Function called to read directory
    on a sd card */
-FRESULT FS_ReadDir(pathType path, FILINFO fileInfo[], uint8_t len)
+FRESULT FS_ReadDir(FS_PathType path, FILINFO fileInfo[], uint8_t len)
 {
-    FRESULT fresult;
+    FRESULT fresult = FR_OK;
     DIR dir;
 
-    fresult = f_opendir(&dir, path);
+    fresult |= f_opendir(&dir, path);
 
     if(FR_OK == fresult)
     {
         for(uint8_t i = 0u; i < len; i++)
         {
-            fresult = f_readdir(&dir, &fileInfo[i]);
+            fresult |= f_readdir(&dir, &fileInfo[i]);
             if(0u == fileInfo[i].fsize)
             {
                 break;
             }
         }
+        fresult |= f_closedir(&dir);
     }
 
     return fresult;
@@ -156,8 +233,7 @@ FRESULT FS_ReInit(void)
 {
     FRESULT fresult = FR_OK;
 
-    fresult = f_close(&fileRead);
-    fresult = f_mount(0u, "", (uint8_t)FS_MOUNTNOW);
+    fresult |= f_mount(0u, "", (uint8_t)FS_MOUNTNOW);
     memset(&fs, 0u, sizeof(fs));
     memset(&sdCardInfo, 0u, sizeof(sdCardInfo));
 
