@@ -53,6 +53,8 @@ typedef struct
 /* Exported constants --------------------------------------------------------*/
 /* USER CODE BEGIN EC */
 extern UART_HandleTypeDef huart5;
+extern TimerTypeT tim;
+extern CounterTypeT cnt;
 /* USER CODE END EC */
 
 /* Exported macro ------------------------------------------------------------*/

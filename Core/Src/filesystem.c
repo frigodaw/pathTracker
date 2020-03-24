@@ -258,6 +258,7 @@ FRESULT FS_ReadDir(FS_Dir_T* dir)
     /* Replace local variables with the global ones */
     memcpy(dir->fileName, name, sizeof(name));
     dir->filesNum = number;
+    dir->state = fresult;
 
     return fresult;
 }

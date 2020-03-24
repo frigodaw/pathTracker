@@ -80,6 +80,7 @@ typedef struct
     FS_ShortPathType path;
     FS_FullPathType fileName[FS_SAVEDFILESNUM];
     uint8_t filesNum;
+    FRESULT state;
 }FS_Dir_T;
 
 //typedef to store info about given

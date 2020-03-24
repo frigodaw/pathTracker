@@ -80,52 +80,53 @@ uint8_t Gps_Main(void)
     /* Read data until read inidicator is not equal to write */
     while(gpsData.read != gpsData.write)
     {
-        while((ret == RET_OK) && (gpsData.ringBuff[gpsData.read] != '$') && (gpsData.read != gpsData.write))
+        while((gpsData.ringBuff[gpsData.read] != '$') && (gpsData.read != gpsData.write))
         {
             if((gpsData.state == GPS_OK_AHEAD) && (gpsData.read < gpsData.write))
             {
-                gpsData.read++;
+                Gps_IncrementReadIndicator();
             }
             else if((gpsData.state == GPS_OK_BEHIND) && (gpsData.read > gpsData.write))
             {
-                gpsData.read = ((gpsData.read + 1u) < GPS_RING_BUFFER_SIZE) ? (gpsData.read + 1u) : 0u;
+                Gps_IncrementReadIndicator();
             }
             else
             {
-                /* Should not get here */
-                gpsData.errorCnt++;
-                gpsData.read = gpsData.write;
-                ret = RET_NOK;
+                /* Refresh state */
+                Gps_PrepareWrite();
             }
         }
-        
-        if((ret == RET_OK) && (gpsData.read != gpsData.write))
+
+        /* Only when character was found */
+        if(((gpsData.read + GPS_NMEA_OFFSET_FIVE) < GPS_RING_BUFFER_SIZE) &&
+            (gpsData.ringBuff[gpsData.read] == '$') && 
+            (gpsData.ringBuff[gpsData.read + GPS_NMEA_OFFSET_ONE] == 'G') &&
+            (gpsData.ringBuff[gpsData.read + GPS_NMEA_OFFSET_TWO] == 'P'))
         {
-            /* Only when character was found */
-            if(((gpsData.read + GPS_NMEA_OFFSET_FIVE) < GPS_RING_BUFFER_SIZE) &&
-                (gpsData.ringBuff[gpsData.read] == '$') && 
-                (gpsData.ringBuff[gpsData.read + GPS_NMEA_OFFSET_ONE] == 'G') && 
-                (gpsData.ringBuff[gpsData.read + GPS_NMEA_OFFSET_TWO] == 'P'))
-            {   
-                Gps_SelectMsg(&messageInfo);
-            }
-            
+            Gps_SelectMsg(&messageInfo);
+
             /* Go ahead if searching messages fails */
             if(messageInfo.type == GPS_INVALID)
             {
-                gpsData.read = ((gpsData.read + 1u) < GPS_RING_BUFFER_SIZE) ? (gpsData.read + 1u) : 0u;
+                Gps_IncrementReadIndicator();
             }
             /* Read proper message */
             else
             {
                 Gps_ReadMessage(&messageInfo);
             }
-            
+        }
+        else if(gpsData.read == gpsData.write)
+        {
+            /* End of the while loop */
+            break;
         }
         else
         {
-            /* End of the most outer while loop. */
+            /* Can not proceed data. Increment read indicator. */
+            Gps_IncrementReadIndicator();
         }
+        
     }
 
     ret |= Gps_RetriggerUartGps();
@@ -592,25 +593,55 @@ uint8_t Gps_PrepareDebugData(void)
     return RET_OK;
 }
 
+
 /* Functon called to retrigger gps uart
-   when it is stacked after overflow or lack of data */
+   when it is stacked after overflow or lack of data.
+   UART will be retrigger only when a pause was longer
+   than GPS_RETRIGGER_TIMEOUT (5s).
+*/
 uint8_t Gps_RetriggerUartGps(void)
 {
-   static uint8_t lastWrite = 0u;
+    static uint16_t timeFirstFault = 0u;
+    static uint16_t lastWrite = 0u;
 
-   if((gpsData.state == GPS_FULL) || (lastWrite == gpsData.write))
-   {
-      Gps_PrepareWrite();
-      if(gpsData.state != GPS_FULL)
-      {
-        HAL_UART_Receive_DMA(&huart5, (uint8_t*)&gpsData.ringBuff[gpsData.write], GPS_MAX_NMEA_SIZE);
-      }
-   }
+    uint16_t timeNow = tim.t_1s;
+    uint16_t timeDiff = 0u;
 
-   lastWrite = gpsData.write;
+    if((gpsData.state == GPS_FULL) || (lastWrite == gpsData.write))
+    {
+        /* Wait until timeout elapses */
+        if(timeFirstFault == 0u)
+        {
+            timeFirstFault = timeNow;
+        }
+        else
+        {
+            timeDiff = timeNow - timeFirstFault;
 
-   return RET_OK;
+            if(timeDiff >= GPS_RETRIGGER_TIMEOUT)
+            {
+                /* Do the retrigger and refresh the state. */
+                Gps_PrepareWrite();
+                HAL_UART_Receive_DMA(&huart5, (uint8_t*)&gpsData.ringBuff[gpsData.write], GPS_MAX_NMEA_SIZE);
+
+                timeFirstFault = 0u;
+            }
+            else
+            {
+                /* Timer has not elapsed yet. Wait. */
+            }
+        }
+    }
+    else
+    {
+        timeFirstFault = 0u;
+    }
+
+    lastWrite = gpsData.write;
+
+    return RET_OK;
 }
+
 
 /* Function called to read time given in different
    gps frames.
@@ -630,6 +661,7 @@ uint8_t Gps_ReadMessageElement_Time(uint8_t* fieldBuff)
 
     return RET_OK;
 }
+
 
 /* Function called to read modeIndicator given in different
    gps frames.
@@ -654,7 +686,6 @@ uint8_t Gps_ReadMessageElement_ModeOne(uint8_t* fieldBuff)
 
     return RET_OK;
 }
-
 
 
 /* Function called to read modeIndicator given in different
@@ -688,3 +719,22 @@ uint8_t Gps_ReadMessageElement_ModeIndicator(uint8_t* fieldBuff)
     return RET_OK;
 }
 
+
+/* Function called to increment read indicator
+   or set it to zero when it is bigger than
+   max size.
+*/
+uint8_t Gps_IncrementReadIndicator(void)
+{
+    if((gpsData.read + 1u) < GPS_RING_BUFFER_SIZE)
+    {
+        gpsData.read += 1u;
+    }
+    else
+    {
+        gpsData.read = 0u;
+        gpsData.state = GPS_OK_AHEAD;
+    }
+
+    return RET_OK;
+}

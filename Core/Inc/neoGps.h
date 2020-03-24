@@ -40,6 +40,8 @@ extern "C" {
 #define GPS_SIZE_GPGSA              18u     //18    ok
 #define GPS_SIZE_GPGSV              19u     //7     none
 #define GPS_SIZE_GPGLL              8u      //8     ok
+
+#define GPS_RETRIGGER_TIMEOUT       5u      //time [s] to retrigger gps uart
 /* END OF THE DEFINE AREA */
 
 
@@ -213,7 +215,6 @@ typedef struct GpsUartData_Tag
 
     uint8_t fixQuality;
     uint8_t satelitesNum;
-    uint8_t errorCnt;
 
 } GpsUartData_T;
 
@@ -257,6 +258,7 @@ uint8_t Gps_ReadMessageElement_ModeOne(uint8_t* fieldBuff);
 uint8_t Gps_ReadMessageElement_ModeIndicator(uint8_t* fieldBuff);
 uint8_t Gps_PrepareDebugData(void);
 uint8_t Gps_RetriggerUartGps(void);
+uint8_t Gps_IncrementReadIndicator(void);
 /* END OF THE FUNCTIONS PROTOTYPES AREA */
 
 # ifdef __cplusplus
