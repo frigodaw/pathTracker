@@ -27,6 +27,7 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
+#include "dataCollector.h"
 #include "neoGps.h"
 #include "usbd_cdc_if.h"
 #include "fatfs_sd.h"
@@ -987,7 +988,8 @@ void Main_Init(void)
   HAL_TIM_Base_Start_IT(&htim10);
 
   /* Start gps uart */
-  HAL_UART_Receive_DMA(&huart5, (uint8_t*)&gpsData.ringBuff[gpsData.write], GPS_MAX_NMEA_SIZE);
+  uint16_t write = DC_get_neoGps_gpsData_write();
+  HAL_UART_Receive_DMA(&huart5, (uint8_t*)&gpsData.ringBuff[write], GPS_MAX_NMEA_SIZE);
 }
 
 
@@ -1065,7 +1067,7 @@ void GpsTask(void const * argument)
   {
     Gps_Main();
     cnt.c_gpsTask++;
-    osDelay(200);
+    osDelay(100);
   }
   /* USER CODE END GpsTask */
 }

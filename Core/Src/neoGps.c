@@ -7,6 +7,7 @@
 #include "neoGps.h"
 #include "types.h"
 #include "main.h"
+#include "dataCollector.h"
 #include <stdio.h>
 #include <string.h>
 
@@ -148,7 +149,7 @@ uint8_t Gps_SelectMsg(GpsMsgInfo_T* messageInfo)
     messageInfo->type = GPS_INVALID;
     messageInfo->maxElements = 0u;
 
-    for(enum Gps_msgType msgId=0u; msgId < GPS_NMEA_MSG_NUM; msgId++)
+    for(Gps_msgType msgId=0u; msgId < GPS_NMEA_MSG_NUM; msgId++)
     {
         if(strncmp((char*)&gpsData.ringBuff[gpsData.read + GPS_NMEA_OFFSET_ONE], msgTypeArray[msgId], GPS_NMEA_WORD_LEN) == 0)
         {
@@ -604,7 +605,7 @@ uint8_t Gps_RetriggerUartGps(void)
     static uint16_t timeFirstFault = 0u;
     static uint16_t lastWrite = 0u;
 
-    uint16_t timeNow = tim.t_1s;
+    uint16_t timeNow = DC_get_main_tim_t_1s();
     uint16_t timeDiff = 0u;
 
     if((gpsData.state == GPS_FULL) || (lastWrite == gpsData.write))

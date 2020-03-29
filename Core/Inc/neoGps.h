@@ -46,7 +46,7 @@ extern "C" {
 
 
 /* START OF THE ENUM AREA */
-enum Gps_gprmcDataSequence
+typedef enum
 {
     GPS_GPRMC_TIME,
     GPS_GPRMC_POSITIONSTATUS,
@@ -61,9 +61,9 @@ enum Gps_gprmcDataSequence
     GPS_GPRMC_MAGNETICVARIATIONDIR,
     GPS_GPRMC_MODEINDICATOR,
     GPS_GPRMC_CHECKSUM
-};
+}Gps_gprmcDataSequence;
 
-enum Gps_gpvtgDataSequence
+typedef enum
 {
     GPS_GPVTG_TRACKMADEGOODDEGREES,
     GPS_GPVTG_RELATIVENORTH,
@@ -75,9 +75,9 @@ enum Gps_gpvtgDataSequence
     GPS_GPVTG_SPEEDUNITKMH,
     GPS_GPVTG_MODEINDICATOR,
     GPS_GPVTG_CHECKSUM
-};
+}Gps_gpvtgDataSequence;
 
-enum Gps_gpggaDataSequence
+typedef enum
 {
     GPS_GPGGA_TIME,
     GPS_GPGGA_LATITUDE,
@@ -94,9 +94,9 @@ enum Gps_gpggaDataSequence
     GPS_GPGGA_EMPTYSLOTONE,
     GPS_GPGGA_EMPTYSLOTTWO,
     GPS_GPGGA_CHECKSUM
-};
+}Gps_gpggaDataSequence;
 
-enum Gps_gpgsaDataSequence
+typedef enum
 {
     GPS_GPGSA_MODEONE,
     GPS_GPGSA_MODETWO,
@@ -116,9 +116,9 @@ enum Gps_gpgsaDataSequence
     GPS_GPGSA_HDOP,
     GPS_GPGSA_VDOP,
     GPS_GPGSA_CHECKSUM
-};
+}Gps_gpgsaDataSequence;
 
-enum Gps_gpgllDataSequence
+typedef enum
 {
     GPS_GPGLL_LATITUDE,
     GPS_GPGLL_NS,
@@ -128,16 +128,16 @@ enum Gps_gpgllDataSequence
     GPS_GPGLL_POSITIONSTATUS,
     GPS_GPGLL_MODEINDICATOR,
     GPS_GPGLL_CHECKSUM
-};
+}Gps_gpgllDataSequence;
 
-enum Gps_bufferState
+typedef enum
 {
     GPS_OK_AHEAD,
     GPS_OK_BEHIND,
     GPS_FULL = 255u
-};
+}Gps_bufferState;
 
-enum Gps_msgType
+typedef enum
 {
     GPS_GPRMC,
     GPS_GPVTG,
@@ -146,40 +146,40 @@ enum Gps_msgType
     GPS_GPGSV,
     GPS_GPGLL,
     GPS_INVALID = 255u
-};
+}Gps_msgType;
 
-enum Gps_nmeaOffset
+typedef enum
 {
     GPS_NMEA_OFFSET_ONE = 1u,
     GPS_NMEA_OFFSET_TWO,
     GPS_NMEA_OFFSET_THREE,
     GPS_NMEA_OFFSET_FOUR,
     GPS_NMEA_OFFSET_FIVE,
-};
+}Gps_nmeaOffset;
 
-enum Gps_modeOne
+typedef enum
 {
     GPS_MODEONE_INVALID,
     GPS_MODEONE_AUTOMATIC,
     GPS_MODEONE_MANUAL
-};
+}Gps_modeOne;
 
-enum Gps_modeTwo
+typedef enum
 {
     GPS_MODETWO_INVALID,
     GPS_MODETWO_FIXUNAVAILABLE,     //have to be 1u
     GPS_MODETWO_2D,
     GPS_MODETWO_3D
-};
+}Gps_modeTwo;
 
-enum Gps_modeIndicator
+typedef enum
 {
     GPS_MODEINDICATOR_DATANOTVALID,
     GPS_MODEINDICATOR_AUTONOMOUS,
     GPS_MODEINDICATOR_DIFFERENTIAL,
     GPS_MODEINDICATOR_ESTIMATED,
     GPS_MODEINDICATOR_MANUALINPUT
-};
+}Gps_modeIndicator;
 /* END OF THE ENUM AREA */
 
 
@@ -197,7 +197,7 @@ typedef struct GpsUartData_Tag
     uint16_t read;
     volatile uint16_t write;
     volatile uint8_t ringBuff[GPS_RING_BUFFER_SIZE];
-    volatile enum Gps_bufferState state;
+    volatile Gps_bufferState state;
 
     uint8_t dateDay;
     uint8_t dateMon;
@@ -209,9 +209,9 @@ typedef struct GpsUartData_Tag
     char latDir;
     char lonDir;
 
-    enum Gps_modeOne modeOne;
-    enum Gps_modeTwo modeTwo;
-    enum Gps_modeIndicator modeIndicator;
+    Gps_modeOne modeOne;
+    Gps_modeTwo modeTwo;
+    Gps_modeIndicator modeIndicator;
 
     uint8_t fixQuality;
     uint8_t satelitesNum;
@@ -228,7 +228,7 @@ typedef struct GpsDebugData_Tag
 //typedef to store information about actual read message
 typedef struct GpsMsgInfo_Tag
 {
-    enum Gps_msgType type;
+    Gps_msgType type;
     uint8_t maxElements;
     uint8_t currentElement;
 }GpsMsgInfo_T;

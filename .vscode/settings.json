@@ -11,6 +11,12 @@
         "filesystem.h": "c",
         "fatfs.h": "c",
         "ff_gen_drv.h": "c",
-        "ff.h": "c"
+        "ff.h": "c",
+        "datacollector.h": "c",
+        "cstddef": "c",
+        "limits": "c",
+        "type_traits": "c",
+        "vector": "c",
+        "xutility": "c"
     }
 }
