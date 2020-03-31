@@ -35,10 +35,68 @@
             "LineSpacing": 0,
             "Name": "ProjectName",
             "X": 17,
-            "Y": 139,
+            "Y": 60,
             "Width": 207,
             "Height": 43,
             "Type": "TextArea",
+            "Visible": true,
+            "Draggable": false,
+            "Clickable": false,
+            "Fadeable": false,
+            "Moveable": false
+          },
+          {
+            "Pressed": "__designer\\Blue_Buttons_Round_Edge_small_pressed.png",
+            "Released": "__designer\\Blue_Buttons_Round_Edge_small.png",
+            "Alpha": 255,
+            "TextId": "SingleUseId25",
+            "ReleasedColor": {
+              "Red": 255,
+              "Green": 255,
+              "Blue": 255
+            },
+            "PressedColor": {
+              "Red": 255,
+              "Green": 255,
+              "Blue": 255
+            },
+            "TextRotation": "0",
+            "Style": "Style4",
+            "Name": "DebugButton",
+            "X": 35,
+            "Y": 150,
+            "Width": 170,
+            "Height": 60,
+            "Type": "ButtonWithLabel",
+            "Visible": true,
+            "Draggable": false,
+            "Clickable": false,
+            "Fadeable": false,
+            "Moveable": false
+          },
+          {
+            "Pressed": "__designer\\Blue_Buttons_Round_Edge_small_pressed.png",
+            "Released": "__designer\\Blue_Buttons_Round_Edge_small.png",
+            "Alpha": 255,
+            "TextId": "SingleUseId26",
+            "ReleasedColor": {
+              "Red": 255,
+              "Green": 255,
+              "Blue": 255
+            },
+            "PressedColor": {
+              "Red": 255,
+              "Green": 255,
+              "Blue": 255
+            },
+            "TextRotation": "0",
+            "Style": "Style4",
+            "Name": "AppButton",
+            "X": 35,
+            "Y": 230,
+            "Width": 170,
+            "Height": 60,
+            "Type": "ButtonWithLabel",
             "Visible": true,
             "Draggable": false,
             "Clickable": false,
@@ -48,32 +106,83 @@
         ],
         "Interactions": [
           {
-            "InteractionName": "WaitHalfSecond",
-            "HasCompletedTrigger": true,
+            "InteractionName": "StartDebug",
+            "HasCompletedTrigger": false,
             "Trigger": {
-              "Type": "TriggerScreenEntered"
+              "TriggerComponent": "DebugButton",
+              "Type": "TriggerClicked"
             },
             "Action": {
-              "Duration": 500,
-              "Type": "ActionDelay"
+              "ScreenTransitionType": "ScreenTransitionNone",
+              "ActionComponent": "DebugGpsDataScreen",
+              "Type": "ActionGotoScreen"
             }
           },
           {
-            "InteractionName": "GoToGpsDataScreen",
+            "InteractionName": "StartApplication",
             "HasCompletedTrigger": false,
             "Trigger": {
-              "InteractionToTriggerOn": "WaitHalfSecond",
-              "Type": "TriggerInteractionCompleted"
+              "TriggerComponent": "AppButton",
+              "Type": "TriggerClicked"
             },
             "Action": {
-              "ScreenTransitionType": "ScreenTransitionSlide",
-              "ScreenTransitionDirection": "East",
-              "ActionComponent": "GpsDataScreen",
+              "ScreenTransitionType": "ScreenTransitionNone",
+              "ActionComponent": "AppMenuScreen",
               "Type": "ActionGotoScreen"
             }
           }
         ],
         "Name": "StartScreen",
+        "OverrideDefaultBufferSize": false,
+        "CanvasBufferSize": 0
+      },
+      {
+        "Components": [
+          {
+            "Color": {
+              "Red": 100,
+              "Green": 160,
+              "Blue": 200
+            },
+            "Alpha": 255,
+            "Name": "background",
+            "X": 0,
+            "Y": 0,
+            "Width": 240,
+            "Height": 320,
+            "Type": "Box",
+            "Visible": true,
+            "Draggable": false,
+            "Clickable": false,
+            "Fadeable": false,
+            "Moveable": false
+          },
+          {
+            "TextId": "SingleUseId28",
+            "TextRotation": "0",
+            "Color": {
+              "Red": 0,
+              "Green": 0,
+              "Blue": 0
+            },
+            "Alpha": 255,
+            "AutoSize": true,
+            "LineSpacing": 0,
+            "Name": "NameLabel",
+            "X": 65,
+            "Y": 15,
+            "Width": 110,
+            "Height": 25,
+            "Type": "TextArea",
+            "Visible": true,
+            "Draggable": false,
+            "Clickable": false,
+            "Fadeable": false,
+            "Moveable": false
+          }
+        ],
+        "Interactions": [],
+        "Name": "AppMenuScreen",
         "OverrideDefaultBufferSize": false,
         "CanvasBufferSize": 0
       },
@@ -150,7 +259,7 @@
                 },
                 "Name": "LatTextBox",
                 "X": 20,
-                "Y": 45,
+                "Y": 55,
                 "Width": 200,
                 "Height": 20,
                 "Type": "TextArea",
@@ -210,7 +319,7 @@
                 },
                 "Name": "AltiTextBox",
                 "X": 20,
-                "Y": 105,
+                "Y": 95,
                 "Width": 200,
                 "Height": 20,
                 "Type": "TextArea",
@@ -238,7 +347,7 @@
                 },
                 "Name": "FixTextBox",
                 "X": 20,
-                "Y": 134,
+                "Y": 115,
                 "Width": 200,
                 "Height": 20,
                 "Type": "TextArea",
@@ -266,7 +375,91 @@
                 },
                 "Name": "SatTextBox",
                 "X": 20,
-                "Y": 165,
+                "Y": 135,
+                "Width": 200,
+                "Height": 20,
+                "Type": "TextArea",
+                "Visible": true,
+                "Draggable": false,
+                "Clickable": false,
+                "Fadeable": false,
+                "Moveable": false
+              },
+              {
+                "TextId": "SingleUseId19",
+                "TextRotation": "0",
+                "Color": {
+                  "Red": 0,
+                  "Green": 0,
+                  "Blue": 0
+                },
+                "Alpha": 255,
+                "AutoSize": false,
+                "LineSpacing": 0,
+                "Wildcard1": {
+                  "TextId": "SingleUseId20",
+                  "UseBuffer": true,
+                  "BufferSize": 16
+                },
+                "Name": "DateTextBox",
+                "X": 20,
+                "Y": 35,
+                "Width": 200,
+                "Height": 20,
+                "Type": "TextArea",
+                "Visible": true,
+                "Draggable": false,
+                "Clickable": false,
+                "Fadeable": false,
+                "Moveable": false
+              },
+              {
+                "TextId": "SingleUseId21",
+                "TextRotation": "0",
+                "Color": {
+                  "Red": 0,
+                  "Green": 0,
+                  "Blue": 0
+                },
+                "Alpha": 255,
+                "AutoSize": false,
+                "LineSpacing": 0,
+                "Wildcard1": {
+                  "TextId": "SingleUseId22",
+                  "UseBuffer": true,
+                  "BufferSize": 4
+                },
+                "Name": "ReadTextBox",
+                "X": 20,
+                "Y": 155,
+                "Width": 200,
+                "Height": 20,
+                "Type": "TextArea",
+                "Visible": true,
+                "Draggable": false,
+                "Clickable": false,
+                "Fadeable": false,
+                "Moveable": false
+              },
+              {
+                "TextId": "SingleUseId23",
+                "TextRotation": "0",
+                "Color": {
+                  "Red": 0,
+                  "Green": 0,
+                  "Blue": 0
+                },
+                "Alpha": 255,
+                "AutoSize": false,
+                "LineSpacing": 0,
+                "Wildcard1": {
+                  "TextId": "SingleUseId24",
+                  "UseBuffer": true,
+                  "BufferSize": 4
+                },
+                "Name": "WriteTextBox",
+                "X": 20,
+                "Y": 175,
                 "Width": 200,
                 "Height": 20,
                 "Type": "TextArea",
@@ -307,7 +500,7 @@
             },
             "TextRotation": "0",
             "Style": "Style4",
-            "Name": "GoToDrawScreenButton",
+            "Name": "GoToDebugDrawScreenButton",
             "X": 35,
             "Y": 245,
             "Width": 170,
@@ -322,21 +515,20 @@
         ],
         "Interactions": [
           {
-            "InteractionName": "GoToDrawScreen",
+            "InteractionName": "GoToDebugDrawScreen",
             "HasCompletedTrigger": false,
             "Trigger": {
-              "TriggerComponent": "GoToDrawScreenButton",
+              "TriggerComponent": "GoToDebugDrawScreenButton",
               "Type": "TriggerClicked"
             },
             "Action": {
-              "ScreenTransitionType": "ScreenTransitionCover",
-              "ScreenTransitionDirection": "East",
-              "ActionComponent": "DrawScreen",
+              "ScreenTransitionType": "ScreenTransitionNone",
+              "ActionComponent": "DebugDrawScreen",
               "Type": "ActionGotoScreen"
             }
           }
         ],
-        "Name": "GpsDataScreen",
+        "Name": "DebugGpsDataScreen",
         "OverrideDefaultBufferSize": false,
         "CanvasBufferSize": 0
       },
@@ -378,7 +570,7 @@
             },
             "TextRotation": "0",
             "Style": "Style4",
-            "Name": "GoToGpsDataScreenButton",
+            "Name": "GoToDebugGpsDataScreenButton",
             "X": 35,
             "Y": 245,
             "Width": 170,
@@ -412,21 +604,20 @@
         ],
         "Interactions": [
           {
-            "InteractionName": "GoToGpsDataScreen",
+            "InteractionName": "GoToDebugGpsDataScreen",
             "HasCompletedTrigger": false,
             "Trigger": {
-              "TriggerComponent": "GoToGpsDataScreenButton",
+              "TriggerComponent": "GoToDebugGpsDataScreenButton",
               "Type": "TriggerClicked"
             },
             "Action": {
-              "ScreenTransitionType": "ScreenTransitionCover",
-              "ScreenTransitionDirection": "East",
-              "ActionComponent": "GpsDataScreen",
+              "ScreenTransitionType": "ScreenTransitionNone",
+              "ActionComponent": "DebugGpsDataScreen",
               "Type": "ActionGotoScreen"
             }
           }
         ],
-        "Name": "DrawScreen",
+        "Name": "DebugDrawScreen",
         "OverrideDefaultBufferSize": false,
         "CanvasBufferSize": 0
       }
@@ -435,6 +626,22 @@
     "TextEntries": [
       {
         "TextEntryId": "SingleUseId1",
+        "IsResource": false
+      },
+      {
+        "TextEntryId": "SingleUseId17",
+        "IsResource": false
+      },
+      {
+        "TextEntryId": "SingleUseId18",
+        "IsResource": false
+      },
+      {
+        "TextEntryId": "SingleUseId25",
+        "IsResource": false
+      },
+      {
+        "TextEntryId": "SingleUseId26",
         "IsResource": false
       },
       {
@@ -486,11 +693,35 @@
         "IsResource": false
       },
       {
-        "TextEntryId": "SingleUseId17",
+        "TextEntryId": "SingleUseId19",
         "IsResource": false
       },
       {
-        "TextEntryId": "SingleUseId18",
+        "TextEntryId": "SingleUseId20",
+        "IsResource": false
+      },
+      {
+        "TextEntryId": "SingleUseId21",
+        "IsResource": false
+      },
+      {
+        "TextEntryId": "SingleUseId22",
+        "IsResource": false
+      },
+      {
+        "TextEntryId": "SingleUseId23",
+        "IsResource": false
+      },
+      {
+        "TextEntryId": "SingleUseId24",
+        "IsResource": false
+      },
+      {
+        "TextEntryId": "SingleUseId28",
+        "IsResource": false
+      },
+      {
+        "TextEntryId": "SingleUseId29",
         "IsResource": false
       }
     ],

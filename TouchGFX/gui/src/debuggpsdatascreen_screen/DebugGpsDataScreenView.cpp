@@ -1,25 +1,27 @@
-#include <gui/gpsdatascreen_screen/GpsDataScreenView.hpp>
+#include <gui/debuggpsdatascreen_screen/DebugGpsDataScreenView.hpp>
 #include <../../Core/Inc/neoGps.h>
 
-GpsDataScreenView::GpsDataScreenView()
+DebugGpsDataScreenView::DebugGpsDataScreenView()
 {
 
 }
 
-void GpsDataScreenView::setupScreen()
+void DebugGpsDataScreenView::setupScreen()
 {
-    GpsDataScreenViewBase::setupScreen();
+    DebugGpsDataScreenViewBase::setupScreen();
 }
 
-void GpsDataScreenView::tearDownScreen()
+void DebugGpsDataScreenView::tearDownScreen()
 {
-    GpsDataScreenViewBase::tearDownScreen();
+    DebugGpsDataScreenViewBase::tearDownScreen();
 }
 
-void GpsDataScreenView::updateGpsDataContainer()
+void DebugGpsDataScreenView::updateGpsDataContainer()
 {
     Unicode::snprintf(TimeTextBoxBuffer, TIMETEXTBOX_SIZE, "%.2d:%.2d:%.2d", gpsData.timeHr, gpsData.timeMin, gpsData.timeSec);
     TimeTextBox.invalidate();
+    Unicode::snprintf(DateTextBoxBuffer, DATETEXTBOX_SIZE, "%.2d.%.2d.%.2d", gpsData.dateDay, gpsData.dateMon, gpsData.dateYear);
+    DateTextBox.invalidate();
     Unicode::snprintfFloats(LatTextBoxBuffer1, LATTEXTBOXBUFFER1_SIZE, "%#.5f", &gpsData.latitude);
     Unicode::snprintf(LatTextBoxBuffer2, LATTEXTBOXBUFFER2_SIZE, "%c", gpsData.latDir);
     LatTextBox.invalidate();
@@ -32,4 +34,8 @@ void GpsDataScreenView::updateGpsDataContainer()
     FixTextBox.invalidate();
     Unicode::snprintf(SatTextBoxBuffer, SATTEXTBOX_SIZE, "%d", gpsData.satelitesNum);
     SatTextBox.invalidate();
+    Unicode::snprintf(ReadTextBoxBuffer, READTEXTBOX_SIZE, "%d", gpsData.read);
+    ReadTextBox.invalidate();
+    Unicode::snprintf(WriteTextBoxBuffer, WRITETEXTBOX_SIZE, "%d", gpsData.write);
+    WriteTextBox.invalidate();
 }

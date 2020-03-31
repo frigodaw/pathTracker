@@ -1,17 +1,17 @@
-#ifndef GPSDATASCREENPRESENTER_HPP
-#define GPSDATASCREENPRESENTER_HPP
+#ifndef DEBUGGPSDATASCREENPRESENTER_HPP
+#define DEBUGGPSDATASCREENPRESENTER_HPP
 
 #include <gui/model/ModelListener.hpp>
 #include <mvp/Presenter.hpp>
 
 using namespace touchgfx;
 
-class GpsDataScreenView;
+class DebugGpsDataScreenView;
 
-class GpsDataScreenPresenter : public touchgfx::Presenter, public ModelListener
+class DebugGpsDataScreenPresenter : public touchgfx::Presenter, public ModelListener
 {
 public:
-    GpsDataScreenPresenter(GpsDataScreenView& v);
+    DebugGpsDataScreenPresenter(DebugGpsDataScreenView& v);
 
     /**
      * The activate function is called automatically when this screen is "switched in"
@@ -27,12 +27,12 @@ public:
 
     virtual void updateGpsDataContainer();
 
-    virtual ~GpsDataScreenPresenter() {};
+    virtual ~DebugGpsDataScreenPresenter() {};
 
 private:
-    GpsDataScreenPresenter();
+    DebugGpsDataScreenPresenter();
 
-    GpsDataScreenView& view;
+    DebugGpsDataScreenView& view;
 };
 
-#endif // GPSDATASCREENPRESENTER_HPP
+#endif // DEBUGGPSDATASCREENPRESENTER_HPP

@@ -4,21 +4,38 @@
 #include <gui_generated/startscreen_screen/StartScreenViewBase.hpp>
 #include <touchgfx/Color.hpp>
 #include <texts/TextKeysAndLanguages.hpp>
+#include "BitmapDatabase.hpp"
 
 StartScreenViewBase::StartScreenViewBase() :
-    waitHalfSecondCounter(0)
+    buttonCallback(this, &StartScreenViewBase::buttonCallbackHandler)
 {
 
     background.setPosition(0, 0, 240, 320);
     background.setColor(touchgfx::Color::getColorFrom24BitRGB(100, 160, 200));
 
-    ProjectName.setXY(17, 139);
+    ProjectName.setXY(17, 60);
     ProjectName.setColor(touchgfx::Color::getColorFrom24BitRGB(0, 0, 0));
     ProjectName.setLinespacing(0);
     ProjectName.setTypedText(touchgfx::TypedText(T_SINGLEUSEID1));
 
+    DebugButton.setXY(35, 150);
+    DebugButton.setBitmaps(touchgfx::Bitmap(BITMAP_BLUE_BUTTONS_ROUND_EDGE_SMALL_ID), touchgfx::Bitmap(BITMAP_BLUE_BUTTONS_ROUND_EDGE_SMALL_PRESSED_ID));
+    DebugButton.setLabelText(touchgfx::TypedText(T_SINGLEUSEID25));
+    DebugButton.setLabelColor(touchgfx::Color::getColorFrom24BitRGB(255, 255, 255));
+    DebugButton.setLabelColorPressed(touchgfx::Color::getColorFrom24BitRGB(255, 255, 255));
+    DebugButton.setAction(buttonCallback);
+
+    AppButton.setXY(35, 230);
+    AppButton.setBitmaps(touchgfx::Bitmap(BITMAP_BLUE_BUTTONS_ROUND_EDGE_SMALL_ID), touchgfx::Bitmap(BITMAP_BLUE_BUTTONS_ROUND_EDGE_SMALL_PRESSED_ID));
+    AppButton.setLabelText(touchgfx::TypedText(T_SINGLEUSEID26));
+    AppButton.setLabelColor(touchgfx::Color::getColorFrom24BitRGB(255, 255, 255));
+    AppButton.setLabelColorPressed(touchgfx::Color::getColorFrom24BitRGB(255, 255, 255));
+    AppButton.setAction(buttonCallback);
+
     add(background);
     add(ProjectName);
+    add(DebugButton);
+    add(AppButton);
 }
 
 void StartScreenViewBase::setupScreen()
@@ -26,27 +43,20 @@ void StartScreenViewBase::setupScreen()
 
 }
 
-//Handles delays
-void StartScreenViewBase::handleTickEvent()
+void StartScreenViewBase::buttonCallbackHandler(const touchgfx::AbstractButton& src)
 {
-    if(waitHalfSecondCounter > 0)
+    if (&src == &DebugButton)
     {
-        waitHalfSecondCounter--;
-        if(waitHalfSecondCounter == 0)
-        {
-            //GoToGpsDataScreen
-            //When WaitHalfSecond completed change screen to GpsDataScreen
-            //Go to GpsDataScreen with screen transition towards East
-            application().gotoGpsDataScreenScreenSlideTransitionEast();
-        }
+        //StartDebug
+        //When DebugButton clicked change screen to DebugGpsDataScreen
+        //Go to DebugGpsDataScreen with no screen transition
+        application().gotoDebugGpsDataScreenScreenNoTransition();
     }
-}
-
-//Called when the screen is done with transition/load
-void StartScreenViewBase::afterTransition()
-{
-    //WaitHalfSecond
-    //When screen is entered delay
-    //Delay for 500 ms (30 Ticks)
-    waitHalfSecondCounter = WAITHALFSECOND_DURATION;
+    else if (&src == &AppButton)
+    {
+        //StartApplication
+        //When AppButton clicked change screen to AppMenuScreen
+        //Go to AppMenuScreen with no screen transition
+        application().gotoAppMenuScreenScreenNoTransition();
+    }
 }

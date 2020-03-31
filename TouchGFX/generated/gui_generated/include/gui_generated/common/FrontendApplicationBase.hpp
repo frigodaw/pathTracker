@@ -18,13 +18,14 @@ public:
     // StartScreen
     void gotoStartScreenScreenNoTransition();
 
-    // GpsDataScreen
-    void gotoGpsDataScreenScreenSlideTransitionEast();
+    // AppMenuScreen
+    void gotoAppMenuScreenScreenNoTransition();
 
-    void gotoGpsDataScreenScreenCoverTransitionEast();
+    // DebugGpsDataScreen
+    void gotoDebugGpsDataScreenScreenNoTransition();
 
-    // DrawScreen
-    void gotoDrawScreenScreenCoverTransitionEast();
+    // DebugDrawScreen
+    void gotoDebugDrawScreenScreenNoTransition();
 
 protected:
     touchgfx::Callback<FrontendApplicationBase> transitionCallback;
@@ -34,13 +35,14 @@ protected:
     // StartScreen
     void gotoStartScreenScreenNoTransitionImpl();
 
-    // GpsDataScreen
-    void gotoGpsDataScreenScreenSlideTransitionEastImpl();
+    // AppMenuScreen
+    void gotoAppMenuScreenScreenNoTransitionImpl();
 
-    void gotoGpsDataScreenScreenCoverTransitionEastImpl();
+    // DebugGpsDataScreen
+    void gotoDebugGpsDataScreenScreenNoTransitionImpl();
 
-    // DrawScreen
-    void gotoDrawScreenScreenCoverTransitionEastImpl();
+    // DebugDrawScreen
+    void gotoDebugDrawScreenScreenNoTransitionImpl();
 };
 
 #endif // FRONTENDAPPLICATIONBASE_HPP

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <projectDescription>
 	<name>pathTracker</name>
-	<comment></comment>
+	<comment/>
 	<projects>
 	</projects>
 	<buildSpec>
@@ -359,11 +359,6 @@
 			<locationURI>$%7BPARENT-1-PROJECT_LOC%7D/TouchGFX/generated/fonts/src/CachedFont.cpp</locationURI>
 		</link>
 		<link>
-			<name>Application/User/generated/DrawScreenViewBase.cpp</name>
-			<type>1</type>
-			<locationURI>$%7BPARENT-1-PROJECT_LOC%7D/TouchGFX/generated/gui_generated/src/drawscreen_screen/DrawScreenViewBase.cpp</locationURI>
-		</link>
-		<link>
 			<name>Application/User/generated/FontCache.cpp</name>
 			<type>1</type>
 			<locationURI>$%7BPARENT-1-PROJECT_LOC%7D/TouchGFX/generated/fonts/src/FontCache.cpp</locationURI>
@@ -392,11 +387,6 @@
 			<name>Application/User/generated/GeneratedFont.cpp</name>
 			<type>1</type>
 			<locationURI>$%7BPARENT-1-PROJECT_LOC%7D/TouchGFX/generated/fonts/src/GeneratedFont.cpp</locationURI>
-		</link>
-		<link>
-			<name>Application/User/generated/GpsDataScreenViewBase.cpp</name>
-			<type>1</type>
-			<locationURI>$%7BPARENT-1-PROJECT_LOC%7D/TouchGFX/generated/gui_generated/src/gpsdatascreen_screen/GpsDataScreenViewBase.cpp</locationURI>
 		</link>
 		<link>
 			<name>Application/User/generated/Kerning_verdana_15_4bpp.cpp</name>
@@ -449,29 +439,9 @@
 			<locationURI>$%7BPARENT-1-PROJECT_LOC%7D/TouchGFX/generated/texts/src/TypedTextDatabase.cpp</locationURI>
 		</link>
 		<link>
-			<name>Application/User/gui/DrawScreenPresenter.cpp</name>
-			<type>1</type>
-			<locationURI>$%7BPARENT-1-PROJECT_LOC%7D/TouchGFX/gui/src/drawscreen_screen/DrawScreenPresenter.cpp</locationURI>
-		</link>
-		<link>
-			<name>Application/User/gui/DrawScreenView.cpp</name>
-			<type>1</type>
-			<locationURI>$%7BPARENT-1-PROJECT_LOC%7D/TouchGFX/gui/src/drawscreen_screen/DrawScreenView.cpp</locationURI>
-		</link>
-		<link>
 			<name>Application/User/gui/FrontendApplication.cpp</name>
 			<type>1</type>
 			<locationURI>$%7BPARENT-1-PROJECT_LOC%7D/TouchGFX/gui/src/common/FrontendApplication.cpp</locationURI>
-		</link>
-		<link>
-			<name>Application/User/gui/GpsDataScreenPresenter.cpp</name>
-			<type>1</type>
-			<locationURI>$%7BPARENT-1-PROJECT_LOC%7D/TouchGFX/gui/src/gpsdatascreen_screen/GpsDataScreenPresenter.cpp</locationURI>
-		</link>
-		<link>
-			<name>Application/User/gui/GpsDataScreenView.cpp</name>
-			<type>1</type>
-			<locationURI>$%7BPARENT-1-PROJECT_LOC%7D/TouchGFX/gui/src/gpsdatascreen_screen/GpsDataScreenView.cpp</locationURI>
 		</link>
 		<link>
 			<name>Application/User/gui/Model.cpp</name>
@@ -562,6 +532,51 @@
 			<name>Application/User/TouchGFX/target/generated/TouchGFXGeneratedHAL.cpp</name>
 			<type>1</type>
 			<locationURI>$%7BPARENT-1-PROJECT_LOC%7D/TouchGFX/target/generated/TouchGFXGeneratedHAL.cpp</locationURI>
+		</link>
+		<link>
+			<name>Application/User/gui/AppMenuScreenPresenter.cpp</name>
+			<type>1</type>
+			<locationURI>$%7BPARENT-1-PROJECT_LOC%7D/TouchGFX/gui/src/appmenuscreen_screen/AppMenuScreenPresenter.cpp</locationURI>
+		</link>
+		<link>
+			<name>Application/User/gui/AppMenuScreenView.cpp</name>
+			<type>1</type>
+			<locationURI>$%7BPARENT-1-PROJECT_LOC%7D/TouchGFX/gui/src/appmenuscreen_screen/AppMenuScreenView.cpp</locationURI>
+		</link>
+		<link>
+			<name>Application/User/generated/AppMenuScreenViewBase.cpp</name>
+			<type>1</type>
+			<locationURI>$%7BPARENT-1-PROJECT_LOC%7D/TouchGFX/generated/gui_generated/src/appmenuscreen_screen/AppMenuScreenViewBase.cpp</locationURI>
+		</link>
+		<link>
+			<name>Application/User/gui/DebugDrawScreenPresenter.cpp</name>
+			<type>1</type>
+			<locationURI>$%7BPARENT-1-PROJECT_LOC%7D/TouchGFX/gui/src/debugdrawscreen_screen/DebugDrawScreenPresenter.cpp</locationURI>
+		</link>
+		<link>
+			<name>Application/User/gui/DebugDrawScreenView.cpp</name>
+			<type>1</type>
+			<locationURI>$%7BPARENT-1-PROJECT_LOC%7D/TouchGFX/gui/src/debugdrawscreen_screen/DebugDrawScreenView.cpp</locationURI>
+		</link>
+		<link>
+			<name>Application/User/gui/DebugGpsDataScreenView.cpp</name>
+			<type>1</type>
+			<locationURI>$%7BPARENT-1-PROJECT_LOC%7D/TouchGFX/gui/src/debuggpsdatascreen_screen/DebugGpsDataScreenView.cpp</locationURI>
+		</link>
+		<link>
+			<name>Application/User/generated/DebugDrawScreenViewBase.cpp</name>
+			<type>1</type>
+			<locationURI>$%7BPARENT-1-PROJECT_LOC%7D/TouchGFX/generated/gui_generated/src/debugdrawscreen_screen/DebugDrawScreenViewBase.cpp</locationURI>
+		</link>
+		<link>
+			<name>Application/User/generated/DebugGpsDataScreenViewBase.cpp</name>
+			<type>1</type>
+			<locationURI>$%7BPARENT-1-PROJECT_LOC%7D/TouchGFX/generated/gui_generated/src/debuggpsdatascreen_screen/DebugGpsDataScreenViewBase.cpp</locationURI>
+		</link>
+		<link>
+			<name>Application/User/gui/DebugGpsDataScreenPresenter.cpp</name>
+			<type>1</type>
+			<locationURI>$%7BPARENT-1-PROJECT_LOC%7D/TouchGFX/gui/src/debuggpsdatascreen_screen/DebugGpsDataScreenPresenter.cpp</locationURI>
 		</link>
 	</linkedResources>
 </projectDescription>

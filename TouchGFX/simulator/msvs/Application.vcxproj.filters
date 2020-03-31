@@ -172,29 +172,41 @@
     <Filter Include="Header Files\generated\gui_generated\startscreen_screen">
       <UniqueIdentifier>BCBF16DB-B38A-8B22-52E1-7C84D6697EA4</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\gui\gpsdatascreen_screen">
-      <UniqueIdentifier>3DF84684-1B54-5996-DDCF-8EF5774BB4B6</UniqueIdentifier>
+    <Filter Include="Source Files\gui\appmenuscreen_screen">
+      <UniqueIdentifier>E4B2A307-9750-B160-D912-8DF765D5112B</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\gui\gpsdatascreen_screen">
-      <UniqueIdentifier>1F349F38-7A1C-DEDD-8A97-EAC5A908E16E</UniqueIdentifier>
+    <Filter Include="Header Files\gui\appmenuscreen_screen">
+      <UniqueIdentifier>1E399EBF-CAF6-E068-81D6-6F2762CE659E</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\generated\gui_generated\gpsdatascreen_screen">
-      <UniqueIdentifier>970CDBC0-43D6-DE46-CB62-96150775C272</UniqueIdentifier>
+    <Filter Include="Source Files\generated\gui_generated\appmenuscreen_screen">
+      <UniqueIdentifier>B5BC8916-323A-E939-617E-4718D6828868</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\generated\gui_generated\gpsdatascreen_screen">
-      <UniqueIdentifier>4B5C2206-C509-89D1-4B91-1F3B12E1C467</UniqueIdentifier>
+    <Filter Include="Header Files\generated\gui_generated\appmenuscreen_screen">
+      <UniqueIdentifier>589364D9-ED24-2937-451D-61930656F371</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\gui\drawscreen_screen">
-      <UniqueIdentifier>DAFCCBAB-0AE6-7C1B-7CD3-A449E1C29885</UniqueIdentifier>
+    <Filter Include="Header Files\gui\debuggpsdatascreen_screen">
+      <UniqueIdentifier>61EEAF83-C68A-A9D8-D9CF-A4B2EBAE5262</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\gui\drawscreen_screen">
-      <UniqueIdentifier>6A131D5C-7590-5A2F-40A9-6E85F032F7F9</UniqueIdentifier>
+    <Filter Include="Source Files\gui\debuggpsdatascreen_screen">
+      <UniqueIdentifier>C8EF9368-8088-3398-B797-3C73EDF45F2B</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\generated\gui_generated\drawscreen_screen">
-      <UniqueIdentifier>96E99D12-3F13-7257-23A7-12B67D6E5632</UniqueIdentifier>
+    <Filter Include="Header Files\gui\debugdrawscreen_screen">
+      <UniqueIdentifier>177CCCF6-CF09-4566-F497-BB299B3AAEFB</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\generated\gui_generated\drawscreen_screen">
-      <UniqueIdentifier>E4504199-CFC1-B474-4D77-9744A0AF7BCE</UniqueIdentifier>
+    <Filter Include="Source Files\gui\debugdrawscreen_screen">
+      <UniqueIdentifier>B9B0B757-7304-C5CC-8B93-8E2CD03ACA9C</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\generated\gui_generated\debugdrawscreen_screen">
+      <UniqueIdentifier>3079704A-B922-2395-2C96-EC08B638F7EF</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\generated\gui_generated\debugdrawscreen_screen">
+      <UniqueIdentifier>14828775-7BE9-F6FC-8668-DD6DB3B0752F</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\generated\gui_generated\debuggpsdatascreen_screen">
+      <UniqueIdentifier>4183A9D7-8047-889F-5F6F-450E8718157F</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\generated\gui_generated\debuggpsdatascreen_screen">
+      <UniqueIdentifier>14162DD5-8E00-FF63-E5EB-E266A8DD1534</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -234,23 +246,32 @@
     <ClCompile Include="..\..\generated\gui_generated\src\startscreen_screen\StartScreenViewBase.cpp">
       <Filter>Source Files\generated\gui_generated\startscreen_screen</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\gui\src\gpsdatascreen_screen\GpsDataScreenPresenter.cpp">
-      <Filter>Source Files\gui\gpsdatascreen_screen</Filter>
+    <ClCompile Include="..\..\gui\src\appmenuscreen_screen\AppMenuScreenPresenter.cpp">
+      <Filter>Source Files\gui\appmenuscreen_screen</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\gui\src\gpsdatascreen_screen\GpsDataScreenView.cpp">
-      <Filter>Source Files\gui\gpsdatascreen_screen</Filter>
+    <ClCompile Include="..\..\gui\src\appmenuscreen_screen\AppMenuScreenView.cpp">
+      <Filter>Source Files\gui\appmenuscreen_screen</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\generated\gui_generated\src\gpsdatascreen_screen\GpsDataScreenViewBase.cpp">
-      <Filter>Source Files\generated\gui_generated\gpsdatascreen_screen</Filter>
+    <ClCompile Include="..\..\generated\gui_generated\src\appmenuscreen_screen\AppMenuScreenViewBase.cpp">
+      <Filter>Source Files\generated\gui_generated\appmenuscreen_screen</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\gui\src\drawscreen_screen\DrawScreenPresenter.cpp">
-      <Filter>Source Files\gui\drawscreen_screen</Filter>
+    <ClCompile Include="..\..\gui\src\debugdrawscreen_screen\DebugDrawScreenPresenter.cpp">
+      <Filter>Source Files\gui\debugdrawscreen_screen</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\gui\src\drawscreen_screen\DrawScreenView.cpp">
-      <Filter>Source Files\gui\drawscreen_screen</Filter>
+    <ClCompile Include="..\..\gui\src\debugdrawscreen_screen\DebugDrawScreenView.cpp">
+      <Filter>Source Files\gui\debugdrawscreen_screen</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\generated\gui_generated\src\drawscreen_screen\DrawScreenViewBase.cpp">
-      <Filter>Source Files\generated\gui_generated\drawscreen_screen</Filter>
+    <ClCompile Include="..\..\generated\gui_generated\src\debugdrawscreen_screen\DebugDrawScreenViewBase.cpp">
+      <Filter>Source Files\generated\gui_generated\debugdrawscreen_screen</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\gui\src\debuggpsdatascreen_screen\DebugGpsDataScreenPresenter.cpp">
+      <Filter>Source Files\gui\debuggpsdatascreen_screen</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\gui\src\debuggpsdatascreen_screen\DebugGpsDataScreenView.cpp">
+      <Filter>Source Files\gui\debuggpsdatascreen_screen</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\generated\gui_generated\src\debuggpsdatascreen_screen\DebugGpsDataScreenViewBase.cpp">
+      <Filter>Source Files\generated\gui_generated\debuggpsdatascreen_screen</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -694,23 +715,32 @@
     <ClInclude Include="..\..\generated\gui_generated\include\gui_generated\startscreen_screen\StartScreenViewBase.hpp">
       <Filter>Header Files\generated\gui_generated\startscreen_screen</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\gui\include\gui\gpsdatascreen_screen\GpsDataScreenPresenter.hpp">
-      <Filter>Header Files\gui\gpsdatascreen_screen</Filter>
+    <ClInclude Include="..\..\gui\include\gui\appmenuscreen_screen\AppMenuScreenPresenter.hpp">
+      <Filter>Header Files\gui\appmenuscreen_screen</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\gui\include\gui\gpsdatascreen_screen\GpsDataScreenView.hpp">
-      <Filter>Header Files\gui\gpsdatascreen_screen</Filter>
+    <ClInclude Include="..\..\gui\include\gui\appmenuscreen_screen\AppMenuScreenView.hpp">
+      <Filter>Header Files\gui\appmenuscreen_screen</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\generated\gui_generated\include\gui_generated\gpsdatascreen_screen\GpsDataScreenViewBase.hpp">
-      <Filter>Header Files\generated\gui_generated\gpsdatascreen_screen</Filter>
+    <ClInclude Include="..\..\generated\gui_generated\include\gui_generated\appmenuscreen_screen\AppMenuScreenViewBase.hpp">
+      <Filter>Header Files\generated\gui_generated\appmenuscreen_screen</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\gui\include\gui\drawscreen_screen\DrawScreenPresenter.hpp">
-      <Filter>Header Files\gui\drawscreen_screen</Filter>
+    <ClInclude Include="..\..\gui\include\gui\debugdrawscreen_screen\DebugDrawScreenPresenter.hpp">
+      <Filter>Header Files\gui\debugdrawscreen_screen</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\gui\include\gui\drawscreen_screen\DrawScreenView.hpp">
-      <Filter>Header Files\gui\drawscreen_screen</Filter>
+    <ClInclude Include="..\..\gui\include\gui\debugdrawscreen_screen\DebugDrawScreenView.hpp">
+      <Filter>Header Files\gui\debugdrawscreen_screen</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\generated\gui_generated\include\gui_generated\drawscreen_screen\DrawScreenViewBase.hpp">
-      <Filter>Header Files\generated\gui_generated\drawscreen_screen</Filter>
+    <ClInclude Include="..\..\generated\gui_generated\include\gui_generated\debugdrawscreen_screen\DebugDrawScreenViewBase.hpp">
+      <Filter>Header Files\generated\gui_generated\debugdrawscreen_screen</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\gui\include\gui\debuggpsdatascreen_screen\DebugGpsDataScreenPresenter.hpp">
+      <Filter>Header Files\gui\debuggpsdatascreen_screen</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\gui\include\gui\debuggpsdatascreen_screen\DebugGpsDataScreenView.hpp">
+      <Filter>Header Files\gui\debuggpsdatascreen_screen</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\generated\gui_generated\include\gui_generated\debuggpsdatascreen_screen\DebugGpsDataScreenViewBase.hpp">
+      <Filter>Header Files\generated\gui_generated\debuggpsdatascreen_screen</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

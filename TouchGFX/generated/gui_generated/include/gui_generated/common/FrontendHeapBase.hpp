@@ -8,19 +8,22 @@
 #include <common/Partition.hpp>
 #include <mvp/MVPHeap.hpp>
 #include <touchgfx/transitions/NoTransition.hpp>
-#include <touchgfx/transitions/SlideTransition.hpp>
-#include <touchgfx/transitions/CoverTransition.hpp>
-#include <touchgfx/transitions/CoverTransition.hpp>
+
+
+
+
 
 #include <gui/common/FrontendApplication.hpp>
 #include <gui/model/Model.hpp>
 
 #include <gui/startscreen_screen/StartScreenView.hpp>
 #include <gui/startscreen_screen/StartScreenPresenter.hpp>
-#include <gui/gpsdatascreen_screen/GpsDataScreenView.hpp>
-#include <gui/gpsdatascreen_screen/GpsDataScreenPresenter.hpp>
-#include <gui/drawscreen_screen/DrawScreenView.hpp>
-#include <gui/drawscreen_screen/DrawScreenPresenter.hpp>
+#include <gui/appmenuscreen_screen/AppMenuScreenView.hpp>
+#include <gui/appmenuscreen_screen/AppMenuScreenPresenter.hpp>
+#include <gui/debuggpsdatascreen_screen/DebugGpsDataScreenView.hpp>
+#include <gui/debuggpsdatascreen_screen/DebugGpsDataScreenPresenter.hpp>
+#include <gui/debugdrawscreen_screen/DebugDrawScreenView.hpp>
+#include <gui/debugdrawscreen_screen/DebugDrawScreenPresenter.hpp>
 
 
 /**
@@ -44,9 +47,10 @@ public:
      * @note All view types used in the application MUST be added to this list!
      */
     typedef touchgfx::meta::TypeList< StartScreenView,
-            touchgfx::meta::TypeList< GpsDataScreenView,
-            touchgfx::meta::TypeList< DrawScreenView,
-            touchgfx::meta::Nil > >
+            touchgfx::meta::TypeList< AppMenuScreenView,
+            touchgfx::meta::TypeList< DebugGpsDataScreenView,
+            touchgfx::meta::TypeList< DebugDrawScreenView,
+            touchgfx::meta::Nil > > >
             > GeneratedViewTypes;
 
     /**
@@ -59,9 +63,10 @@ public:
      * @note All presenter types used in the application MUST be added to this list!
      */
     typedef touchgfx::meta::TypeList< StartScreenPresenter,
-            touchgfx::meta::TypeList< GpsDataScreenPresenter,
-            touchgfx::meta::TypeList< DrawScreenPresenter,
-            touchgfx::meta::Nil > >
+            touchgfx::meta::TypeList< AppMenuScreenPresenter,
+            touchgfx::meta::TypeList< DebugGpsDataScreenPresenter,
+            touchgfx::meta::TypeList< DebugDrawScreenPresenter,
+            touchgfx::meta::Nil > > >
             > GeneratedPresenterTypes;
 
     /**
@@ -74,9 +79,7 @@ public:
      * @note All transition types used in the application MUST be added to this list!
      */
     typedef touchgfx::meta::TypeList< touchgfx::NoTransition,
-            touchgfx::meta::TypeList< SlideTransition<EAST>,
-            touchgfx::meta::TypeList< CoverTransition<EAST>,
-            touchgfx::meta::Nil > >
+            touchgfx::meta::Nil
             > GeneratedTransitionTypes;
 
     /**

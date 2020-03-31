@@ -9,6 +9,7 @@
 #include <gui/startscreen_screen/StartScreenPresenter.hpp>
 #include <touchgfx/widgets/Box.hpp>
 #include <touchgfx/widgets/TextArea.hpp>
+#include <touchgfx/widgets/ButtonWithLabel.hpp>
 
 class StartScreenViewBase : public touchgfx::View<StartScreenPresenter>
 {
@@ -16,8 +17,6 @@ public:
     StartScreenViewBase();
     virtual ~StartScreenViewBase() {}
     virtual void setupScreen();
-    virtual void handleTickEvent();
-    virtual void afterTransition();
 
 protected:
     FrontendApplication& application() {
@@ -29,14 +28,20 @@ protected:
      */
     touchgfx::Box background;
     touchgfx::TextArea ProjectName;
+    touchgfx::ButtonWithLabel DebugButton;
+    touchgfx::ButtonWithLabel AppButton;
 
 private:
 
     /*
-     * Delay Variable Declarations
+     * Callback Declarations
      */
-    static const uint16_t WAITHALFSECOND_DURATION = 30;
-    uint16_t waitHalfSecondCounter;
+    touchgfx::Callback<StartScreenViewBase, const touchgfx::AbstractButton&> buttonCallback;
+
+    /*
+     * Callback Handler Declarations
+     */
+    void buttonCallbackHandler(const touchgfx::AbstractButton& src);
 
 };
 

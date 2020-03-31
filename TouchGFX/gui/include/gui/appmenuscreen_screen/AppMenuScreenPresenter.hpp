@@ -1,17 +1,17 @@
-#ifndef DRAWSCREENPRESENTER_HPP
-#define DRAWSCREENPRESENTER_HPP
+#ifndef APPMENUSCREENPRESENTER_HPP
+#define APPMENUSCREENPRESENTER_HPP
 
 #include <gui/model/ModelListener.hpp>
 #include <mvp/Presenter.hpp>
 
 using namespace touchgfx;
 
-class DrawScreenView;
+class AppMenuScreenView;
 
-class DrawScreenPresenter : public touchgfx::Presenter, public ModelListener
+class AppMenuScreenPresenter : public touchgfx::Presenter, public ModelListener
 {
 public:
-    DrawScreenPresenter(DrawScreenView& v);
+    AppMenuScreenPresenter(AppMenuScreenView& v);
 
     /**
      * The activate function is called automatically when this screen is "switched in"
@@ -25,12 +25,12 @@ public:
      */
     virtual void deactivate();
 
-    virtual ~DrawScreenPresenter() {};
+    virtual ~AppMenuScreenPresenter() {};
 
 private:
-    DrawScreenPresenter();
+    AppMenuScreenPresenter();
 
-    DrawScreenView& view;
+    AppMenuScreenView& view;
 };
 
-#endif // DRAWSCREENPRESENTER_HPP
+#endif // APPMENUSCREENPRESENTER_HPP

@@ -11,10 +11,12 @@
 #include <platform/driver/lcd/LCD16bpp.hpp>
 #include <gui/startscreen_screen/StartScreenView.hpp>
 #include <gui/startscreen_screen/StartScreenPresenter.hpp>
-#include <gui/gpsdatascreen_screen/GpsDataScreenView.hpp>
-#include <gui/gpsdatascreen_screen/GpsDataScreenPresenter.hpp>
-#include <gui/drawscreen_screen/DrawScreenView.hpp>
-#include <gui/drawscreen_screen/DrawScreenPresenter.hpp>
+#include <gui/appmenuscreen_screen/AppMenuScreenView.hpp>
+#include <gui/appmenuscreen_screen/AppMenuScreenPresenter.hpp>
+#include <gui/debuggpsdatascreen_screen/DebugGpsDataScreenView.hpp>
+#include <gui/debuggpsdatascreen_screen/DebugGpsDataScreenPresenter.hpp>
+#include <gui/debugdrawscreen_screen/DebugDrawScreenView.hpp>
+#include <gui/debugdrawscreen_screen/DebugDrawScreenPresenter.hpp>
 
 using namespace touchgfx;
 
@@ -46,39 +48,41 @@ void FrontendApplicationBase::gotoStartScreenScreenNoTransitionImpl()
     touchgfx::makeTransition<StartScreenView, StartScreenPresenter, touchgfx::NoTransition, Model >(&currentScreen, &currentPresenter, frontendHeap, &currentTransition, &model);
 }
 
-// GpsDataScreen
+// AppMenuScreen
 
-void FrontendApplicationBase::gotoGpsDataScreenScreenSlideTransitionEast()
+void FrontendApplicationBase::gotoAppMenuScreenScreenNoTransition()
 {
-    transitionCallback = touchgfx::Callback<FrontendApplicationBase>(this, &FrontendApplication::gotoGpsDataScreenScreenSlideTransitionEastImpl);
+    transitionCallback = touchgfx::Callback<FrontendApplicationBase>(this, &FrontendApplication::gotoAppMenuScreenScreenNoTransitionImpl);
     pendingScreenTransitionCallback = &transitionCallback;
 }
 
-void FrontendApplicationBase::gotoGpsDataScreenScreenSlideTransitionEastImpl()
+void FrontendApplicationBase::gotoAppMenuScreenScreenNoTransitionImpl()
 {
-    touchgfx::makeTransition<GpsDataScreenView, GpsDataScreenPresenter, touchgfx::SlideTransition<EAST>, Model >(&currentScreen, &currentPresenter, frontendHeap, &currentTransition, &model);
+    touchgfx::makeTransition<AppMenuScreenView, AppMenuScreenPresenter, touchgfx::NoTransition, Model >(&currentScreen, &currentPresenter, frontendHeap, &currentTransition, &model);
 }
 
-void FrontendApplicationBase::gotoGpsDataScreenScreenCoverTransitionEast()
+// DebugGpsDataScreen
+
+void FrontendApplicationBase::gotoDebugGpsDataScreenScreenNoTransition()
 {
-    transitionCallback = touchgfx::Callback<FrontendApplicationBase>(this, &FrontendApplication::gotoGpsDataScreenScreenCoverTransitionEastImpl);
+    transitionCallback = touchgfx::Callback<FrontendApplicationBase>(this, &FrontendApplication::gotoDebugGpsDataScreenScreenNoTransitionImpl);
     pendingScreenTransitionCallback = &transitionCallback;
 }
 
-void FrontendApplicationBase::gotoGpsDataScreenScreenCoverTransitionEastImpl()
+void FrontendApplicationBase::gotoDebugGpsDataScreenScreenNoTransitionImpl()
 {
-    touchgfx::makeTransition<GpsDataScreenView, GpsDataScreenPresenter, touchgfx::CoverTransition<EAST>, Model >(&currentScreen, &currentPresenter, frontendHeap, &currentTransition, &model);
+    touchgfx::makeTransition<DebugGpsDataScreenView, DebugGpsDataScreenPresenter, touchgfx::NoTransition, Model >(&currentScreen, &currentPresenter, frontendHeap, &currentTransition, &model);
 }
 
-// DrawScreen
+// DebugDrawScreen
 
-void FrontendApplicationBase::gotoDrawScreenScreenCoverTransitionEast()
+void FrontendApplicationBase::gotoDebugDrawScreenScreenNoTransition()
 {
-    transitionCallback = touchgfx::Callback<FrontendApplicationBase>(this, &FrontendApplication::gotoDrawScreenScreenCoverTransitionEastImpl);
+    transitionCallback = touchgfx::Callback<FrontendApplicationBase>(this, &FrontendApplication::gotoDebugDrawScreenScreenNoTransitionImpl);
     pendingScreenTransitionCallback = &transitionCallback;
 }
 
-void FrontendApplicationBase::gotoDrawScreenScreenCoverTransitionEastImpl()
+void FrontendApplicationBase::gotoDebugDrawScreenScreenNoTransitionImpl()
 {
-    touchgfx::makeTransition<DrawScreenView, DrawScreenPresenter, touchgfx::CoverTransition<EAST>, Model >(&currentScreen, &currentPresenter, frontendHeap, &currentTransition, &model);
+    touchgfx::makeTransition<DebugDrawScreenView, DebugDrawScreenPresenter, touchgfx::NoTransition, Model >(&currentScreen, &currentPresenter, frontendHeap, &currentTransition, &model);
 }

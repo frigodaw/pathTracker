@@ -23,12 +23,15 @@
     <ClCompile Include="..\..\gui\src\startscreen_screen\StartScreenPresenter.cpp"/>
     <ClCompile Include="..\..\gui\src\startscreen_screen\StartScreenView.cpp"/>
     <ClCompile Include="..\..\generated\gui_generated\src\startscreen_screen\StartScreenViewBase.cpp"/>
-    <ClCompile Include="..\..\gui\src\gpsdatascreen_screen\GpsDataScreenPresenter.cpp"/>
-    <ClCompile Include="..\..\gui\src\gpsdatascreen_screen\GpsDataScreenView.cpp"/>
-    <ClCompile Include="..\..\generated\gui_generated\src\gpsdatascreen_screen\GpsDataScreenViewBase.cpp"/>
-    <ClCompile Include="..\..\gui\src\drawscreen_screen\DrawScreenPresenter.cpp"/>
-    <ClCompile Include="..\..\gui\src\drawscreen_screen\DrawScreenView.cpp"/>
-    <ClCompile Include="..\..\generated\gui_generated\src\drawscreen_screen\DrawScreenViewBase.cpp"/>
+    <ClCompile Include="..\..\gui\src\appmenuscreen_screen\AppMenuScreenPresenter.cpp"/>
+    <ClCompile Include="..\..\gui\src\appmenuscreen_screen\AppMenuScreenView.cpp"/>
+    <ClCompile Include="..\..\generated\gui_generated\src\appmenuscreen_screen\AppMenuScreenViewBase.cpp"/>
+    <ClCompile Include="..\..\gui\src\debugdrawscreen_screen\DebugDrawScreenPresenter.cpp"/>
+    <ClCompile Include="..\..\gui\src\debugdrawscreen_screen\DebugDrawScreenView.cpp"/>
+    <ClCompile Include="..\..\generated\gui_generated\src\debugdrawscreen_screen\DebugDrawScreenViewBase.cpp"/>
+    <ClCompile Include="..\..\gui\src\debuggpsdatascreen_screen\DebugGpsDataScreenPresenter.cpp"/>
+    <ClCompile Include="..\..\gui\src\debuggpsdatascreen_screen\DebugGpsDataScreenView.cpp"/>
+    <ClCompile Include="..\..\generated\gui_generated\src\debuggpsdatascreen_screen\DebugGpsDataScreenViewBase.cpp"/>
   </ItemGroup>
   <ItemGroup>
     <None Include="$(ApplicationRoot)\assets\texts\texts.xlsx"/>
@@ -179,12 +182,15 @@
     <ClInclude Include="..\..\gui\include\gui\startscreen_screen\StartScreenPresenter.hpp"/>
     <ClInclude Include="..\..\gui\include\gui\startscreen_screen\StartScreenView.hpp"/>
     <ClInclude Include="..\..\generated\gui_generated\include\gui_generated\startscreen_screen\StartScreenViewBase.hpp"/>
-    <ClInclude Include="..\..\gui\include\gui\gpsdatascreen_screen\GpsDataScreenPresenter.hpp"/>
-    <ClInclude Include="..\..\gui\include\gui\gpsdatascreen_screen\GpsDataScreenView.hpp"/>
-    <ClInclude Include="..\..\generated\gui_generated\include\gui_generated\gpsdatascreen_screen\GpsDataScreenViewBase.hpp"/>
-    <ClInclude Include="..\..\gui\include\gui\drawscreen_screen\DrawScreenPresenter.hpp"/>
-    <ClInclude Include="..\..\gui\include\gui\drawscreen_screen\DrawScreenView.hpp"/>
-    <ClInclude Include="..\..\generated\gui_generated\include\gui_generated\drawscreen_screen\DrawScreenViewBase.hpp"/>
+    <ClInclude Include="..\..\gui\include\gui\appmenuscreen_screen\AppMenuScreenPresenter.hpp"/>
+    <ClInclude Include="..\..\gui\include\gui\appmenuscreen_screen\AppMenuScreenView.hpp"/>
+    <ClInclude Include="..\..\generated\gui_generated\include\gui_generated\appmenuscreen_screen\AppMenuScreenViewBase.hpp"/>
+    <ClInclude Include="..\..\gui\include\gui\debugdrawscreen_screen\DebugDrawScreenPresenter.hpp"/>
+    <ClInclude Include="..\..\gui\include\gui\debugdrawscreen_screen\DebugDrawScreenView.hpp"/>
+    <ClInclude Include="..\..\generated\gui_generated\include\gui_generated\debugdrawscreen_screen\DebugDrawScreenViewBase.hpp"/>
+    <ClInclude Include="..\..\gui\include\gui\debuggpsdatascreen_screen\DebugGpsDataScreenPresenter.hpp"/>
+    <ClInclude Include="..\..\gui\include\gui\debuggpsdatascreen_screen\DebugGpsDataScreenView.hpp"/>
+    <ClInclude Include="..\..\generated\gui_generated\include\gui_generated\debuggpsdatascreen_screen\DebugGpsDataScreenViewBase.hpp"/>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="$(ApplicationRoot)\generated\simulator\touchgfx.rc"/>
