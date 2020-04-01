@@ -12,18 +12,17 @@
 /* Main file system variable */
 static FATFS fs = {0u};
 
-/* The main info about current SD card */
-static FS_SDcardInfo_T sdCardInfo = {0u};
-
-/* Variable with a list of directories and a files inside them */
-static FS_DirsCollection_T dirInfo = {0u};
-
 /* Component's buffer to read and write data to and from a test file */
 static uint8_t fsBuffer[FS_BUFFSIZE] = {0u};
 
 /* Variable to store currently opened read and write file */
 static FS_FilesCollection_T files = {0u};
 
+/* Global variable with the main info about current SD card */
+FS_SDcardInfo_T sdCardInfo = {0u};
+
+/* Global variable with a list of directories and a files inside them */
+FS_DirsCollection_T dirInfo = {0u};
 
 /* Init function for FS module to mount SD card and
    initialize varaibles */
@@ -93,7 +92,14 @@ void FS_Main(void)
         }
         else
         {
-            /* To be done */
+            static uint8_t errorCnt = 0u;
+            errorCnt++;
+
+            if(errorCnt >= FS_MAXFAILSNUM)
+            {
+                errorCnt = 0u;
+                sdCardInfo.state = FS_UNINITIALIZED;
+            }
         }
     }
     else

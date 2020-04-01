@@ -27,6 +27,8 @@ extern "C" {
 
 #define FS_SHORTCHARLEN     13u
 
+#define FS_MAXFAILSNUM      10u
+
 #if ((_USE_LFN == 2u) || (_USE_LFN == 3u))
 # define FS_FULLCHARLEN     _MAX_LFN
 #else
@@ -112,6 +114,8 @@ typedef struct
 
 
 /* START OF THE EXTERN VARIABLES AREA */
+extern FS_SDcardInfo_T sdCardInfo;
+extern FS_DirsCollection_T dirInfo;
 /* END OF THE EXTERN VARIABLES AREA */
 
 

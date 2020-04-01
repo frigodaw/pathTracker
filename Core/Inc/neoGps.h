@@ -42,6 +42,8 @@ extern "C" {
 #define GPS_SIZE_GPGLL              8u      //8     ok
 
 #define GPS_RETRIGGER_TIMEOUT       5u      //time [s] to retrigger gps uart
+
+#define GPS_DEBUG                   0u      //disable debug messages
 /* END OF THE DEFINE AREA */
 
 
@@ -187,6 +189,10 @@ typedef enum
 //typedef to store all gps data
 typedef struct GpsUartData_Tag
 {
+    volatile uint8_t ringBuff[GPS_RING_BUFFER_SIZE];
+    uint16_t read;
+    volatile uint16_t write;
+
     float latitude;
     float longitude;
     float hdop;
@@ -194,9 +200,6 @@ typedef struct GpsUartData_Tag
     float altitude;
     float groundSpeedKmh;
 
-    uint16_t read;
-    volatile uint16_t write;
-    volatile uint8_t ringBuff[GPS_RING_BUFFER_SIZE];
     volatile Gps_bufferState state;
 
     uint8_t dateDay;

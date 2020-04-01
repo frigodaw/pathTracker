@@ -13,7 +13,6 @@
 
 /*  Global variables to store all GPS-related data */
 GpsUartData_T gpsData = {0u};
-GpsDebugData_T gpsDebug = {0u};
 
 
 /* Function called to initialize GPS variables
@@ -131,7 +130,10 @@ uint8_t Gps_Main(void)
     }
 
     ret |= Gps_RetriggerUartGps();
+
+#if GPS_DEBUG == 1
     ret |= Gps_PrepareDebugData();
+#endif
 
     return ret;
 }
@@ -580,6 +582,9 @@ uint8_t Gps_ReadMessage_GPGLL(uint8_t currentElement, uint8_t* fieldBuff)
 }
 
 
+#if GPS_DEBUG == 1
+GpsDebugData_T gpsDebug = {0u};
+
 /* Function called to prepare buffer which will be send 
    via USB.
 */
@@ -593,6 +598,7 @@ uint8_t Gps_PrepareDebugData(void)
 
     return RET_OK;
 }
+#endif
 
 
 /* Functon called to retrigger gps uart
