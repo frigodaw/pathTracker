@@ -16,7 +16,7 @@ public:
         model = m;
     }
 
-    virtual void updateGpsDataContainer(){}
+    virtual void tickDebugScreen(){}
 
 protected:
     Model* model;

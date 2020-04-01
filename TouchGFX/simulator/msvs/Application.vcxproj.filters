@@ -208,6 +208,30 @@
     <Filter Include="Header Files\generated\gui_generated\debuggpsdatascreen_screen">
       <UniqueIdentifier>14162DD5-8E00-FF63-E5EB-E266A8DD1534</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\gui\containers">
+      <UniqueIdentifier>7F667A9A-62E7-B390-1E7F-2ECBF6776BD8</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\gui\containers">
+      <UniqueIdentifier>60FE74C0-C8B0-7F8D-2B34-92A39E13AB6C</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\generated\gui_generated\containers">
+      <UniqueIdentifier>8863C7D9-87F1-0BA4-4315-5DDB19D8E9B8</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\generated\gui_generated\containers">
+      <UniqueIdentifier>21815F49-BFE5-DF81-D1AD-CB8C827733E4</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\gui\debugsdcardscreen_screen">
+      <UniqueIdentifier>944F8592-EB93-5AF7-9B09-B8226FF7DF07</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\gui\debugsdcardscreen_screen">
+      <UniqueIdentifier>5798A472-09C3-D411-C6EC-3FC06C054B3D</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\generated\gui_generated\debugsdcardscreen_screen">
+      <UniqueIdentifier>D9F9082F-2084-0ADB-3E6C-B42F79975E37</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\generated\gui_generated\debugsdcardscreen_screen">
+      <UniqueIdentifier>7034A725-FF88-7412-EEAE-B44BCDA7DD80</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="$(TouchGFXReleasePath)\framework\source\platform\driver\touch\SDL2TouchController.cpp">
@@ -272,6 +296,33 @@
     </ClCompile>
     <ClCompile Include="..\..\generated\gui_generated\src\debuggpsdatascreen_screen\DebugGpsDataScreenViewBase.cpp">
       <Filter>Source Files\generated\gui_generated\debuggpsdatascreen_screen</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\gui\src\containers\GpsDataContainer.cpp">
+      <Filter>Source Files\gui\containers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\generated\gui_generated\src\containers\GpsDataContainerBase.cpp">
+      <Filter>Source Files\generated\gui_generated\containers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\gui\src\debugsdcardscreen_screen\DebugSdCardScreenPresenter.cpp">
+      <Filter>Source Files\gui\debugsdcardscreen_screen</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\gui\src\debugsdcardscreen_screen\DebugSdCardScreenView.cpp">
+      <Filter>Source Files\gui\debugsdcardscreen_screen</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\generated\gui_generated\src\debugsdcardscreen_screen\DebugSdCardScreenViewBase.cpp">
+      <Filter>Source Files\generated\gui_generated\debugsdcardscreen_screen</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\gui\src\containers\ScreenBackgroundContainer.cpp">
+      <Filter>Source Files\gui\containers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\generated\gui_generated\src\containers\ScreenBackgroundContainerBase.cpp">
+      <Filter>Source Files\generated\gui_generated\containers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\gui\src\containers\SDCardContainter.cpp">
+      <Filter>Source Files\gui\containers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\generated\gui_generated\src\containers\SDCardContainterBase.cpp">
+      <Filter>Source Files\generated\gui_generated\containers</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -741,6 +792,33 @@
     </ClInclude>
     <ClInclude Include="..\..\generated\gui_generated\include\gui_generated\debuggpsdatascreen_screen\DebugGpsDataScreenViewBase.hpp">
       <Filter>Header Files\generated\gui_generated\debuggpsdatascreen_screen</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\gui\include\gui\containers\GpsDataContainer.hpp">
+      <Filter>Header Files\gui\containers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\generated\gui_generated\include\gui_generated\containers\GpsDataContainerBase.hpp">
+      <Filter>Header Files\generated\gui_generated\containers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\gui\include\gui\debugsdcardscreen_screen\DebugSdCardScreenPresenter.hpp">
+      <Filter>Header Files\gui\debugsdcardscreen_screen</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\gui\include\gui\debugsdcardscreen_screen\DebugSdCardScreenView.hpp">
+      <Filter>Header Files\gui\debugsdcardscreen_screen</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\generated\gui_generated\include\gui_generated\debugsdcardscreen_screen\DebugSdCardScreenViewBase.hpp">
+      <Filter>Header Files\generated\gui_generated\debugsdcardscreen_screen</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\gui\include\gui\containers\ScreenBackgroundContainer.hpp">
+      <Filter>Header Files\gui\containers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\generated\gui_generated\include\gui_generated\containers\ScreenBackgroundContainerBase.hpp">
+      <Filter>Header Files\generated\gui_generated\containers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\gui\include\gui\containers\SDCardContainter.hpp">
+      <Filter>Header Files\gui\containers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\generated\gui_generated\include\gui_generated\containers\SDCardContainterBase.hpp">
+      <Filter>Header Files\generated\gui_generated\containers</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

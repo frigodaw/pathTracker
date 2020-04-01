@@ -17,7 +17,7 @@ void DebugGpsDataScreenPresenter::deactivate()
 
 }
 
-void DebugGpsDataScreenPresenter::updateGpsDataContainer()
+void DebugGpsDataScreenPresenter::tickDebugScreen()
 {
-    view.updateGpsDataContainer();
+    view.tickDebugScreen();
 }

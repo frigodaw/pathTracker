@@ -7,10 +7,10 @@
 #include <gui/common/FrontendApplication.hpp>
 #include <mvp/View.hpp>
 #include <gui/debuggpsdatascreen_screen/DebugGpsDataScreenPresenter.hpp>
-#include <touchgfx/widgets/Box.hpp>
-#include <touchgfx/containers/Container.hpp>
-#include <touchgfx/widgets/TextAreaWithWildcard.hpp>
+#include <gui/containers/ScreenBackgroundContainer.hpp>
 #include <touchgfx/widgets/ButtonWithLabel.hpp>
+#include <gui/containers/GpsDataContainer.hpp>
+#include <touchgfx/widgets/TextArea.hpp>
 
 class DebugGpsDataScreenViewBase : public touchgfx::View<DebugGpsDataScreenPresenter>
 {
@@ -27,44 +27,10 @@ protected:
     /*
      * Member Declarations
      */
-    touchgfx::Box background;
-    touchgfx::Container GpsDataContainer;
-    touchgfx::TextAreaWithOneWildcard TimeTextBox;
-    touchgfx::TextAreaWithTwoWildcards LatTextBox;
-    touchgfx::TextAreaWithTwoWildcards LonTextBox;
-    touchgfx::TextAreaWithOneWildcard AltiTextBox;
-    touchgfx::TextAreaWithOneWildcard FixTextBox;
-    touchgfx::TextAreaWithOneWildcard SatTextBox;
-    touchgfx::TextAreaWithOneWildcard DateTextBox;
-    touchgfx::TextAreaWithOneWildcard ReadTextBox;
-    touchgfx::TextAreaWithOneWildcard WriteTextBox;
-    touchgfx::ButtonWithLabel GoToDebugDrawScreenButton;
-
-    /*
-     * Wildcard Buffers
-     */
-    static const uint16_t TIMETEXTBOX_SIZE = 16;
-    touchgfx::Unicode::UnicodeChar TimeTextBoxBuffer[TIMETEXTBOX_SIZE];
-    static const uint16_t LATTEXTBOXBUFFER1_SIZE = 16;
-    touchgfx::Unicode::UnicodeChar LatTextBoxBuffer1[LATTEXTBOXBUFFER1_SIZE];
-    static const uint16_t LATTEXTBOXBUFFER2_SIZE = 4;
-    touchgfx::Unicode::UnicodeChar LatTextBoxBuffer2[LATTEXTBOXBUFFER2_SIZE];
-    static const uint16_t LONTEXTBOXBUFFER1_SIZE = 16;
-    touchgfx::Unicode::UnicodeChar LonTextBoxBuffer1[LONTEXTBOXBUFFER1_SIZE];
-    static const uint16_t LONTEXTBOXBUFFER2_SIZE = 4;
-    touchgfx::Unicode::UnicodeChar LonTextBoxBuffer2[LONTEXTBOXBUFFER2_SIZE];
-    static const uint16_t ALTITEXTBOX_SIZE = 8;
-    touchgfx::Unicode::UnicodeChar AltiTextBoxBuffer[ALTITEXTBOX_SIZE];
-    static const uint16_t FIXTEXTBOX_SIZE = 4;
-    touchgfx::Unicode::UnicodeChar FixTextBoxBuffer[FIXTEXTBOX_SIZE];
-    static const uint16_t SATTEXTBOX_SIZE = 4;
-    touchgfx::Unicode::UnicodeChar SatTextBoxBuffer[SATTEXTBOX_SIZE];
-    static const uint16_t DATETEXTBOX_SIZE = 16;
-    touchgfx::Unicode::UnicodeChar DateTextBoxBuffer[DATETEXTBOX_SIZE];
-    static const uint16_t READTEXTBOX_SIZE = 4;
-    touchgfx::Unicode::UnicodeChar ReadTextBoxBuffer[READTEXTBOX_SIZE];
-    static const uint16_t WRITETEXTBOX_SIZE = 4;
-    touchgfx::Unicode::UnicodeChar WriteTextBoxBuffer[WRITETEXTBOX_SIZE];
+    ScreenBackgroundContainer BackgroundCC;
+    touchgfx::ButtonWithLabel NextButton;
+    GpsDataContainer GpsDataCC;
+    touchgfx::TextArea NameLabel;
 
 private:
 

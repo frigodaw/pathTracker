@@ -13,6 +13,8 @@
 
 
 
+
+
 #include <gui/common/FrontendApplication.hpp>
 #include <gui/model/Model.hpp>
 
@@ -22,6 +24,8 @@
 #include <gui/appmenuscreen_screen/AppMenuScreenPresenter.hpp>
 #include <gui/debuggpsdatascreen_screen/DebugGpsDataScreenView.hpp>
 #include <gui/debuggpsdatascreen_screen/DebugGpsDataScreenPresenter.hpp>
+#include <gui/debugsdcardscreen_screen/DebugSdCardScreenView.hpp>
+#include <gui/debugsdcardscreen_screen/DebugSdCardScreenPresenter.hpp>
 #include <gui/debugdrawscreen_screen/DebugDrawScreenView.hpp>
 #include <gui/debugdrawscreen_screen/DebugDrawScreenPresenter.hpp>
 
@@ -49,8 +53,9 @@ public:
     typedef touchgfx::meta::TypeList< StartScreenView,
             touchgfx::meta::TypeList< AppMenuScreenView,
             touchgfx::meta::TypeList< DebugGpsDataScreenView,
+            touchgfx::meta::TypeList< DebugSdCardScreenView,
             touchgfx::meta::TypeList< DebugDrawScreenView,
-            touchgfx::meta::Nil > > >
+            touchgfx::meta::Nil > > > >
             > GeneratedViewTypes;
 
     /**
@@ -65,8 +70,9 @@ public:
     typedef touchgfx::meta::TypeList< StartScreenPresenter,
             touchgfx::meta::TypeList< AppMenuScreenPresenter,
             touchgfx::meta::TypeList< DebugGpsDataScreenPresenter,
+            touchgfx::meta::TypeList< DebugSdCardScreenPresenter,
             touchgfx::meta::TypeList< DebugDrawScreenPresenter,
-            touchgfx::meta::Nil > > >
+            touchgfx::meta::Nil > > > >
             > GeneratedPresenterTypes;
 
     /**

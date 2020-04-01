@@ -7,8 +7,10 @@
 #include <gui/common/FrontendApplication.hpp>
 #include <mvp/View.hpp>
 #include <gui/debugdrawscreen_screen/DebugDrawScreenPresenter.hpp>
-#include <touchgfx/widgets/Box.hpp>
+#include <gui/containers/ScreenBackgroundContainer.hpp>
 #include <touchgfx/widgets/ButtonWithLabel.hpp>
+#include <touchgfx/widgets/Box.hpp>
+#include <touchgfx/widgets/TextArea.hpp>
 
 class DebugDrawScreenViewBase : public touchgfx::View<DebugDrawScreenPresenter>
 {
@@ -25,9 +27,10 @@ protected:
     /*
      * Member Declarations
      */
-    touchgfx::Box background;
-    touchgfx::ButtonWithLabel GoToDebugGpsDataScreenButton;
+    ScreenBackgroundContainer BackgroundCC;
+    touchgfx::ButtonWithLabel NextButton;
     touchgfx::Box DrawBox;
+    touchgfx::TextArea NameLabel;
 
 private:
 

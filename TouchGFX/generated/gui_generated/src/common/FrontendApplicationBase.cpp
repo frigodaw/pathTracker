@@ -15,6 +15,8 @@
 #include <gui/appmenuscreen_screen/AppMenuScreenPresenter.hpp>
 #include <gui/debuggpsdatascreen_screen/DebugGpsDataScreenView.hpp>
 #include <gui/debuggpsdatascreen_screen/DebugGpsDataScreenPresenter.hpp>
+#include <gui/debugsdcardscreen_screen/DebugSdCardScreenView.hpp>
+#include <gui/debugsdcardscreen_screen/DebugSdCardScreenPresenter.hpp>
 #include <gui/debugdrawscreen_screen/DebugDrawScreenView.hpp>
 #include <gui/debugdrawscreen_screen/DebugDrawScreenPresenter.hpp>
 
@@ -72,6 +74,19 @@ void FrontendApplicationBase::gotoDebugGpsDataScreenScreenNoTransition()
 void FrontendApplicationBase::gotoDebugGpsDataScreenScreenNoTransitionImpl()
 {
     touchgfx::makeTransition<DebugGpsDataScreenView, DebugGpsDataScreenPresenter, touchgfx::NoTransition, Model >(&currentScreen, &currentPresenter, frontendHeap, &currentTransition, &model);
+}
+
+// DebugSdCardScreen
+
+void FrontendApplicationBase::gotoDebugSdCardScreenScreenNoTransition()
+{
+    transitionCallback = touchgfx::Callback<FrontendApplicationBase>(this, &FrontendApplication::gotoDebugSdCardScreenScreenNoTransitionImpl);
+    pendingScreenTransitionCallback = &transitionCallback;
+}
+
+void FrontendApplicationBase::gotoDebugSdCardScreenScreenNoTransitionImpl()
+{
+    touchgfx::makeTransition<DebugSdCardScreenView, DebugSdCardScreenPresenter, touchgfx::NoTransition, Model >(&currentScreen, &currentPresenter, frontendHeap, &currentTransition, &model);
 }
 
 // DebugDrawScreen

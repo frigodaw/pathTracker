@@ -7,7 +7,7 @@
 #include <gui/common/FrontendApplication.hpp>
 #include <mvp/View.hpp>
 #include <gui/appmenuscreen_screen/AppMenuScreenPresenter.hpp>
-#include <touchgfx/widgets/Box.hpp>
+#include <gui/containers/ScreenBackgroundContainer.hpp>
 #include <touchgfx/widgets/TextArea.hpp>
 
 class AppMenuScreenViewBase : public touchgfx::View<AppMenuScreenPresenter>
@@ -25,7 +25,7 @@ protected:
     /*
      * Member Declarations
      */
-    touchgfx::Box background;
+    ScreenBackgroundContainer BackgroundCC;
     touchgfx::TextArea NameLabel;
 
 private:

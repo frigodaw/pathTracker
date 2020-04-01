@@ -24,6 +24,9 @@ public:
     // DebugGpsDataScreen
     void gotoDebugGpsDataScreenScreenNoTransition();
 
+    // DebugSdCardScreen
+    void gotoDebugSdCardScreenScreenNoTransition();
+
     // DebugDrawScreen
     void gotoDebugDrawScreenScreenNoTransition();
 
@@ -40,6 +43,9 @@ protected:
 
     // DebugGpsDataScreen
     void gotoDebugGpsDataScreenScreenNoTransitionImpl();
+
+    // DebugSdCardScreen
+    void gotoDebugSdCardScreenScreenNoTransitionImpl();
 
     // DebugDrawScreen
     void gotoDebugDrawScreenScreenNoTransitionImpl();

@@ -11,7 +11,7 @@ public:
     virtual ~DebugGpsDataScreenView() {}
     virtual void setupScreen();
     virtual void tearDownScreen();
-    virtual void updateGpsDataContainer();
+    virtual void tickDebugScreen();
 protected:
 };
 

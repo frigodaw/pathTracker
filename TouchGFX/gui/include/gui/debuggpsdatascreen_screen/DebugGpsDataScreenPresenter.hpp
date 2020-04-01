@@ -25,7 +25,7 @@ public:
      */
     virtual void deactivate();
 
-    virtual void updateGpsDataContainer();
+    virtual void tickDebugScreen();
 
     virtual ~DebugGpsDataScreenPresenter() {};
 

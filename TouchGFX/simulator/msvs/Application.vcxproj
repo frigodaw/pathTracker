@@ -32,6 +32,15 @@
     <ClCompile Include="..\..\gui\src\debuggpsdatascreen_screen\DebugGpsDataScreenPresenter.cpp"/>
     <ClCompile Include="..\..\gui\src\debuggpsdatascreen_screen\DebugGpsDataScreenView.cpp"/>
     <ClCompile Include="..\..\generated\gui_generated\src\debuggpsdatascreen_screen\DebugGpsDataScreenViewBase.cpp"/>
+    <ClCompile Include="..\..\gui\src\containers\GpsDataContainer.cpp"/>
+    <ClCompile Include="..\..\generated\gui_generated\src\containers\GpsDataContainerBase.cpp"/>
+    <ClCompile Include="..\..\gui\src\debugsdcardscreen_screen\DebugSdCardScreenPresenter.cpp"/>
+    <ClCompile Include="..\..\gui\src\debugsdcardscreen_screen\DebugSdCardScreenView.cpp"/>
+    <ClCompile Include="..\..\generated\gui_generated\src\debugsdcardscreen_screen\DebugSdCardScreenViewBase.cpp"/>
+    <ClCompile Include="..\..\gui\src\containers\ScreenBackgroundContainer.cpp"/>
+    <ClCompile Include="..\..\generated\gui_generated\src\containers\ScreenBackgroundContainerBase.cpp"/>
+    <ClCompile Include="..\..\gui\src\containers\SDCardContainter.cpp"/>
+    <ClCompile Include="..\..\generated\gui_generated\src\containers\SDCardContainterBase.cpp"/>
   </ItemGroup>
   <ItemGroup>
     <None Include="$(ApplicationRoot)\assets\texts\texts.xlsx"/>
@@ -191,6 +200,15 @@
     <ClInclude Include="..\..\gui\include\gui\debuggpsdatascreen_screen\DebugGpsDataScreenPresenter.hpp"/>
     <ClInclude Include="..\..\gui\include\gui\debuggpsdatascreen_screen\DebugGpsDataScreenView.hpp"/>
     <ClInclude Include="..\..\generated\gui_generated\include\gui_generated\debuggpsdatascreen_screen\DebugGpsDataScreenViewBase.hpp"/>
+    <ClInclude Include="..\..\gui\include\gui\containers\GpsDataContainer.hpp"/>
+    <ClInclude Include="..\..\generated\gui_generated\include\gui_generated\containers\GpsDataContainerBase.hpp"/>
+    <ClInclude Include="..\..\gui\include\gui\debugsdcardscreen_screen\DebugSdCardScreenPresenter.hpp"/>
+    <ClInclude Include="..\..\gui\include\gui\debugsdcardscreen_screen\DebugSdCardScreenView.hpp"/>
+    <ClInclude Include="..\..\generated\gui_generated\include\gui_generated\debugsdcardscreen_screen\DebugSdCardScreenViewBase.hpp"/>
+    <ClInclude Include="..\..\gui\include\gui\containers\ScreenBackgroundContainer.hpp"/>
+    <ClInclude Include="..\..\generated\gui_generated\include\gui_generated\containers\ScreenBackgroundContainerBase.hpp"/>
+    <ClInclude Include="..\..\gui\include\gui\containers\SDCardContainter.hpp"/>
+    <ClInclude Include="..\..\generated\gui_generated\include\gui_generated\containers\SDCardContainterBase.hpp"/>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="$(ApplicationRoot)\generated\simulator\touchgfx.rc"/>
