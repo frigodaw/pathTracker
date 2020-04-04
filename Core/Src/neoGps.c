@@ -75,18 +75,22 @@ uint8_t Gps_PrepareWrite(void)
 uint8_t Gps_Main(void)
 {
     uint8_t ret = RET_OK;
-    GpsMsgInfo_T messageInfo;
+    GpsMsgInfo_T messageInfo = {0u};
+    uint8_t failCounter = 0u;
 
-    /* Read data until read inidicator is not equal to write */
+    /* Read data until read indicator is not equal to write */
     while(gpsData.read != gpsData.write)
     {
+        /* Refresh state */
+        Gps_PrepareWrite();
+
         while((gpsData.ringBuff[gpsData.read] != '$') && (gpsData.read != gpsData.write))
         {
-            if((gpsData.state == GPS_OK_AHEAD) && (gpsData.read < gpsData.write))
+            if( ((gpsData.state == GPS_OK_AHEAD) || (gpsData.state == GPS_FULL)) && (gpsData.read < gpsData.write) )
             {
                 Gps_IncrementReadIndicator();
             }
-            else if((gpsData.state == GPS_OK_BEHIND) && (gpsData.read > gpsData.write))
+            else if( ((gpsData.state == GPS_OK_BEHIND) || (gpsData.state == GPS_FULL)) && (gpsData.read > gpsData.write))
             {
                 Gps_IncrementReadIndicator();
             }
@@ -94,6 +98,13 @@ uint8_t Gps_Main(void)
             {
                 /* Refresh state */
                 Gps_PrepareWrite();
+
+                /* Try GPS_FAILCOUNTER_LIMIT times to read. If still fails, increment read indicator and miss one character */
+                failCounter++;
+                if(GPS_FAILCOUNTER_LIMIT <= failCounter)
+                {
+                    Gps_IncrementReadIndicator();
+                }
             }
         }
 
@@ -295,8 +306,6 @@ uint8_t Gps_ReadMessage(GpsMsgInfo_T* messageInfo)
 */
 uint8_t Gps_ReadMessage_GPRMC(uint8_t currentElement, uint8_t* fieldBuff)
 {
-    uint32_t dateLinked = 0u;
-
     switch (currentElement)
     {
         case GPS_GPRMC_TIME:
@@ -305,26 +314,23 @@ uint8_t Gps_ReadMessage_GPRMC(uint8_t currentElement, uint8_t* fieldBuff)
         case GPS_GPRMC_POSITIONSTATUS:
             break;
         case GPS_GPRMC_LATITUDE:
-            sscanf((char*)fieldBuff, "%f", &gpsData.latitude);
+            Gps_ReadMessageElement_Latitude(fieldBuff);
             break;
         case GPS_GPRMC_NS:
-            sscanf((char*)fieldBuff, "%c", &gpsData.latDir);
+            Gps_ReadMessageElement_LatDir(fieldBuff);
             break;
         case GPS_GPRMC_LONGITUDE:
-            sscanf((char*)fieldBuff, "%f", &gpsData.longitude);
+            Gps_ReadMessageElement_Longitude(fieldBuff);
             break;
         case GPS_GPRMC_WE:
-            sscanf((char*)fieldBuff, "%c", &gpsData.lonDir);
+            Gps_ReadMessageElement_LonDir(fieldBuff);
             break;
         case GPS_GPRMC_SPEEDGROUNDKNOTS:
             break;
         case GPS_GPRMC_TRACKMADEGOODDEGREES:
             break;
         case GPS_GPRMC_DATE:
-            sscanf((char*)fieldBuff, "%ld", &dateLinked);
-            gpsData.dateYear = dateLinked % GPS_DATE_COEFF1;
-            gpsData.dateMon = (dateLinked / GPS_DATE_COEFF1) % GPS_DATE_COEFF1;
-            gpsData.dateDay = ((dateLinked / GPS_DATE_COEFF2) % GPS_DATE_COEFF1);
+            Gps_ReadMessageElement_Date(fieldBuff);
             break;
         case GPS_GPRMC_MAGNETICVARIATION:
             break;
@@ -373,7 +379,7 @@ uint8_t Gps_ReadMessage_GPVTG(uint8_t currentElement, uint8_t* fieldBuff)
         case GPS_GPVTG_SPEEDUNITKNOTS:
             break;
         case GPS_GPVTG_GROUNDSPEEDKMH:
-            sscanf((char*)fieldBuff, "%f", &gpsData.groundSpeedKmh);
+            Gps_ReadMessageElement_GroundSpeedKmh(fieldBuff);
             break;
         case GPS_GPVTG_SPEEDUNITKMH:
             break;
@@ -396,7 +402,7 @@ uint8_t Gps_ReadMessage_GPVTG(uint8_t currentElement, uint8_t* fieldBuff)
     3.  01855.72499     Longitude
     4.  E               Direction WE
     5.  1               GPS quality indicator
-    6.  08              Number of satelites
+    6.  08              Number of satellites
     7.  1.01            Horizontal dilution of precision
     8.  240.5           Altitude
     9.  M               Units, meters
@@ -414,28 +420,28 @@ uint8_t Gps_ReadMessage_GPGGA(uint8_t currentElement, uint8_t* fieldBuff)
             Gps_ReadMessageElement_Time(fieldBuff);
             break;
         case GPS_GPGGA_LATITUDE:
-            sscanf((char*)fieldBuff, "%f", &gpsData.latitude);
+            Gps_ReadMessageElement_Latitude(fieldBuff);
             break;
         case GPS_GPGGA_NS:
-            sscanf((char*)fieldBuff, "%c", &gpsData.latDir);
+            Gps_ReadMessageElement_LatDir(fieldBuff);
             break;
         case GPS_GPGGA_LONGITUDE:
-            sscanf((char*)fieldBuff, "%f", &gpsData.longitude);
+            Gps_ReadMessageElement_Longitude(fieldBuff);
             break;
         case GPS_GPGGA_WE:
-            sscanf((char*)fieldBuff, "%c", &gpsData.lonDir);
+            Gps_ReadMessageElement_LonDir(fieldBuff);
             break;
         case GPS_GPGGA_FIXQUALITY:
-            sscanf((char*)fieldBuff, "%hhu", &gpsData.fixQuality);
+            Gps_ReadMessageElement_FixQuality(fieldBuff);
             break;
-        case GPS_GPGGA_SATELITESNUM:
-            sscanf((char*)fieldBuff, "%hhu", &gpsData.satelitesNum);
+        case GPS_GPGGA_SATELLITESNUM:
+            Gps_ReadMessageElement_SatellitesNum(fieldBuff);
             break;
         case GPS_GPGGA_HDOP:
-            sscanf((char*)fieldBuff, "%f", &gpsData.hdop);
+            Gps_ReadMessageElement_Hdop(fieldBuff);
             break;
         case GPS_GPGGA_ALTITUDE:
-            sscanf((char*)fieldBuff, "%f", &gpsData.altitude);
+            Gps_ReadMessageElement_Altitude(fieldBuff);
             break;
         case GPS_GPGGA_ALTITUDEUNITSMETERS:
             break;
@@ -475,7 +481,7 @@ uint8_t Gps_ReadMessage_GPGSA(uint8_t currentElement, uint8_t* fieldBuff)
             Gps_ReadMessageElement_ModeOne(fieldBuff);
             break;
         case GPS_GPGSA_MODETWO:
-            sscanf((char*)fieldBuff, "%hhu", &gpsData.modeTwo);
+            Gps_ReadMessageElement_ModeTwo(fieldBuff);
             break;
         case GPS_GPGSA_SATELLITEIDONE:
             break;
@@ -504,10 +510,10 @@ uint8_t Gps_ReadMessage_GPGSA(uint8_t currentElement, uint8_t* fieldBuff)
         case GPS_GPGSA_PDOP:
             break;
         case GPS_GPGSA_HDOP:
-            sscanf((char*)fieldBuff, "%f", &gpsData.hdop);
+            Gps_ReadMessageElement_Hdop(fieldBuff);
             break;
         case GPS_GPGSA_VDOP:
-            sscanf((char*)fieldBuff, "%f", &gpsData.vdop);
+            Gps_ReadMessageElement_Vdop(fieldBuff);
             break;
         case GPS_GPGSA_CHECKSUM:
             break;
@@ -554,16 +560,16 @@ uint8_t Gps_ReadMessage_GPGLL(uint8_t currentElement, uint8_t* fieldBuff)
     switch (currentElement)
     {
         case GPS_GPGLL_LATITUDE:
-            sscanf((char*)fieldBuff, "%f", &gpsData.latitude);
+            Gps_ReadMessageElement_Latitude(fieldBuff);
             break;
         case GPS_GPGLL_NS:
-            sscanf((char*)fieldBuff, "%c", &gpsData.latDir);
+            Gps_ReadMessageElement_LatDir(fieldBuff);
             break;
         case GPS_GPGLL_LONGITUDE:
-            sscanf((char*)fieldBuff, "%f", &gpsData.longitude);
+            Gps_ReadMessageElement_Longitude(fieldBuff);
             break;
         case GPS_GPGLL_WE:
-            sscanf((char*)fieldBuff, "%c", &gpsData.lonDir);
+            Gps_ReadMessageElement_LonDir(fieldBuff);
             break;
         case GPS_GPGLL_TIME:
             Gps_ReadMessageElement_Time(fieldBuff);
@@ -650,35 +656,191 @@ uint8_t Gps_RetriggerUartGps(void)
 }
 
 
-/* Function called to read time given in different
-   gps frames.
-*/
-uint8_t Gps_ReadMessageElement_Time(uint8_t* fieldBuff)
+/* Function called to read altitude from
+   field buffer and if it is correct save it
+   to gpsData structure */
+void Gps_ReadMessageElement_Altitude(uint8_t* fieldBuff)
 {
-    uint32_t timeLinked = 0u;
-    uint8_t tmpHr = 0u;
+    float altitude = 0.f;
+    sscanf((char*)fieldBuff, "%f", &altitude);
 
-    memset(&fieldBuff[GPS_TIME_LEN], 0u, GPS_FIELD_BUFFER_SIZE - GPS_TIME_LEN);
-    sscanf((char*)fieldBuff, "%ld", &timeLinked);
-    gpsData.timeSec  = timeLinked % GPS_TIME_COEFF1;
-    gpsData.timeMin = (timeLinked / GPS_TIME_COEFF1) % GPS_TIME_COEFF1;
-    /* Add 1 hour to adjust time to polish timezone */
-    tmpHr = ((timeLinked / GPS_TIME_COEFF2) % GPS_TIME_COEFF1) + GPS_TIMEZONE_OFFSET;
-    gpsData.timeHr = (tmpHr > GPS_TIME_MAXHOUR) ? 0u : tmpHr;
-
-    return RET_OK;
+    if( (GPS_LIMIT_ALTITUDE_LOWER <= altitude) && (GPS_LIMIT_ALTITUDE_UPPER >= altitude) )
+    {
+        gpsData.altitude = altitude;
+    }
 }
 
 
-/* Function called to read modeIndicator given in different
-   gps frames.
-*/
-uint8_t Gps_ReadMessageElement_ModeOne(uint8_t* fieldBuff)
+/* Function called to read latitude from
+   field buffer and if it is correct save it
+   to gpsData structure */
+void Gps_ReadMessageElement_Latitude(uint8_t* fieldBuff)
 {
-    char readModeOne = '0';
-    sscanf((char*)fieldBuff, "%c", &readModeOne);
+    float latitude = 0.f;
+    sscanf((char*)fieldBuff, "%f", &latitude);
 
-    switch(readModeOne)
+    if( (GPS_LIMIT_LATITUDE_LOWER <= latitude) && (GPS_LIMIT_LATITUDE_UPPER >= latitude) )
+    {
+        gpsData.latitude = latitude;
+    }
+}
+
+
+/* Function called to read longitude from
+   field buffer and if it is correct save it
+   to gpsData structure */
+void Gps_ReadMessageElement_Longitude(uint8_t* fieldBuff)
+{
+    float longitude = 0.f;
+    sscanf((char*)fieldBuff, "%f", &longitude);
+
+    if( (GPS_LIMIT_LONGITUDE_LOWER <= longitude) && (GPS_LIMIT_LONGITUDE_UPPER >= longitude) )
+    {
+        gpsData.longitude = longitude;
+    }
+}
+
+
+/* Function called to read date from
+   field buffer and if it is correct save it
+   to gpsData structure */
+void Gps_ReadMessageElement_Date(uint8_t* fieldBuff)
+{
+    uint32_t dateLinked = 0u;
+    uint8_t dateYear = 0u;
+    uint8_t dateMon  = 0u;
+    uint8_t dateDay  = 0u;
+
+    memset(&fieldBuff[GPS_DATE_LEN], 0u, GPS_FIELD_BUFFER_SIZE - GPS_DATE_LEN);
+    sscanf((char*)fieldBuff, "%ld", &dateLinked);
+
+    dateYear = dateLinked % GPS_DATE_COEFF1;
+    dateMon  = (dateLinked / GPS_DATE_COEFF1) % GPS_DATE_COEFF1;
+    dateDay  = ((dateLinked / GPS_DATE_COEFF2) % GPS_DATE_COEFF1);
+
+    if( ((GPS_LIMIT_DATE_YEAR_LOWER <= dateYear) && (GPS_LIMIT_DATE_YEAR_UPPER >= dateYear)) &&
+        ((GPS_LIMIT_DATE_MON_LOWER  <= dateMon ) && (GPS_LIMIT_DATE_MON_UPPER  >= dateMon)) &&
+        ((GPS_LIMIT_DATE_DAY_LOWER  <= dateDay ) && (GPS_LIMIT_DATE_DAY_UPPER  >= dateDay)) )
+    {
+        gpsData.dateYear = dateYear;
+        gpsData.dateMon  = dateMon;
+        gpsData.dateDay  = dateDay;
+    }
+}
+
+
+/* Function called to read time from
+   field buffer and if it is correct save it
+   to gpsData structure */
+void Gps_ReadMessageElement_Time(uint8_t* fieldBuff)
+{
+    uint32_t timeLinked = 0u;
+    uint8_t timeSec = 0u;
+    uint8_t timeMin = 0u;
+    uint8_t timeHr  = 0u;
+
+    memset(&fieldBuff[GPS_TIME_LEN], 0u, GPS_FIELD_BUFFER_SIZE - GPS_TIME_LEN);
+    sscanf((char*)fieldBuff, "%ld", &timeLinked);
+
+    timeSec  = timeLinked % GPS_TIME_COEFF1;
+    timeMin = (timeLinked / GPS_TIME_COEFF1) % GPS_TIME_COEFF1;
+    timeHr = ((timeLinked / GPS_TIME_COEFF2) % GPS_TIME_COEFF1);
+
+    if( ((GPS_LIMIT_TIME_SEC_LOWER <= timeSec) && (GPS_LIMIT_TIME_SEC_UPPER >= timeSec)) &&
+        ((GPS_LIMIT_TIME_MIN_LOWER <= timeMin) && (GPS_LIMIT_TIME_MIN_UPPER >= timeMin)) &&
+        ((GPS_LIMIT_TIME_HR_LOWER  <= timeHr ) && (GPS_LIMIT_TIME_HR_UPPER  >= timeHr)) )
+    {
+        gpsData.timeSec = timeSec;
+        gpsData.timeMin = timeMin;
+        gpsData.timeHr  = timeHr;
+    }
+}
+
+
+/* Function called to read fixQuality from
+   field buffer and if it is correct save it
+   to gpsData structure */
+void Gps_ReadMessageElement_FixQuality(uint8_t* fieldBuff)
+{
+    uint16_t fixQuality = 0u;
+    sscanf((char*)fieldBuff, "%hu", &fixQuality);
+
+    if( (GPS_LIMIT_FIXQUALITY_LOWER <= fixQuality) && (GPS_LIMIT_FIXQUALITY_UPPER >= fixQuality) )
+    {
+        gpsData.fixQuality = (uint8_t)fixQuality;
+    }
+}
+
+
+/* Function called to read hdop from
+   field buffer and if it is correct save it
+   to gpsData structure */
+void Gps_ReadMessageElement_Hdop(uint8_t* fieldBuff)
+{
+    float hdop = 0.f;
+    sscanf((char*)fieldBuff, "%f", &hdop);
+
+    if( (GPS_LIMIT_HDOP_LOWER <= hdop) && (GPS_LIMIT_HDOP_UPPER >= hdop) )
+    {
+        gpsData.hdop = hdop;
+    }
+}
+
+
+/* Function called to read vdop from
+   field buffer and if it is correct save it
+   to gpsData structure */
+void Gps_ReadMessageElement_Vdop(uint8_t* fieldBuff)
+{
+    float vdop = 0.f;
+    sscanf((char*)fieldBuff, "%f", &vdop);
+
+    if( (GPS_LIMIT_VDOP_LOWER <= vdop) && (GPS_LIMIT_VDOP_UPPER >= vdop) )
+    {
+        gpsData.vdop = vdop;
+    }
+}
+
+
+/* Function called to read latDir from
+   field buffer and if it is correct save it
+   to gpsData structure */
+void Gps_ReadMessageElement_LatDir(uint8_t* fieldBuff)
+{
+    char latDir = '0';
+    sscanf((char*)fieldBuff, "%c", &latDir);
+
+    if( ('N' == latDir ) || ('S' == latDir ) )
+    {
+        gpsData.latDir = latDir;
+    }
+}
+
+
+/* Function called to read lonDir from
+   field buffer and if it is correct save it
+   to gpsData structure */
+void Gps_ReadMessageElement_LonDir(uint8_t* fieldBuff)
+{
+    char lonDir = '0';
+    sscanf((char*)fieldBuff, "%c", &lonDir);
+
+    if( ('W' == lonDir ) || ('E' == lonDir ) )
+    {
+        gpsData.lonDir = lonDir;
+    }
+}
+
+
+/* Function called to read modeOne from
+   field buffer and if it is correct save it
+   to gpsData structure */
+void Gps_ReadMessageElement_ModeOne(uint8_t* fieldBuff)
+{
+    char modeOne = '0';
+    sscanf((char*)fieldBuff, "%c", &modeOne);
+
+    switch(modeOne)
     {
         case 'A':
             gpsData.modeOne = GPS_MODEONE_AUTOMATIC;
@@ -690,15 +852,29 @@ uint8_t Gps_ReadMessageElement_ModeOne(uint8_t* fieldBuff)
             gpsData.modeOne = GPS_MODEONE_INVALID;
             break;
     }
+}
 
-    return RET_OK;
+
+/* Function called to read modeTwo from
+   field buffer and if it is correct save it
+   to gpsData structure */
+void Gps_ReadMessageElement_ModeTwo(uint8_t* fieldBuff)
+{
+    uint16_t modeTwo = 0u;
+    sscanf((char*)fieldBuff, "%hu", &modeTwo);
+
+
+    if( (GPS_LIMIT_MODETWO_LOWER <= modeTwo) && (GPS_LIMIT_MODETWO_UPPER >= modeTwo) )
+    {
+        gpsData.modeTwo = (uint8_t)modeTwo;
+    }
 }
 
 
 /* Function called to read modeIndicator given in different
    gps frames.
 */
-uint8_t Gps_ReadMessageElement_ModeIndicator(uint8_t* fieldBuff)
+void Gps_ReadMessageElement_ModeIndicator(uint8_t* fieldBuff)
 {
     char readModeIndicator = '0';
     sscanf((char*)fieldBuff, "%c", &readModeIndicator);
@@ -722,8 +898,36 @@ uint8_t Gps_ReadMessageElement_ModeIndicator(uint8_t* fieldBuff)
             gpsData.modeIndicator = GPS_MODEINDICATOR_DATANOTVALID;
             break;
     }
+}
 
-    return RET_OK;
+
+/* Function called to read satellitesNum from
+   field buffer and if it is correct save it
+   to gpsData structure */
+void Gps_ReadMessageElement_SatellitesNum(uint8_t* fieldBuff)
+{
+    uint16_t satellitesNum = 0u;
+    sscanf((char*)fieldBuff, "%hu", &satellitesNum);
+
+    if( (GPS_LIMIT_SATELLITESNUM_LOWER <= satellitesNum) && (GPS_LIMIT_SATELLITESNUM_UPPER >= satellitesNum) )
+    {
+        gpsData.satellitesNum = (uint8_t)satellitesNum;
+    }
+}
+
+
+/* Function called to read groundSpeedKmh from
+   field buffer and if it is correct save it
+   to gpsData structure */
+void Gps_ReadMessageElement_GroundSpeedKmh(uint8_t* fieldBuff)
+{
+    float groundSpeedKmh = 0u;
+    sscanf((char*)fieldBuff, "%f", &groundSpeedKmh);
+
+    if( (GPS_LIMIT_GROUNDSPEEDKMH_LOWER <= groundSpeedKmh) && (GPS_LIMIT_GROUNDSPEEDKMH_UPPER >= groundSpeedKmh) )
+    {
+        gpsData.groundSpeedKmh = (uint8_t)groundSpeedKmh;
+    }
 }
 
 

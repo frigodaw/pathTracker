@@ -27,7 +27,7 @@ void SDCardContainter::updateSDCardContainer()
     //AltiTextBox.invalidate();
     //Unicode::snprintf(FixTextBoxBuffer, FIXTEXTBOX_SIZE, "%d", gpsData.fixQuality);
     //FixTextBox.invalidate();
-    //Unicode::snprintf(SatTextBoxBuffer, SATTEXTBOX_SIZE, "%d", gpsData.satelitesNum);
+    //Unicode::snprintf(SatTextBoxBuffer, SATTEXTBOX_SIZE, "%d", gpsData.satellitesNum);
     //SatTextBox.invalidate();
     //Unicode::snprintf(ReadTextBoxBuffer, READTEXTBOX_SIZE, "%d", gpsData.read);
     //ReadTextBox.invalidate();

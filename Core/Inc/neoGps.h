@@ -18,7 +18,7 @@ extern "C" {
 
 
 /* START OF THE DEFINE AREA */
-#define GPS_RING_BUFFER_SIZE        1024u   //size of ring buffer
+#define GPS_RING_BUFFER_SIZE        512u   //size of ring buffer
 #define GPS_MAX_NMEA_SIZE           83u     //max size of gps nmea message
 #define GPS_FIELD_BUFFER_SIZE       16u     //size of the temporary filed buffer
 #define GPS_DEBUG_BUFF_SIZE         128u
@@ -29,10 +29,9 @@ extern "C" {
 #define GPS_TIME_LEN                6u
 #define GPS_TIME_COEFF1             100u
 #define GPS_TIME_COEFF2             10000u
+#define GPS_DATE_LEN                6u
 #define GPS_DATE_COEFF1             100u
 #define GPS_DATE_COEFF2             10000u
-#define GPS_TIMEZONE_OFFSET         1u
-#define GPS_TIME_MAXHOUR            23u
 
 #define GPS_SIZE_GPRMC              13u     //13    ok
 #define GPS_SIZE_GPVTG              10u     //10    ok
@@ -42,8 +41,40 @@ extern "C" {
 #define GPS_SIZE_GPGLL              8u      //8     ok
 
 #define GPS_RETRIGGER_TIMEOUT       5u      //time [s] to retrigger gps uart
+#define GPS_FAILCOUNTER_LIMIT       5u      //number of tries until forced read increment
 
 #define GPS_DEBUG                   0u      //disable debug messages
+
+#define GPS_LIMIT_ALTITUDE_LOWER            0.f
+#define GPS_LIMIT_ALTITUDE_UPPER            10000.f
+#define GPS_LIMIT_LATITUDE_LOWER            0.f
+#define GPS_LIMIT_LATITUDE_UPPER            9000.f
+#define GPS_LIMIT_LONGITUDE_LOWER           0.f
+#define GPS_LIMIT_LONGITUDE_UPPER           18000.f
+#define GPS_LIMIT_DATE_YEAR_LOWER           0u
+#define GPS_LIMIT_DATE_YEAR_UPPER           99u
+#define GPS_LIMIT_DATE_MON_LOWER            1u
+#define GPS_LIMIT_DATE_MON_UPPER            12u
+#define GPS_LIMIT_DATE_DAY_LOWER            1u
+#define GPS_LIMIT_DATE_DAY_UPPER            31u
+#define GPS_LIMIT_TIME_SEC_LOWER            0u
+#define GPS_LIMIT_TIME_SEC_UPPER            59u
+#define GPS_LIMIT_TIME_MIN_LOWER            0u
+#define GPS_LIMIT_TIME_MIN_UPPER            59u
+#define GPS_LIMIT_TIME_HR_LOWER             0u
+#define GPS_LIMIT_TIME_HR_UPPER             23u
+#define GPS_LIMIT_FIXQUALITY_LOWER          0u
+#define GPS_LIMIT_FIXQUALITY_UPPER          2u
+#define GPS_LIMIT_HDOP_LOWER                0.f
+#define GPS_LIMIT_HDOP_UPPER                100.f
+#define GPS_LIMIT_VDOP_LOWER                0.f
+#define GPS_LIMIT_VDOP_UPPER                100.f
+#define GPS_LIMIT_MODETWO_LOWER             1u
+#define GPS_LIMIT_MODETWO_UPPER             3u
+#define GPS_LIMIT_SATELLITESNUM_LOWER        0u
+#define GPS_LIMIT_SATELLITESNUM_UPPER        33u     //max number of satellites
+#define GPS_LIMIT_GROUNDSPEEDKMH_LOWER      0.f
+#define GPS_LIMIT_GROUNDSPEEDKMH_UPPER      300.f
 /* END OF THE DEFINE AREA */
 
 
@@ -87,7 +118,7 @@ typedef enum
     GPS_GPGGA_LONGITUDE,
     GPS_GPGGA_WE,
     GPS_GPGGA_FIXQUALITY,
-    GPS_GPGGA_SATELITESNUM,
+    GPS_GPGGA_SATELLITESNUM,
     GPS_GPGGA_HDOP,
     GPS_GPGGA_ALTITUDE,
     GPS_GPGGA_ALTITUDEUNITSMETERS,
@@ -217,7 +248,7 @@ typedef struct GpsUartData_Tag
     Gps_modeIndicator modeIndicator;
 
     uint8_t fixQuality;
-    uint8_t satelitesNum;
+    uint8_t satellitesNum;
 
 } GpsUartData_T;
 
@@ -256,12 +287,24 @@ uint8_t Gps_ReadMessage_GPGGA(uint8_t currentElement, uint8_t* fieldBuff);
 uint8_t Gps_ReadMessage_GPGSA(uint8_t currentElement, uint8_t* fieldBuff);
 uint8_t Gps_ReadMessage_GPGSV(uint8_t currentElement, uint8_t* fieldBuff);
 uint8_t Gps_ReadMessage_GPGLL(uint8_t currentElement, uint8_t* fieldBuff);
-uint8_t Gps_ReadMessageElement_Time(uint8_t* fieldBuff);
-uint8_t Gps_ReadMessageElement_ModeOne(uint8_t* fieldBuff);
-uint8_t Gps_ReadMessageElement_ModeIndicator(uint8_t* fieldBuff);
 uint8_t Gps_PrepareDebugData(void);
 uint8_t Gps_RetriggerUartGps(void);
 uint8_t Gps_IncrementReadIndicator(void);
+void Gps_ReadMessageElement_Altitude(uint8_t* fieldBuff);
+void Gps_ReadMessageElement_Latitude(uint8_t* fieldBuff);
+void Gps_ReadMessageElement_Longitude(uint8_t* fieldBuff);
+void Gps_ReadMessageElement_Date(uint8_t* fieldBuff);
+void Gps_ReadMessageElement_Time(uint8_t* fieldBuff);
+void Gps_ReadMessageElement_FixQuality(uint8_t* fieldBuff);
+void Gps_ReadMessageElement_Hdop(uint8_t* fieldBuff);
+void Gps_ReadMessageElement_Vdop(uint8_t* fieldBuff);
+void Gps_ReadMessageElement_LatDir(uint8_t* fieldBuff);
+void Gps_ReadMessageElement_LonDir(uint8_t* fieldBuff);
+void Gps_ReadMessageElement_ModeOne(uint8_t* fieldBuff);
+void Gps_ReadMessageElement_ModeTwo(uint8_t* fieldBuff);
+void Gps_ReadMessageElement_ModeIndicator(uint8_t* fieldBuff);
+void Gps_ReadMessageElement_SatellitesNum(uint8_t* fieldBuff);
+void Gps_ReadMessageElement_GroundSpeedKmh(uint8_t* fieldBuff);
 /* END OF THE FUNCTIONS PROTOTYPES AREA */
 
 # ifdef __cplusplus
