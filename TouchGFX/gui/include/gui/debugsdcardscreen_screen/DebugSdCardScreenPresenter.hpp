@@ -24,6 +24,12 @@ public:
      * (ie. made inactive). Teardown functionality can be placed here.
      */
     virtual void deactivate();
+    
+    virtual void notifySignalChanged_sdCardInfo_totalSpace(uint32_t newTotalSpace);
+    virtual void notifySignalChanged_sdCardInfo_freeSpace(uint32_t newFreeSpace);
+    virtual void notifySignalChanged_sdCardInfo_state(uint8_t newState);
+    virtual void notifySignalChanged_dirInfo_in_filesNum(uint8_t newInFilesNum);
+    virtual void notifySignalChanged_dirInfo_out_filesNum(uint8_t newOutFilesNum);
 
     virtual ~DebugSdCardScreenPresenter() {};
 

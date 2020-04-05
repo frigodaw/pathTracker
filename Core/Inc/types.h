@@ -12,7 +12,7 @@ extern "C" {
 # endif /* __cplusplus */
 
 /* START OF THE INCLUDE AREA */
-#include "stm32f4xx_hal.h"
+#include "stdint.h"
 /* END OF THE DEFINE AREA */
 
 

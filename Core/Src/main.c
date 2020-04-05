@@ -187,7 +187,7 @@ int main(void)
 
   /* Create the thread(s) */
   /* definition and creation of defaultTask */
-  osThreadDef(defaultTask, DefaultTask, osPriorityNormal, 0, 512);
+  osThreadDef(defaultTask, DefaultTask, osPriorityBelowNormal, 0, 384);
   defaultTaskHandle = osThreadCreate(osThread(defaultTask), NULL);
 
   /* definition and creation of ltdcTask */
@@ -195,7 +195,7 @@ int main(void)
   ltdcTaskHandle = osThreadCreate(osThread(ltdcTask), NULL);
 
   /* definition and creation of gpsTask */
-  osThreadDef(gpsTask, GpsTask, osPriorityBelowNormal, 0, 512);
+  osThreadDef(gpsTask, GpsTask, osPriorityNormal, 0, 384);
   gpsTaskHandle = osThreadCreate(osThread(gpsTask), NULL);
 
   /* USER CODE BEGIN RTOS_THREADS */

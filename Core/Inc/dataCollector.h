@@ -17,6 +17,7 @@ extern "C" {
 /* START OF THE INCLUDE AREA */
 #include "stm32f4xx_hal.h"
 #include "neoGps.h"
+#include "fileSystem.h"
 /* END OF THE DEFINE AREA */
 
 
@@ -41,10 +42,30 @@ extern "C" {
 uint16_t DC_get_main_tim_t_1s(void);
 
 /* ---------- neoGps ---------- */
+float    DC_get_neoGps_gpsData_longitude(void);
+float    DC_get_neoGps_gpsData_latitude(void);
+float    DC_get_neoGps_gpsData_altitude(void);
+uint16_t DC_get_neoGps_gpsData_read(void);
 uint16_t DC_get_neoGps_gpsData_write(void);
-void DC_set_neoGps_gpsData_write(uint16_t value);
-void DC_add_neoGps_gpsData_write(uint16_t value);
-Gps_bufferState DC_get_neoGps_gpsData_state(void);
+uint8_t  DC_get_neoGps_gpsData_state(void);
+uint8_t  DC_get_neoGps_gpsData_timeHr(void);
+uint8_t  DC_get_neoGps_gpsData_timeMin(void);
+uint8_t  DC_get_neoGps_gpsData_timeSec(void);
+uint8_t  DC_get_neoGps_gpsData_dateDay(void);
+uint8_t  DC_get_neoGps_gpsData_dateMon(void);
+uint8_t  DC_get_neoGps_gpsData_dateYear(void);
+uint8_t  DC_get_neoGps_gpsData_fixQuality(void);
+uint8_t  DC_get_neoGps_gpsData_satellitesNum(void);
+char     DC_get_neoGps_gpsData_lonDir(void);
+char     DC_get_neoGps_gpsData_latDir(void);
+void     DC_set_neoGps_gpsData_write(uint16_t value);
+
+/* ---------- fileSystem ---------- */
+uint32_t DC_get_fileSystem_sdCardInfo_totalSpace(void);
+uint32_t DC_get_fileSystem_sdCardInfo_freeSpace(void);
+uint8_t  DC_get_fileSystem_sdCardInfo_state(void);
+uint8_t  DC_get_fileSystem_dirInfo_in_filesNum(void);
+uint8_t  DC_get_fileSystem_dirInfo_out_filesNum(void);
 /* END OF THE FUNCTIONS PROTOTYPES AREA */
 
 # ifdef __cplusplus

@@ -1,5 +1,4 @@
 #include <gui/containers/SDCardContainter.hpp>
-#include "filesystem.h"
 
 SDCardContainter::SDCardContainter()
 {
@@ -11,26 +10,52 @@ void SDCardContainter::initialize()
     SDCardContainterBase::initialize();
 }
 
-void SDCardContainter::updateSDCardContainer()
+
+void SDCardContainter::notifySignalChanged_sdCardInfo_totalSpace(uint32_t newTotalSpace)
 {
-    //Unicode::snprintf(TimeTextBoxBuffer, TIMETEXTBOX_SIZE, "%.2d:%.2d:%.2d", gpsData.timeHr, gpsData.timeMin, gpsData.timeSec);
-    //TimeTextBox.invalidate();
-    //Unicode::snprintf(DateTextBoxBuffer, DATETEXTBOX_SIZE, "%.2d.%.2d.%.2d", gpsData.dateDay, gpsData.dateMon, gpsData.dateYear);
-    //DateTextBox.invalidate();
-    //Unicode::snprintfFloats(LatTextBoxBuffer1, LATTEXTBOXBUFFER1_SIZE, "%#.5f", &gpsData.latitude);
-    //Unicode::snprintf(LatTextBoxBuffer2, LATTEXTBOXBUFFER2_SIZE, "%c", gpsData.latDir);
-    //LatTextBox.invalidate();
-    //Unicode::snprintfFloats(LonTextBoxBuffer1, LONTEXTBOXBUFFER1_SIZE, "%#.5f", &gpsData.longitude);
-    //Unicode::snprintf(LonTextBoxBuffer2, LONTEXTBOXBUFFER2_SIZE, "%c", gpsData.lonDir);
-    //LonTextBox.invalidate();
-    //Unicode::snprintfFloats(AltiTextBoxBuffer, ALTITEXTBOX_SIZE, "%#.1f", &gpsData.altitude);
-    //AltiTextBox.invalidate();
-    //Unicode::snprintf(FixTextBoxBuffer, FIXTEXTBOX_SIZE, "%d", gpsData.fixQuality);
-    //FixTextBox.invalidate();
-    //Unicode::snprintf(SatTextBoxBuffer, SATTEXTBOX_SIZE, "%d", gpsData.satellitesNum);
-    //SatTextBox.invalidate();
-    //Unicode::snprintf(ReadTextBoxBuffer, READTEXTBOX_SIZE, "%d", gpsData.read);
-    //ReadTextBox.invalidate();
-    //Unicode::snprintf(WriteTextBoxBuffer, WRITETEXTBOX_SIZE, "%d", gpsData.write);
-    //WriteTextBox.invalidate();
+    Unicode::snprintf(TotalSpaceTextBoxBuffer, TOTALSPACETEXTBOX_SIZE, "%d", newTotalSpace);
+    TotalSpaceTextBox.invalidate();
+}
+
+
+void SDCardContainter::notifySignalChanged_sdCardInfo_freeSpace(uint32_t newFreeSpace)
+{
+    Unicode::snprintf(FreeSpaceTextBoxBuffer, FREESPACETEXTBOX_SIZE, "%d", newFreeSpace);
+    FreeSpaceTextBox.invalidate();
+}
+
+
+void SDCardContainter::notifySignalChanged_sdCardInfo_state(uint8_t newState)
+{
+    Unicode::UnicodeChar stateText[STATETEXTBOX_SIZE] = {0u};
+
+    switch (newState)
+    {
+        case 0u:
+            Unicode::fromUTF8((const uint8_t*)"UNINITIALIZED", stateText, STATETEXTBOX_SIZE);
+            break;
+        case 1u:
+            Unicode::fromUTF8((const uint8_t*)"INITIALIZED", stateText, STATETEXTBOX_SIZE);
+            break;
+        default:
+            Unicode::fromUTF8((const uint8_t*)"INVALID", stateText, STATETEXTBOX_SIZE);
+            break;
+    }
+
+    Unicode::snprintf(StateTextBoxBuffer, STATETEXTBOX_SIZE, "%s", stateText);
+    StateTextBox.invalidate();
+}
+
+
+void SDCardContainter::notifySignalChanged_dirInfo_in_filesNum(uint8_t newInFilesNum)
+{
+    Unicode::snprintf(InputFilesTextBoxBuffer, INPUTFILESTEXTBOX_SIZE, "%d", newInFilesNum);
+    InputFilesTextBox.invalidate();
+}
+
+
+void SDCardContainter::notifySignalChanged_dirInfo_out_filesNum(uint8_t newOutFilesNum)
+{
+    Unicode::snprintf(OutputFilesTextBoxBuffer, OUTPUTFILESTEXTBOX_SIZE, "%d", newOutFilesNum);
+    OutputFilesTextBox.invalidate();
 }

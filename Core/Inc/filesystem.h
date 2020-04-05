@@ -45,18 +45,18 @@ extern "C" {
 
 /* START OF THE ENUM AREA */
 //enum to select sc card mount mdoe
-enum FS_mountMode
+typedef enum
 {
     FS_MOUNTLATER,      //to be mounted on the first access to the volume
     FS_MOUNTNOW         //force mounted the volume to check if it is ready to work
-};
+}FS_mountMode;
 
 //enum to distinguish sd card initialization state
-enum FS_cardInitState
+typedef enum
 {
     FS_UNINITIALIZED,
     FS_INITIALIZED
-};
+}FS_cardInitState;
 /* END OF THE ENUM AREA */
 
 
@@ -68,7 +68,7 @@ typedef struct
     DWORD numFreeClusters;
     uint32_t totalSpace;
     uint32_t freeSpace;
-    enum FS_cardInitState state;
+    FS_cardInitState state;
 }FS_SDcardInfo_T;
 
 //typedefs to store path to file or directory
