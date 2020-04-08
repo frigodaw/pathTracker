@@ -6,6 +6,26 @@
 #define MODEL_TICKS_PER_SECOND          60u
 #define MODEL_GPSDATA_TIME_INTERVAL     15u     //15:60 = 0.25s = 250ms
 
+typedef struct
+{
+    uint8_t gpsData_latitude;
+    uint8_t gpsData_longitude;
+    uint8_t gpsData_altitude;
+    uint8_t gpsData_date;
+    uint8_t gpsData_time;
+    uint8_t gpsData_read;
+    uint8_t gpsData_write;
+    uint8_t gpsData_fixQuality;
+    uint8_t gpsData_satellitesNum;
+    uint8_t gpsData_lonDir;
+    uint8_t gpsData_latDir;
+    uint8_t sdCardInfo_totalSpace;
+    uint8_t sdCardInfo_freeSpace;
+    uint8_t sdCardInfo_state;
+    uint8_t dirInfo_in_filesNum;
+    uint8_t dirInfo_out_filesNum;
+} Model_dataNotifier_T;
+
 class ModelListener;
 
 class Model
@@ -17,9 +37,12 @@ public:
     void tick(void);
 
     void ReadInputSignals(void);
-    void NotifySignalsChanged(void);
     void RefreshScreens(void);
+    void NotifyScreens(void);
+    void SignalRequestFromPresenter(void);
 
+    template <typename T> void UpdateElement(T (*getDataPtr)(void), T &currentData, uint8_t &dataNotifier);
+    template <typename T> void NotifyElement(void (ModelListener::*notifySignalChangedElement)(T), T currentData, uint8_t &dataNotifier);
 protected:
     ModelListener* modelListener;
 
@@ -28,14 +51,10 @@ private:
     float    gpsData_latitude;
     float    gpsData_longitude;
     float    gpsData_altitude;
+    uint32_t gpsData_date;
+    uint32_t gpsData_time;
     uint16_t gpsData_read;
     uint16_t gpsData_write;
-    uint8_t  gpsData_timeHr;
-    uint8_t  gpsData_timeMin;
-    uint8_t  gpsData_timeSec;
-    uint8_t  gpsData_dateDay;
-    uint8_t  gpsData_dateMon;
-    uint8_t  gpsData_dateYear;
     uint8_t  gpsData_fixQuality;
     uint8_t  gpsData_satellitesNum;
     char     gpsData_lonDir;
@@ -47,7 +66,9 @@ private:
     uint8_t  dirInfo_in_filesNum;
     uint8_t  dirInfo_out_filesNum;
     /* internal data */
-    uint8_t modelTicks;
+    Model_dataNotifier_T dataNotifier;
+    uint8_t  timeZoneOffset;
+    uint8_t  modelTicks;
 };
 
 #endif // MODEL_HPP

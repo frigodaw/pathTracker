@@ -85,6 +85,16 @@ uint8_t DC_get_neoGps_gpsData_state(void)
 
 /*  File: neoGps.c
     Type: getter
+    Variable: gpsData.time
+*/
+uint32_t DC_get_neoGps_gpsData_time(void)
+{
+    return gpsData.time;
+}
+
+
+/*  File: neoGps.c
+    Type: getter
     Variable: gpsData.timeHr
 */
 uint8_t DC_get_neoGps_gpsData_timeHr(void)
@@ -110,6 +120,16 @@ uint8_t DC_get_neoGps_gpsData_timeMin(void)
 uint8_t DC_get_neoGps_gpsData_timeSec(void)
 {
     return gpsData.timeSec;
+}
+
+
+/*  File: neoGps.c
+    Type: getter
+    Variable: gpsData.date
+*/
+uint32_t DC_get_neoGps_gpsData_date(void)
+{
+    return gpsData.date;
 }
 
 

@@ -18,67 +18,67 @@ void DebugGpsDataScreenView::tearDownScreen()
 }
 
 
-void DebugGpsDataScreenView::notifySignalChanged_gpsData_latitude(float newLatitude)
+void DebugGpsDataScreenView::NotifySignalChanged_gpsData_latitude(float newLatitude)
 {
-    GpsDataCC.notifySignalChanged_gpsData_latitude(newLatitude);
+    GpsDataCC.NotifySignalChanged_gpsData_latitude(newLatitude);
 }
 
 
-void DebugGpsDataScreenView::notifySignalChanged_gpsData_longitude(float newLongitude)
+void DebugGpsDataScreenView::NotifySignalChanged_gpsData_longitude(float newLongitude)
 {
-    GpsDataCC.notifySignalChanged_gpsData_longitude(newLongitude);
+    GpsDataCC.NotifySignalChanged_gpsData_longitude(newLongitude);
 }
 
 
-void DebugGpsDataScreenView::notifySignalChanged_gpsData_altitude(float newAltitude)
+void DebugGpsDataScreenView::NotifySignalChanged_gpsData_altitude(float newAltitude)
 {
-    GpsDataCC.notifySignalChanged_gpsData_altitude(newAltitude);
+    GpsDataCC.NotifySignalChanged_gpsData_altitude(newAltitude);
 }
 
 
-void DebugGpsDataScreenView::notifySignalChanged_gpsData_read(uint16_t newRead)
+void DebugGpsDataScreenView::NotifySignalChanged_gpsData_time(uint32_t newTime)
 {
-    GpsDataCC.notifySignalChanged_gpsData_read(newRead);
+    GpsDataCC.NotifySignalChanged_gpsData_time(newTime);
 }
 
 
-void DebugGpsDataScreenView::notifySignalChanged_gpsData_write(uint16_t newWrite)
+void DebugGpsDataScreenView::NotifySignalChanged_gpsData_date(uint32_t newDate)
 {
-    GpsDataCC.notifySignalChanged_gpsData_write(newWrite);
+    GpsDataCC.NotifySignalChanged_gpsData_date(newDate);
 }
 
 
-void DebugGpsDataScreenView::notifySignalChanged_gpsData_time(uint8_t newTimeHr, uint8_t newTimeMin, uint8_t newTimeSec)
+void DebugGpsDataScreenView::NotifySignalChanged_gpsData_read(uint16_t newRead)
 {
-    GpsDataCC.notifySignalChanged_gpsData_time(newTimeHr, newTimeMin, newTimeSec);
+    GpsDataCC.NotifySignalChanged_gpsData_read(newRead);
 }
 
 
-void DebugGpsDataScreenView::notifySignalChanged_gpsData_date(uint8_t newDateDay, uint8_t newDateMon, uint8_t newDateYear)
+void DebugGpsDataScreenView::NotifySignalChanged_gpsData_write(uint16_t newWrite)
 {
-    GpsDataCC.notifySignalChanged_gpsData_date(newDateDay, newDateMon, newDateYear);
+    GpsDataCC.NotifySignalChanged_gpsData_write(newWrite);
 }
 
 
-void DebugGpsDataScreenView::notifySignalChanged_gpsData_fixQuality(uint8_t newFixQuality)
+void DebugGpsDataScreenView::NotifySignalChanged_gpsData_fixQuality(uint8_t newFixQuality)
 {
-    GpsDataCC.notifySignalChanged_gpsData_fixQuality(newFixQuality);
+    GpsDataCC.NotifySignalChanged_gpsData_fixQuality(newFixQuality);
 }
 
 
-void DebugGpsDataScreenView::notifySignalChanged_gpsData_satellitesNum(uint8_t newSatellitesNum)
+void DebugGpsDataScreenView::NotifySignalChanged_gpsData_satellitesNum(uint8_t newSatellitesNum)
 {
-    GpsDataCC.notifySignalChanged_gpsData_satellitesNum(newSatellitesNum);
+    GpsDataCC.NotifySignalChanged_gpsData_satellitesNum(newSatellitesNum);
 }
 
 
-void DebugGpsDataScreenView::notifySignalChanged_gpsData_lonDir(char newLonDir)
+void DebugGpsDataScreenView::NotifySignalChanged_gpsData_lonDir(char newLonDir)
 {
-    GpsDataCC.notifySignalChanged_gpsData_lonDir(newLonDir);
+    GpsDataCC.NotifySignalChanged_gpsData_lonDir(newLonDir);
 }
 
 
-void DebugGpsDataScreenView::notifySignalChanged_gpsData_latDir(char newLatDir)
+void DebugGpsDataScreenView::NotifySignalChanged_gpsData_latDir(char newLatDir)
 {
-    GpsDataCC.notifySignalChanged_gpsData_latDir(newLatDir);
+    GpsDataCC.NotifySignalChanged_gpsData_latDir(newLatDir);
 }

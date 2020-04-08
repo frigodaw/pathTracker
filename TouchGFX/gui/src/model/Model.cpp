@@ -1,16 +1,15 @@
 #include <gui/model/Model.hpp>
 #include <gui/model/ModelListener.hpp>
+#include <string.h>
 #include "cmsis_os.h"
 #include "dataCollector.h"
 
-extern osMessageQId Queue_gpsData_ReadHandle;
-extern osMessageQId Queue_gpsData_WriteHandle;
 
 
 /* Constructor of the class Model */
 Model::Model() : modelListener(0), modelTicks(0)
 {
-
+    dataNotifier = {0u};
 }
 
 
@@ -28,9 +27,9 @@ void Model::tick(void)
 {
     ReadInputSignals();
 
-    //NotifySignalsChanged();
-
     RefreshScreens();
+
+    NotifyScreens();
 }
 
 
@@ -39,28 +38,24 @@ void Model::tick(void)
 void Model::ReadInputSignals(void)
 {
     /* neoGps */
-    gpsData_latitude = DC_get_neoGps_gpsData_latitude();
-    gpsData_longitude = DC_get_neoGps_gpsData_longitude();
-    gpsData_altitude = DC_get_neoGps_gpsData_altitude();
-    gpsData_read = DC_get_neoGps_gpsData_read();
-    gpsData_write = DC_get_neoGps_gpsData_write();
-    gpsData_timeHr = DC_get_neoGps_gpsData_timeHr();
-    gpsData_timeMin = DC_get_neoGps_gpsData_timeMin();
-    gpsData_timeSec = DC_get_neoGps_gpsData_timeSec();
-    gpsData_dateDay = DC_get_neoGps_gpsData_dateDay();
-    gpsData_dateMon = DC_get_neoGps_gpsData_dateMon();
-    gpsData_dateYear = DC_get_neoGps_gpsData_dateYear();
-    gpsData_fixQuality = DC_get_neoGps_gpsData_fixQuality();
-    gpsData_satellitesNum = DC_get_neoGps_gpsData_satellitesNum();
-    gpsData_lonDir = DC_get_neoGps_gpsData_lonDir();
-    gpsData_latDir = DC_get_neoGps_gpsData_latDir();
+    UpdateElement<float>(DC_get_neoGps_gpsData_latitude, gpsData_latitude, dataNotifier.gpsData_latitude);
+    UpdateElement<float>(DC_get_neoGps_gpsData_longitude, gpsData_longitude, dataNotifier.gpsData_longitude);
+    UpdateElement<float>(DC_get_neoGps_gpsData_altitude, gpsData_altitude, dataNotifier.gpsData_altitude);
+    UpdateElement<uint32_t>(DC_get_neoGps_gpsData_time, gpsData_time, dataNotifier.gpsData_time);
+    UpdateElement<uint32_t>(DC_get_neoGps_gpsData_date, gpsData_date, dataNotifier.gpsData_date);
+    UpdateElement<uint16_t>(DC_get_neoGps_gpsData_read, gpsData_read, dataNotifier.gpsData_read);
+    UpdateElement<uint16_t>(DC_get_neoGps_gpsData_write, gpsData_write, dataNotifier.gpsData_write);
+    UpdateElement<uint8_t>(DC_get_neoGps_gpsData_fixQuality, gpsData_fixQuality, dataNotifier.gpsData_fixQuality);
+    UpdateElement<uint8_t>(DC_get_neoGps_gpsData_satellitesNum, gpsData_satellitesNum, dataNotifier.gpsData_satellitesNum);
+    UpdateElement<char>(DC_get_neoGps_gpsData_lonDir, gpsData_lonDir, dataNotifier.gpsData_lonDir);
+    UpdateElement<char>(DC_get_neoGps_gpsData_latDir, gpsData_latDir, dataNotifier.gpsData_latDir);
 
     /* fileSystem */
-    sdCardInfo_totalSpace = DC_get_fileSystem_sdCardInfo_totalSpace();
-    sdCardInfo_freeSpace = DC_get_fileSystem_sdCardInfo_freeSpace();
-    sdCardInfo_state = DC_get_fileSystem_sdCardInfo_state();
-    dirInfo_in_filesNum = DC_get_fileSystem_dirInfo_in_filesNum();
-    dirInfo_out_filesNum = DC_get_fileSystem_dirInfo_out_filesNum();
+    UpdateElement<uint32_t>(DC_get_fileSystem_sdCardInfo_totalSpace, sdCardInfo_totalSpace, dataNotifier.sdCardInfo_totalSpace);
+    UpdateElement<uint32_t>(DC_get_fileSystem_sdCardInfo_freeSpace, sdCardInfo_freeSpace, dataNotifier.sdCardInfo_freeSpace);
+    UpdateElement<uint8_t>(DC_get_fileSystem_sdCardInfo_state, sdCardInfo_state, dataNotifier.sdCardInfo_state);
+    UpdateElement<uint8_t>(DC_get_fileSystem_dirInfo_in_filesNum, dirInfo_in_filesNum, dataNotifier.dirInfo_in_filesNum);
+    UpdateElement<uint8_t>(DC_get_fileSystem_dirInfo_out_filesNum, dirInfo_out_filesNum, dataNotifier.dirInfo_out_filesNum);
 }
 
 
@@ -71,7 +66,6 @@ void Model::RefreshScreens(void)
     modelTicks++;
     if(modelTicks >= MODEL_GPSDATA_TIME_INTERVAL)
     {
-        NotifySignalsChanged();
         modelTicks = 0u;
     }
     else
@@ -82,29 +76,73 @@ void Model::RefreshScreens(void)
 
 
 /* Method called to inform active presenter that some
-   signals have changes and give it a new value */
-void Model::NotifySignalsChanged(void)
+   signals have changed and give it a new value */
+void Model::NotifyScreens(void)
 {
     if(modelListener != NULL)
     {
         /* neoGps */
-        modelListener->notifySignalChanged_gpsData_latitude(gpsData_latitude);
-        modelListener->notifySignalChanged_gpsData_longitude(gpsData_longitude);
-        modelListener->notifySignalChanged_gpsData_altitude(gpsData_altitude);
-        modelListener->notifySignalChanged_gpsData_read(gpsData_read);
-        modelListener->notifySignalChanged_gpsData_write(gpsData_write);
-        modelListener->notifySignalChanged_gpsData_time(gpsData_timeHr, gpsData_timeMin, gpsData_timeSec);
-        modelListener->notifySignalChanged_gpsData_date(gpsData_dateDay, gpsData_dateMon, gpsData_dateYear);
-        modelListener->notifySignalChanged_gpsData_fixQuality(gpsData_fixQuality);
-        modelListener->notifySignalChanged_gpsData_satellitesNum(gpsData_satellitesNum);
-        modelListener->notifySignalChanged_gpsData_lonDir(gpsData_lonDir);
-        modelListener->notifySignalChanged_gpsData_latDir(gpsData_latDir);
+        NotifyElement<float>(&ModelListener::NotifySignalChanged_gpsData_longitude, gpsData_longitude, dataNotifier.gpsData_longitude);
+        NotifyElement<float>(&ModelListener::NotifySignalChanged_gpsData_latitude, gpsData_latitude, dataNotifier.gpsData_latitude);
+        NotifyElement<float>(&ModelListener::NotifySignalChanged_gpsData_altitude, gpsData_altitude, dataNotifier.gpsData_altitude);
+        NotifyElement<uint32_t>(&ModelListener::NotifySignalChanged_gpsData_time, gpsData_time, dataNotifier.gpsData_time);
+        NotifyElement<uint32_t>(&ModelListener::NotifySignalChanged_gpsData_date, gpsData_date, dataNotifier.gpsData_date);
+        NotifyElement<uint16_t>(&ModelListener::NotifySignalChanged_gpsData_read, gpsData_read, dataNotifier.gpsData_read);
+        NotifyElement<uint16_t>(&ModelListener::NotifySignalChanged_gpsData_write, gpsData_write, dataNotifier.gpsData_write);
+        NotifyElement<uint8_t>(&ModelListener::NotifySignalChanged_gpsData_fixQuality, gpsData_fixQuality, dataNotifier.gpsData_fixQuality);
+        NotifyElement<uint8_t>(&ModelListener::NotifySignalChanged_gpsData_satellitesNum, gpsData_satellitesNum, dataNotifier.gpsData_satellitesNum);
+        NotifyElement<char>(&ModelListener::NotifySignalChanged_gpsData_lonDir, gpsData_lonDir, dataNotifier.gpsData_lonDir);
+        NotifyElement<char>(&ModelListener::NotifySignalChanged_gpsData_latDir, gpsData_latDir, dataNotifier.gpsData_latDir);
 
         /* fileSystem */
-        modelListener->notifySignalChanged_sdCardInfo_totalSpace(sdCardInfo_totalSpace);
-        modelListener->notifySignalChanged_sdCardInfo_freeSpace(sdCardInfo_freeSpace);
-        modelListener->notifySignalChanged_sdCardInfo_state(sdCardInfo_state);
-        modelListener->notifySignalChanged_dirInfo_in_filesNum(dirInfo_in_filesNum);
-        modelListener->notifySignalChanged_dirInfo_out_filesNum(dirInfo_out_filesNum);
+        NotifyElement<uint32_t>(&ModelListener::NotifySignalChanged_sdCardInfo_totalSpace, sdCardInfo_totalSpace, dataNotifier.sdCardInfo_totalSpace);
+        NotifyElement<uint32_t>(&ModelListener::NotifySignalChanged_sdCardInfo_freeSpace, sdCardInfo_freeSpace, dataNotifier.sdCardInfo_freeSpace);
+        NotifyElement<uint8_t>(&ModelListener::NotifySignalChanged_sdCardInfo_state, sdCardInfo_state, dataNotifier.sdCardInfo_state);
+        NotifyElement<uint8_t>(&ModelListener::NotifySignalChanged_dirInfo_in_filesNum, dirInfo_in_filesNum, dataNotifier.dirInfo_in_filesNum);
+        NotifyElement<uint8_t>(&ModelListener::NotifySignalChanged_dirInfo_out_filesNum, dirInfo_out_filesNum, dataNotifier.dirInfo_out_filesNum);
     }
+}
+
+
+/* Method called to acquire new data via variable
+   getter from dataCollector. If new value if different
+   than previous one, dataNotifier flag will be set
+   to inform NotifyElement function. */
+template <typename T>
+void Model::UpdateElement(T (*getDataPtr)(void), T &currentData, uint8_t &dataNotifier)
+{
+    T newData = getDataPtr();
+    if(newData != currentData)
+    {
+        currentData = newData;
+        dataNotifier = true;
+    }
+    else
+    {
+        dataNotifier = false;
+    }
+}
+
+
+/* Method called to notify active presenter
+   if given variable has changed since
+   last call */
+template <typename T>
+void Model::NotifyElement(void (ModelListener::*notifySignalChangedElement)(T), T currentData, uint8_t &dataNotifier)
+{
+    if (true == dataNotifier)
+    {
+        (modelListener->*notifySignalChangedElement)(currentData);
+        dataNotifier = false;
+    }
+}
+
+
+/* Method called to set all dataNotifier structure
+   to true to force Model to update current
+   presenter with proper signal value */
+void Model::SignalRequestFromPresenter(void)
+{
+    memset(&dataNotifier, true, sizeof(dataNotifier));
+    NotifyScreens();
 }

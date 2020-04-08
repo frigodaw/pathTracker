@@ -9,7 +9,7 @@ DebugSdCardScreenPresenter::DebugSdCardScreenPresenter(DebugSdCardScreenView& v)
 
 void DebugSdCardScreenPresenter::activate()
 {
-
+    model->SignalRequestFromPresenter();
 }
 
 void DebugSdCardScreenPresenter::deactivate()
@@ -17,27 +17,27 @@ void DebugSdCardScreenPresenter::deactivate()
 
 }
 
-void DebugSdCardScreenPresenter::notifySignalChanged_sdCardInfo_totalSpace(uint32_t newTotalSpace)
+void DebugSdCardScreenPresenter::NotifySignalChanged_sdCardInfo_totalSpace(uint32_t newTotalSpace)
 {
-    view.notifySignalChanged_sdCardInfo_totalSpace(newTotalSpace);
+    view.NotifySignalChanged_sdCardInfo_totalSpace(newTotalSpace);
 }
 
-void DebugSdCardScreenPresenter::notifySignalChanged_sdCardInfo_freeSpace(uint32_t newFreeSpace)
+void DebugSdCardScreenPresenter::NotifySignalChanged_sdCardInfo_freeSpace(uint32_t newFreeSpace)
 {
-    view.notifySignalChanged_sdCardInfo_freeSpace(newFreeSpace);
+    view.NotifySignalChanged_sdCardInfo_freeSpace(newFreeSpace);
 }
 
-void DebugSdCardScreenPresenter::notifySignalChanged_sdCardInfo_state(uint8_t newState)
+void DebugSdCardScreenPresenter::NotifySignalChanged_sdCardInfo_state(uint8_t newState)
 {
-    view.notifySignalChanged_sdCardInfo_state(newState);
+    view.NotifySignalChanged_sdCardInfo_state(newState);
 }
 
-void DebugSdCardScreenPresenter::notifySignalChanged_dirInfo_in_filesNum(uint8_t newInFilesNum)
+void DebugSdCardScreenPresenter::NotifySignalChanged_dirInfo_in_filesNum(uint8_t newInFilesNum)
 {
-    view.notifySignalChanged_dirInfo_in_filesNum(newInFilesNum);
+    view.NotifySignalChanged_dirInfo_in_filesNum(newInFilesNum);
 }
 
-void DebugSdCardScreenPresenter::notifySignalChanged_dirInfo_out_filesNum(uint8_t newOutFilesNum)
+void DebugSdCardScreenPresenter::NotifySignalChanged_dirInfo_out_filesNum(uint8_t newOutFilesNum)
 {
-    view.notifySignalChanged_dirInfo_out_filesNum(newOutFilesNum);
+    view.NotifySignalChanged_dirInfo_out_filesNum(newOutFilesNum);
 }

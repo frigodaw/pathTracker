@@ -722,6 +722,7 @@ void Gps_ReadMessageElement_Date(uint8_t* fieldBuff)
         ((GPS_LIMIT_DATE_MON_LOWER  <= dateMon ) && (GPS_LIMIT_DATE_MON_UPPER  >= dateMon)) &&
         ((GPS_LIMIT_DATE_DAY_LOWER  <= dateDay ) && (GPS_LIMIT_DATE_DAY_UPPER  >= dateDay)) )
     {
+        gpsData.date     = dateLinked;
         gpsData.dateYear = dateYear;
         gpsData.dateMon  = dateMon;
         gpsData.dateDay  = dateDay;
@@ -750,6 +751,7 @@ void Gps_ReadMessageElement_Time(uint8_t* fieldBuff)
         ((GPS_LIMIT_TIME_MIN_LOWER <= timeMin) && (GPS_LIMIT_TIME_MIN_UPPER >= timeMin)) &&
         ((GPS_LIMIT_TIME_HR_LOWER  <= timeHr ) && (GPS_LIMIT_TIME_HR_UPPER  >= timeHr)) )
     {
+        gpsData.time    = timeLinked;
         gpsData.timeSec = timeSec;
         gpsData.timeMin = timeMin;
         gpsData.timeHr  = timeHr;

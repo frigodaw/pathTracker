@@ -231,6 +231,9 @@ typedef struct GpsUartData_Tag
     float altitude;
     float groundSpeedKmh;
 
+    uint32_t time;
+    uint32_t date;
+
     volatile Gps_bufferState state;
 
     uint8_t dateDay;

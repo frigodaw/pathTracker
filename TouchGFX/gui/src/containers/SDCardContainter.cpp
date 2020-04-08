@@ -11,21 +11,21 @@ void SDCardContainter::initialize()
 }
 
 
-void SDCardContainter::notifySignalChanged_sdCardInfo_totalSpace(uint32_t newTotalSpace)
+void SDCardContainter::NotifySignalChanged_sdCardInfo_totalSpace(uint32_t newTotalSpace)
 {
     Unicode::snprintf(TotalSpaceTextBoxBuffer, TOTALSPACETEXTBOX_SIZE, "%d", newTotalSpace);
     TotalSpaceTextBox.invalidate();
 }
 
 
-void SDCardContainter::notifySignalChanged_sdCardInfo_freeSpace(uint32_t newFreeSpace)
+void SDCardContainter::NotifySignalChanged_sdCardInfo_freeSpace(uint32_t newFreeSpace)
 {
     Unicode::snprintf(FreeSpaceTextBoxBuffer, FREESPACETEXTBOX_SIZE, "%d", newFreeSpace);
     FreeSpaceTextBox.invalidate();
 }
 
 
-void SDCardContainter::notifySignalChanged_sdCardInfo_state(uint8_t newState)
+void SDCardContainter::NotifySignalChanged_sdCardInfo_state(uint8_t newState)
 {
     Unicode::UnicodeChar stateText[STATETEXTBOX_SIZE] = {0u};
 
@@ -47,14 +47,14 @@ void SDCardContainter::notifySignalChanged_sdCardInfo_state(uint8_t newState)
 }
 
 
-void SDCardContainter::notifySignalChanged_dirInfo_in_filesNum(uint8_t newInFilesNum)
+void SDCardContainter::NotifySignalChanged_dirInfo_in_filesNum(uint8_t newInFilesNum)
 {
     Unicode::snprintf(InputFilesTextBoxBuffer, INPUTFILESTEXTBOX_SIZE, "%d", newInFilesNum);
     InputFilesTextBox.invalidate();
 }
 
 
-void SDCardContainter::notifySignalChanged_dirInfo_out_filesNum(uint8_t newOutFilesNum)
+void SDCardContainter::NotifySignalChanged_dirInfo_out_filesNum(uint8_t newOutFilesNum)
 {
     Unicode::snprintf(OutputFilesTextBoxBuffer, OUTPUTFILESTEXTBOX_SIZE, "%d", newOutFilesNum);
     OutputFilesTextBox.invalidate();
