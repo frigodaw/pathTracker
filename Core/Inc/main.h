@@ -39,14 +39,14 @@ extern "C" {
 /* USER CODE BEGIN ET */
 typedef struct
 {
-   uint16_t t_100ms;
-   uint16_t t_1s;
+   uint32_t t_100ms;
+   uint32_t t_1s;
 } TimerTypeT;
 
 typedef struct
 {
-   uint16_t c_gpsTask;
-   uint16_t c_defaultTask;
+   uint32_t c_gpsTask;
+   uint32_t c_defaultTask;
 } CounterTypeT;
 /* USER CODE END ET */
 

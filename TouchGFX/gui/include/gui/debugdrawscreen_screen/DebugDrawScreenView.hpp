@@ -8,9 +8,9 @@ class DebugDrawScreenView : public DebugDrawScreenViewBase
 {
 public:
     DebugDrawScreenView();
-    virtual ~DebugDrawScreenView() {}
-    virtual void setupScreen();
-    virtual void tearDownScreen();
+    ~DebugDrawScreenView() {}
+    void setupScreen();
+    void tearDownScreen();
 protected:
 };
 

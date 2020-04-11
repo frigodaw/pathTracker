@@ -1027,8 +1027,8 @@ void DefaultTask(void const * argument)
   for(;;)
   {
     FS_Main();
-    cnt.c_defaultTask++;
-    osDelay(500);
+    DC_inc_main_cnt_c_defaultTask();
+    osDelay(1000);
   }
   /* USER CODE END 5 */ 
 }
@@ -1046,8 +1046,8 @@ void LtdcTask(void const * argument)
   /* Infinite loop */
   for(;;)
   {
+    /* This function never returns */
     MX_TouchGFX_Process();
-    osDelay(1);
   }
   /* USER CODE END LtdcTask */
 }
@@ -1066,7 +1066,7 @@ void GpsTask(void const * argument)
   for(;;)
   {
     Gps_Main();
-    cnt.c_gpsTask++;
+    DC_inc_main_cnt_c_gpsTask();
     osDelay(100);
   }
   /* USER CODE END GpsTask */
@@ -1091,8 +1091,11 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
   /* USER CODE BEGIN Callback 1 */
   if (htim->Instance == TIM10)
   {
-    tim.t_100ms++;
-    tim.t_1s = tim.t_100ms / 10u;
+    DC_inc_main_tim_t_100ms();
+    if((DC_get_main_tim_t_100ms() % 10u) == 0u)
+    {
+      DC_inc_main_tim_t_1s();
+    }
     //CDC_Transmit_HS(gpsDebug.buffer, gpsDebug.size);
   }
 

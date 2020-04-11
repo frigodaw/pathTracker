@@ -8,9 +8,9 @@ class AppActivityScreenView : public AppActivityScreenViewBase
 {
 public:
     AppActivityScreenView();
-    virtual ~AppActivityScreenView() {}
-    virtual void setupScreen();
-    virtual void tearDownScreen();
+    ~AppActivityScreenView() {}
+    void setupScreen();
+    void tearDownScreen();
 
     void StartStopActivity(void);
     void FinishActivity(void);

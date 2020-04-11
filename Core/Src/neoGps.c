@@ -614,11 +614,11 @@ uint8_t Gps_PrepareDebugData(void)
 */
 uint8_t Gps_RetriggerUartGps(void)
 {
-    static uint16_t timeFirstFault = 0u;
+    static uint32_t timeFirstFault = 0u;
     static uint16_t lastWrite = 0u;
 
-    uint16_t timeNow = DC_get_main_tim_t_1s();
-    uint16_t timeDiff = 0u;
+    uint32_t timeNow = DC_get_main_tim_t_1s();
+    uint32_t timeDiff = 0u;
 
     if((gpsData.state == GPS_FULL) || (lastWrite == gpsData.write))
     {

@@ -12,11 +12,10 @@ class AppMenuScreenPresenter : public touchgfx::Presenter, public ModelListener
 {
 public:
     AppMenuScreenPresenter(AppMenuScreenView& v);
+    ~AppMenuScreenPresenter() {};
+    void activate();
+    void deactivate();
 
-    virtual void activate();
-    virtual void deactivate();
-
-    virtual ~AppMenuScreenPresenter() {};
 
 private:
     AppMenuScreenPresenter();

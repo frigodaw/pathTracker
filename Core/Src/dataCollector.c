@@ -12,10 +12,60 @@
 
 /* -------------------- main -------------------- */
 /*  File: main.c
+    Type: incrementer
+    Variable: cnt.c_gpsTask
+*/
+void DC_inc_main_cnt_c_gpsTask(void)
+{
+    cnt.c_gpsTask += 1u;
+}
+
+
+/*  File: main.c
+    Type: incrementer
+    Variable: cnt.c_defaultTask
+*/
+void DC_inc_main_cnt_c_defaultTask(void)
+{
+    cnt.c_defaultTask += 1u;
+}
+
+
+/*  File: main.c
+    Type: incrementer
+    Variable: tim.t_100ms
+*/
+void DC_inc_main_tim_t_100ms(void)
+{
+    tim.t_100ms += 1u;
+}
+
+
+/*  File: main.c
+    Type: incrementer
+    Variable: tim.t_1s
+*/
+void DC_inc_main_tim_t_1s(void)
+{
+    tim.t_1s += 1u;
+}
+
+
+/*  File: main.c
+    Type: getter
+    Variable: tim.t_100ms
+*/
+uint32_t DC_get_main_tim_t_100ms(void)
+{
+    return tim.t_100ms;
+}
+
+
+/*  File: main.c
     Type: getter
     Variable: tim.t_1s
 */
-uint16_t DC_get_main_tim_t_1s(void)
+uint32_t DC_get_main_tim_t_1s(void)
 {
     return tim.t_1s;
 }

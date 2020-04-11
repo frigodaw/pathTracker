@@ -8,9 +8,9 @@ class AppMenuScreenView : public AppMenuScreenViewBase
 {
 public:
     AppMenuScreenView();
-    virtual ~AppMenuScreenView() {}
-    virtual void setupScreen();
-    virtual void tearDownScreen();
+    ~AppMenuScreenView() {}
+    void setupScreen();
+    void tearDownScreen();
 protected:
 };
 

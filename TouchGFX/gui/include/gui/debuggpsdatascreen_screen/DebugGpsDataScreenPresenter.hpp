@@ -12,32 +12,22 @@ class DebugGpsDataScreenPresenter : public touchgfx::Presenter, public ModelList
 {
 public:
     DebugGpsDataScreenPresenter(DebugGpsDataScreenView& v);
+    ~DebugGpsDataScreenPresenter() {};
+    void activate();
+    void deactivate();
 
-    /**
-     * The activate function is called automatically when this screen is "switched in"
-     * (ie. made active). Initialization logic can be placed here.
-     */
-    virtual void activate();
+    void NotifySignalChanged_gpsData_latitude(float newLatitude);
+    void NotifySignalChanged_gpsData_longitude(float newLongitude);
+    void NotifySignalChanged_gpsData_altitude(float newAltitude);
+    void NotifySignalChanged_gpsData_time(uint32_t newTime);
+    void NotifySignalChanged_gpsData_date(uint32_t newDate);
+    void NotifySignalChanged_gpsData_read(uint16_t newRead);
+    void NotifySignalChanged_gpsData_write(uint16_t newWrite);
+    void NotifySignalChanged_gpsData_fixQuality(uint8_t newFixQuality);
+    void NotifySignalChanged_gpsData_satellitesNum(uint8_t newSatellitesNum);
+    void NotifySignalChanged_gpsData_lonDir(char newLonDir);
+    void NotifySignalChanged_gpsData_latDir(char newLatDir);
 
-    /**
-     * The deactivate function is called automatically when this screen is "switched out"
-     * (ie. made inactive). Teardown functionality can be placed here.
-     */
-    virtual void deactivate();
-
-    virtual void NotifySignalChanged_gpsData_latitude(float newLatitude);
-    virtual void NotifySignalChanged_gpsData_longitude(float newLongitude);
-    virtual void NotifySignalChanged_gpsData_altitude(float newAltitude);
-    virtual void NotifySignalChanged_gpsData_time(uint32_t newTime);
-    virtual void NotifySignalChanged_gpsData_date(uint32_t newDate);
-    virtual void NotifySignalChanged_gpsData_read(uint16_t newRead);
-    virtual void NotifySignalChanged_gpsData_write(uint16_t newWrite);
-    virtual void NotifySignalChanged_gpsData_fixQuality(uint8_t newFixQuality);
-    virtual void NotifySignalChanged_gpsData_satellitesNum(uint8_t newSatellitesNum);
-    virtual void NotifySignalChanged_gpsData_lonDir(char newLonDir);
-    virtual void NotifySignalChanged_gpsData_latDir(char newLatDir);
-
-    virtual ~DebugGpsDataScreenPresenter() {};
 
 private:
     DebugGpsDataScreenPresenter();

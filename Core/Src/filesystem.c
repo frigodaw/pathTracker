@@ -13,10 +13,10 @@
 static FATFS fs = {0u};
 
 /* Component's buffer to read and write data to and from a test file */
-static uint8_t fsBuffer[FS_BUFFSIZE] = {0u};
+//static uint8_t fsBuffer[FS_BUFFSIZE] = {0u};
 
 /* Variable to store currently opened read and write file */
-static FS_FilesCollection_T files = {0u};
+//static FS_FilesCollection_T files = {0u};
 
 /* Global variable with the main info about current SD card */
 FS_SDcardInfo_T sdCardInfo = {0u};
@@ -62,6 +62,7 @@ void FS_Main(void)
         if(FR_OK == fresult)
         {
             /* Read from from a test file */
+            /*
             uint8_t retVal = FS_OpenFile(&files.in, "READ.TXT", FA_READ);
             if(RET_OK == retVal)
             {
@@ -72,8 +73,10 @@ void FS_Main(void)
 
                 retVal |= FS_CloseFile(&files.in);
             }
+            */
 
             /* Write data to a test file */
+            /*
             retVal = FS_OpenFile(&files.out, "WRITE.TXT", FA_CREATE_ALWAYS | FA_WRITE);
             if(RET_OK == retVal)
             {
@@ -84,6 +87,7 @@ void FS_Main(void)
                 retVal = FS_WriteFile(&files.out, fsBuffer);
                 retVal |= FS_CloseFile(&files.out);
             }
+            */
         }
         else if(FR_DISK_ERR == fresult)
         {

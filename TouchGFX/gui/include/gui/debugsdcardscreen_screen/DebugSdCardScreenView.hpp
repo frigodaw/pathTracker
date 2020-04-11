@@ -8,15 +8,15 @@ class DebugSdCardScreenView : public DebugSdCardScreenViewBase
 {
 public:
     DebugSdCardScreenView();
-    virtual ~DebugSdCardScreenView() {}
-    virtual void setupScreen();
-    virtual void tearDownScreen();
+    ~DebugSdCardScreenView() {}
+    void setupScreen();
+    void tearDownScreen();
 
-    virtual void NotifySignalChanged_sdCardInfo_totalSpace(uint32_t newTotalSpace);
-    virtual void NotifySignalChanged_sdCardInfo_freeSpace(uint32_t newFreeSpace);
-    virtual void NotifySignalChanged_sdCardInfo_state(uint8_t newState);
-    virtual void NotifySignalChanged_dirInfo_in_filesNum(uint8_t newInFilesNum);
-    virtual void NotifySignalChanged_dirInfo_out_filesNum(uint8_t newOutFilesNum);
+    void NotifySignalChanged_sdCardInfo_totalSpace(uint32_t newTotalSpace);
+    void NotifySignalChanged_sdCardInfo_freeSpace(uint32_t newFreeSpace);
+    void NotifySignalChanged_sdCardInfo_state(uint8_t newState);
+    void NotifySignalChanged_dirInfo_in_filesNum(uint8_t newInFilesNum);
+    void NotifySignalChanged_dirInfo_out_filesNum(uint8_t newOutFilesNum);
 protected:
 };
 

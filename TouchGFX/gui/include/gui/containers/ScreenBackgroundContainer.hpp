@@ -7,9 +7,8 @@ class ScreenBackgroundContainer : public ScreenBackgroundContainerBase
 {
 public:
     ScreenBackgroundContainer();
-    virtual ~ScreenBackgroundContainer() {}
-
-    virtual void initialize();
+    ~ScreenBackgroundContainer() {}
+    void initialize();
 protected:
 };
 

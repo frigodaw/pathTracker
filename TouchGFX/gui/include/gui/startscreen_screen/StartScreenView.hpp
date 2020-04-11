@@ -8,9 +8,9 @@ class StartScreenView : public StartScreenViewBase
 {
 public:
     StartScreenView();
-    virtual ~StartScreenView() {}
-    virtual void setupScreen();
-    virtual void tearDownScreen();
+    ~StartScreenView() {}
+    void setupScreen();
+    void tearDownScreen();
 protected:
 };
 

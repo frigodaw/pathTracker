@@ -39,7 +39,12 @@ extern "C" {
 
 /* START OF THE FUNCTIONS PROTOTYPES AREA */
 /* ---------- main ---------- */
-uint16_t DC_get_main_tim_t_1s(void);
+void DC_inc_main_cnt_c_gpsTask(void);
+void DC_inc_main_cnt_c_defaultTask(void);
+void DC_inc_main_tim_t_100ms(void);
+void DC_inc_main_tim_t_1s(void);
+uint32_t DC_get_main_tim_t_100ms(void);
+uint32_t DC_get_main_tim_t_1s(void);
 
 /* ---------- neoGps ---------- */
 float    DC_get_neoGps_gpsData_longitude(void);

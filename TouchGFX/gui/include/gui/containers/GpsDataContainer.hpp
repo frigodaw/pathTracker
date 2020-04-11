@@ -12,21 +12,20 @@ class GpsDataContainer : public GpsDataContainerBase
 {
 public:
     GpsDataContainer();
-    virtual ~GpsDataContainer() {}
+    ~GpsDataContainer() {}
+    void initialize();
 
-    virtual void initialize();
-
-    virtual void NotifySignalChanged_gpsData_latitude(float newLatitude);
-    virtual void NotifySignalChanged_gpsData_longitude(float newLongitude);
-    virtual void NotifySignalChanged_gpsData_altitude(float newAltitude);
-    virtual void NotifySignalChanged_gpsData_time(uint32_t newTime);
-    virtual void NotifySignalChanged_gpsData_date(uint32_t newDate);
-    virtual void NotifySignalChanged_gpsData_read(uint16_t newRead);
-    virtual void NotifySignalChanged_gpsData_write(uint16_t newWrite);
-    virtual void NotifySignalChanged_gpsData_fixQuality(uint8_t newFixQuality);
-    virtual void NotifySignalChanged_gpsData_satellitesNum(uint8_t newSatellitesNum);
-    virtual void NotifySignalChanged_gpsData_lonDir(char newLonDir);
-    virtual void NotifySignalChanged_gpsData_latDir(char newLatDir);
+    void NotifySignalChanged_gpsData_latitude(float newLatitude);
+    void NotifySignalChanged_gpsData_longitude(float newLongitude);
+    void NotifySignalChanged_gpsData_altitude(float newAltitude);
+    void NotifySignalChanged_gpsData_time(uint32_t newTime);
+    void NotifySignalChanged_gpsData_date(uint32_t newDate);
+    void NotifySignalChanged_gpsData_read(uint16_t newRead);
+    void NotifySignalChanged_gpsData_write(uint16_t newWrite);
+    void NotifySignalChanged_gpsData_fixQuality(uint8_t newFixQuality);
+    void NotifySignalChanged_gpsData_satellitesNum(uint8_t newSatellitesNum);
+    void NotifySignalChanged_gpsData_lonDir(char newLonDir);
+    void NotifySignalChanged_gpsData_latDir(char newLatDir);
 protected:
 };
 

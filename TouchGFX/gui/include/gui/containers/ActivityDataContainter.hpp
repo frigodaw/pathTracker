@@ -7,9 +7,8 @@ class ActivityDataContainter : public ActivityDataContainterBase
 {
 public:
     ActivityDataContainter();
-    virtual ~ActivityDataContainter() {}
-
-    virtual void initialize();
+    ~ActivityDataContainter() {}
+    void initialize();
 protected:
 };
 
