@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <projectDescription>
 	<name>pathTracker</name>
-	<comment></comment>
+	<comment/>
 	<projects>
 	</projects>
 	<buildSpec>
@@ -637,6 +637,56 @@
 			<name>Application/User/TouchGFX/target/generated/TouchGFXGeneratedHAL.cpp</name>
 			<type>1</type>
 			<locationURI>$%7BPARENT-1-PROJECT_LOC%7D/TouchGFX/target/generated/TouchGFXGeneratedHAL.cpp</locationURI>
+		</link>
+		<link>
+			<name>Application/User/gui/ActivityDataContainter.cpp</name>
+			<type>1</type>
+			<locationURI>$%7BPARENT-1-PROJECT_LOC%7D/TouchGFX/gui/src/containers/ActivityDataContainter.cpp</locationURI>
+		</link>
+		<link>
+			<name>Application/User/generated/ActivityDataContainterBase.cpp</name>
+			<type>1</type>
+			<locationURI>$%7BPARENT-1-PROJECT_LOC%7D/TouchGFX/generated/gui_generated/src/containers/ActivityDataContainterBase.cpp</locationURI>
+		</link>
+		<link>
+			<name>Application/User/generated/Blue_PageIndicator_dot_indicator_small_highlight.cpp</name>
+			<type>1</type>
+			<locationURI>$%7BPARENT-1-PROJECT_LOC%7D/TouchGFX/generated/images/src/__designer/Blue_PageIndicator_dot_indicator_small_highlight.cpp</locationURI>
+		</link>
+		<link>
+			<name>Application/User/generated/Blue_PageIndicator_dot_indicator_small_normal.cpp</name>
+			<type>1</type>
+			<locationURI>$%7BPARENT-1-PROJECT_LOC%7D/TouchGFX/generated/images/src/__designer/Blue_PageIndicator_dot_indicator_small_normal.cpp</locationURI>
+		</link>
+		<link>
+			<name>Application/User/gui/AppActivityScreenPresenter.cpp</name>
+			<type>1</type>
+			<locationURI>$%7BPARENT-1-PROJECT_LOC%7D/TouchGFX/gui/src/appactivityscreen_screen/AppActivityScreenPresenter.cpp</locationURI>
+		</link>
+		<link>
+			<name>Application/User/gui/AppActivityScreenView.cpp</name>
+			<type>1</type>
+			<locationURI>$%7BPARENT-1-PROJECT_LOC%7D/TouchGFX/gui/src/appactivityscreen_screen/AppActivityScreenView.cpp</locationURI>
+		</link>
+		<link>
+			<name>Application/User/generated/AppActivityScreenViewBase.cpp</name>
+			<type>1</type>
+			<locationURI>$%7BPARENT-1-PROJECT_LOC%7D/TouchGFX/generated/gui_generated/src/appactivityscreen_screen/AppActivityScreenViewBase.cpp</locationURI>
+		</link>
+		<link>
+			<name>Application/User/generated/Blue_Icons_Home_32.cpp</name>
+			<type>1</type>
+			<locationURI>$%7BPARENT-1-PROJECT_LOC%7D/TouchGFX/generated/images/src/__designer/Blue_Icons_Home_32.cpp</locationURI>
+		</link>
+		<link>
+			<name>Application/User/generated/Blue_Icons_Pause_32.cpp</name>
+			<type>1</type>
+			<locationURI>$%7BPARENT-1-PROJECT_LOC%7D/TouchGFX/generated/images/src/__designer/Blue_Icons_Pause_32.cpp</locationURI>
+		</link>
+		<link>
+			<name>Application/User/generated/Blue_Icons_Stop_32.cpp</name>
+			<type>1</type>
+			<locationURI>$%7BPARENT-1-PROJECT_LOC%7D/TouchGFX/generated/images/src/__designer/Blue_Icons_Stop_32.cpp</locationURI>
 		</link>
 	</linkedResources>
 </projectDescription>

@@ -41,6 +41,11 @@
     <ClCompile Include="..\..\generated\gui_generated\src\containers\ScreenBackgroundContainerBase.cpp"/>
     <ClCompile Include="..\..\gui\src\containers\SDCardContainter.cpp"/>
     <ClCompile Include="..\..\generated\gui_generated\src\containers\SDCardContainterBase.cpp"/>
+    <ClCompile Include="..\..\gui\src\containers\ActivityDataContainter.cpp"/>
+    <ClCompile Include="..\..\generated\gui_generated\src\containers\ActivityDataContainterBase.cpp"/>
+    <ClCompile Include="..\..\gui\src\appactivityscreen_screen\AppActivityScreenPresenter.cpp"/>
+    <ClCompile Include="..\..\gui\src\appactivityscreen_screen\AppActivityScreenView.cpp"/>
+    <ClCompile Include="..\..\generated\gui_generated\src\appactivityscreen_screen\AppActivityScreenViewBase.cpp"/>
   </ItemGroup>
   <ItemGroup>
     <None Include="$(ApplicationRoot)\assets\texts\texts.xlsx"/>
@@ -209,6 +214,11 @@
     <ClInclude Include="..\..\generated\gui_generated\include\gui_generated\containers\ScreenBackgroundContainerBase.hpp"/>
     <ClInclude Include="..\..\gui\include\gui\containers\SDCardContainter.hpp"/>
     <ClInclude Include="..\..\generated\gui_generated\include\gui_generated\containers\SDCardContainterBase.hpp"/>
+    <ClInclude Include="..\..\gui\include\gui\containers\ActivityDataContainter.hpp"/>
+    <ClInclude Include="..\..\generated\gui_generated\include\gui_generated\containers\ActivityDataContainterBase.hpp"/>
+    <ClInclude Include="..\..\gui\include\gui\appactivityscreen_screen\AppActivityScreenPresenter.hpp"/>
+    <ClInclude Include="..\..\gui\include\gui\appactivityscreen_screen\AppActivityScreenView.hpp"/>
+    <ClInclude Include="..\..\generated\gui_generated\include\gui_generated\appactivityscreen_screen\AppActivityScreenViewBase.hpp"/>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="$(ApplicationRoot)\generated\simulator\touchgfx.rc"/>

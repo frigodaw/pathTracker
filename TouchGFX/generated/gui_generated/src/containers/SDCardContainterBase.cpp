@@ -9,6 +9,20 @@ SDCardContainterBase::SDCardContainterBase()
 {
     setWidth(240);
     setHeight(210);
+    OutputFilesTextBox.setPosition(20, 95, 200, 20);
+    OutputFilesTextBox.setColor(touchgfx::Color::getColorFrom24BitRGB(0, 0, 0));
+    OutputFilesTextBox.setLinespacing(0);
+    Unicode::snprintf(OutputFilesTextBoxBuffer, OUTPUTFILESTEXTBOX_SIZE, "%s", touchgfx::TypedText(T_SINGLEUSEID79).getText());
+    OutputFilesTextBox.setWildcard(OutputFilesTextBoxBuffer);
+    OutputFilesTextBox.setTypedText(touchgfx::TypedText(T_SINGLEUSEID78));
+
+    InputFilesTextBox.setPosition(20, 75, 200, 20);
+    InputFilesTextBox.setColor(touchgfx::Color::getColorFrom24BitRGB(0, 0, 0));
+    InputFilesTextBox.setLinespacing(0);
+    Unicode::snprintf(InputFilesTextBoxBuffer, INPUTFILESTEXTBOX_SIZE, "%s", touchgfx::TypedText(T_SINGLEUSEID77).getText());
+    InputFilesTextBox.setWildcard(InputFilesTextBoxBuffer);
+    InputFilesTextBox.setTypedText(touchgfx::TypedText(T_SINGLEUSEID76));
+
     FreeSpaceTextBox.setPosition(20, 55, 200, 20);
     FreeSpaceTextBox.setColor(touchgfx::Color::getColorFrom24BitRGB(0, 0, 0));
     FreeSpaceTextBox.setLinespacing(0);
@@ -30,25 +44,11 @@ SDCardContainterBase::SDCardContainterBase()
     StateTextBox.setWildcard(StateTextBoxBuffer);
     StateTextBox.setTypedText(touchgfx::TypedText(T_SINGLEUSEID70));
 
-    InputFilesTextBox.setPosition(20, 75, 200, 20);
-    InputFilesTextBox.setColor(touchgfx::Color::getColorFrom24BitRGB(0, 0, 0));
-    InputFilesTextBox.setLinespacing(0);
-    Unicode::snprintf(InputFilesTextBoxBuffer, INPUTFILESTEXTBOX_SIZE, "%s", touchgfx::TypedText(T_SINGLEUSEID77).getText());
-    InputFilesTextBox.setWildcard(InputFilesTextBoxBuffer);
-    InputFilesTextBox.setTypedText(touchgfx::TypedText(T_SINGLEUSEID76));
-
-    OutputFilesTextBox.setPosition(20, 95, 200, 20);
-    OutputFilesTextBox.setColor(touchgfx::Color::getColorFrom24BitRGB(0, 0, 0));
-    OutputFilesTextBox.setLinespacing(0);
-    Unicode::snprintf(OutputFilesTextBoxBuffer, OUTPUTFILESTEXTBOX_SIZE, "%s", touchgfx::TypedText(T_SINGLEUSEID79).getText());
-    OutputFilesTextBox.setWildcard(OutputFilesTextBoxBuffer);
-    OutputFilesTextBox.setTypedText(touchgfx::TypedText(T_SINGLEUSEID78));
-
+    add(OutputFilesTextBox);
+    add(InputFilesTextBox);
     add(FreeSpaceTextBox);
     add(TotalSpaceTextBox);
     add(StateTextBox);
-    add(InputFilesTextBox);
-    add(OutputFilesTextBox);
 }
 
 void SDCardContainterBase::initialize()

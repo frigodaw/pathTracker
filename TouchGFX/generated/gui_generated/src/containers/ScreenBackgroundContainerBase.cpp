@@ -4,7 +4,6 @@
 #include <gui_generated/containers/ScreenBackgroundContainerBase.hpp>
 #include <touchgfx/Color.hpp>
 #include "BitmapDatabase.hpp"
-#include <texts/TextKeysAndLanguages.hpp>
 
 ScreenBackgroundContainerBase::ScreenBackgroundContainerBase() :
     buttonCallback(this, &ScreenBackgroundContainerBase::buttonCallbackHandler)
@@ -12,13 +11,11 @@ ScreenBackgroundContainerBase::ScreenBackgroundContainerBase() :
     setWidth(240);
     setHeight(320);
     background.setPosition(0, 0, 240, 320);
-    background.setColor(touchgfx::Color::getColorFrom24BitRGB(100, 160, 200));
+    background.setColor(touchgfx::Color::getColorFrom24BitRGB(211, 236, 252));
 
     ExitButton.setXY(0, 260);
-    ExitButton.setBitmaps(touchgfx::Bitmap(BITMAP_BLUE_BUTTONS_ROUND_EDGE_ICON_BUTTON_ID), touchgfx::Bitmap(BITMAP_BLUE_BUTTONS_ROUND_EDGE_ICON_BUTTON_PRESSED_ID));
-    ExitButton.setLabelText(touchgfx::TypedText(T_SINGLEUSEID67));
-    ExitButton.setLabelColor(touchgfx::Color::getColorFrom24BitRGB(255, 255, 255));
-    ExitButton.setLabelColorPressed(touchgfx::Color::getColorFrom24BitRGB(255, 255, 255));
+    ExitButton.setBitmaps(touchgfx::Bitmap(BITMAP_BLUE_BUTTONS_ROUND_EDGE_ICON_BUTTON_ID), touchgfx::Bitmap(BITMAP_BLUE_BUTTONS_ROUND_EDGE_ICON_BUTTON_PRESSED_ID), touchgfx::Bitmap(BITMAP_BLUE_ICONS_HOME_32_ID), touchgfx::Bitmap(BITMAP_BLUE_ICONS_HOME_32_ID));
+    ExitButton.setIconXY(15, 16);
     ExitButton.setAction(buttonCallback);
 
     add(background);

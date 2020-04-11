@@ -153,7 +153,202 @@
             "Moveable": false
           },
           {
-            "TextId": "SingleUseId28",
+            "Components": [
+              {
+                "Components": [
+                  {
+                    "TextId": "SingleUseId94",
+                    "TextRotation": "0",
+                    "Color": {
+                      "Red": 0,
+                      "Green": 0,
+                      "Blue": 0
+                    },
+                    "Alpha": 255,
+                    "AutoSize": true,
+                    "LineSpacing": 0,
+                    "Name": "SettingsNameLabel",
+                    "X": 79,
+                    "Y": 15,
+                    "Width": 82,
+                    "Height": 25,
+                    "Type": "TextArea",
+                    "Visible": true,
+                    "Draggable": false,
+                    "Clickable": false,
+                    "Fadeable": false,
+                    "Moveable": false
+                  }
+                ],
+                "IsCacheableContainer": false,
+                "Name": "Settings",
+                "X": 0,
+                "Y": 0,
+                "Width": 240,
+                "Height": 260,
+                "Type": "Container",
+                "Visible": true,
+                "Draggable": false,
+                "Clickable": false,
+                "Fadeable": false,
+                "Moveable": false
+              },
+              {
+                "Components": [
+                  {
+                    "Pressed": "__designer\\Blue_Buttons_Round_Edge_small_pressed.png",
+                    "Released": "__designer\\Blue_Buttons_Round_Edge_small.png",
+                    "Alpha": 255,
+                    "TextId": "SingleUseId96",
+                    "ReleasedColor": {
+                      "Red": 255,
+                      "Green": 255,
+                      "Blue": 255
+                    },
+                    "PressedColor": {
+                      "Red": 255,
+                      "Green": 255,
+                      "Blue": 255
+                    },
+                    "TextRotation": "0",
+                    "Style": "Style4",
+                    "Name": "StartActivityButton",
+                    "X": 35,
+                    "Y": 130,
+                    "Width": 170,
+                    "Height": 60,
+                    "Type": "ButtonWithLabel",
+                    "Visible": true,
+                    "Draggable": false,
+                    "Clickable": false,
+                    "Fadeable": false,
+                    "Moveable": false
+                  },
+                  {
+                    "TextId": "SingleUseId95",
+                    "TextRotation": "0",
+                    "Color": {
+                      "Red": 0,
+                      "Green": 0,
+                      "Blue": 0
+                    },
+                    "Alpha": 255,
+                    "AutoSize": true,
+                    "LineSpacing": 0,
+                    "Name": "ActivityNameLabel",
+                    "X": 83,
+                    "Y": 15,
+                    "Width": 74,
+                    "Height": 25,
+                    "Type": "TextArea",
+                    "Visible": true,
+                    "Draggable": false,
+                    "Clickable": false,
+                    "Fadeable": false,
+                    "Moveable": false
+                  }
+                ],
+                "IsCacheableContainer": false,
+                "Name": "Activity",
+                "X": 0,
+                "Y": 0,
+                "Width": 240,
+                "Height": 260,
+                "Type": "Container",
+                "Visible": true,
+                "Draggable": false,
+                "Clickable": false,
+                "Fadeable": false,
+                "Moveable": false
+              }
+            ],
+            "SwipeCutoff": 50,
+            "ShowPageIndicator": false,
+            "PageIndicatorX": 0,
+            "PageIndicatorY": 0,
+            "CenteredX": false,
+            "IndicatorImageNormal": "__designer\\Blue_PageIndicator_dot_indicator_small_normal.png",
+            "IndicatorImageHighlight": "__designer\\Blue_PageIndicator_dot_indicator_small_highlight.png",
+            "EndSwipeElasticWidth": 50,
+            "SelectedPage": "Activity",
+            "Style": "Style1",
+            "IsCacheableContainer": false,
+            "Name": "AppMenuSwipeContainer",
+            "X": 0,
+            "Y": 0,
+            "Width": 240,
+            "Height": 260,
+            "Type": "SwipeContainer",
+            "Visible": true,
+            "Draggable": false,
+            "Clickable": false,
+            "Fadeable": false,
+            "Moveable": false
+          }
+        ],
+        "Interactions": [
+          {
+            "InteractionName": "StartActivity",
+            "HasCompletedTrigger": false,
+            "Trigger": {
+              "TriggerComponent": "StartActivityButton",
+              "Type": "TriggerClicked"
+            },
+            "Action": {
+              "FunctionName": "StartActivity",
+              "Type": "ActionCustom"
+            }
+          },
+          {
+            "InteractionName": "GoToAppActivityScreen",
+            "HasCompletedTrigger": false,
+            "Trigger": {
+              "TriggerComponent": "StartActivityButton",
+              "Type": "TriggerClicked"
+            },
+            "Action": {
+              "ScreenTransitionType": "ScreenTransitionNone",
+              "ActionComponent": "AppActivityScreen",
+              "Type": "ActionGotoScreen"
+            }
+          }
+        ],
+        "Name": "AppMenuScreen",
+        "OverrideDefaultBufferSize": false,
+        "CanvasBufferSize": 0
+      },
+      {
+        "Components": [
+          {
+            "CustomContainerDefinitionName": "ScreenBackgroundContainer",
+            "Name": "BackgroundCC",
+            "X": 0,
+            "Y": 0,
+            "Width": 240,
+            "Height": 320,
+            "Type": "CustomContainerInstance",
+            "Visible": true,
+            "Draggable": false,
+            "Clickable": false,
+            "Fadeable": false,
+            "Moveable": false
+          },
+          {
+            "CustomContainerDefinitionName": "ActivityDataContainter",
+            "Name": "ActivityDataCC",
+            "X": 0,
+            "Y": 40,
+            "Width": 240,
+            "Height": 210,
+            "Type": "CustomContainerInstance",
+            "Visible": true,
+            "Draggable": false,
+            "Clickable": false,
+            "Fadeable": false,
+            "Moveable": false
+          },
+          {
+            "TextId": "SingleUseId97",
             "TextRotation": "0",
             "Color": {
               "Red": 0,
@@ -164,9 +359,9 @@
             "AutoSize": true,
             "LineSpacing": 0,
             "Name": "NameLabel",
-            "X": 65,
+            "X": 83,
             "Y": 15,
-            "Width": 110,
+            "Width": 74,
             "Height": 25,
             "Type": "TextArea",
             "Visible": true,
@@ -174,10 +369,96 @@
             "Clickable": false,
             "Fadeable": false,
             "Moveable": false
+          },
+          {
+            "Pressed": "__designer\\Blue_Buttons_Round_Edge_icon_button_pressed.png",
+            "Released": "__designer\\Blue_Buttons_Round_Edge_icon_button.png",
+            "Alpha": 255,
+            "IconPressed": "__designer\\Blue_Icons_Pause_32.png",
+            "IconReleased": "__designer\\Blue_Icons_Pause_32.png",
+            "IconX": 18,
+            "IconY": 15,
+            "IconHeight": 30,
+            "IconWidth": 24,
+            "ButtonStyle": "Style1",
+            "IconStyle": "Icon43",
+            "Name": "StartStopButton",
+            "X": 90,
+            "Y": 260,
+            "Width": 60,
+            "Height": 60,
+            "Type": "ButtonWithIcon",
+            "Visible": true,
+            "Draggable": false,
+            "Clickable": false,
+            "Fadeable": false,
+            "Moveable": false
+          },
+          {
+            "Pressed": "__designer\\Blue_Buttons_Round_Edge_icon_button_pressed.png",
+            "Released": "__designer\\Blue_Buttons_Round_Edge_icon_button.png",
+            "Alpha": 255,
+            "IconPressed": "__designer\\Blue_Icons_Stop_32.png",
+            "IconReleased": "__designer\\Blue_Icons_Stop_32.png",
+            "IconX": 15,
+            "IconY": 15,
+            "IconHeight": 30,
+            "IconWidth": 30,
+            "ButtonStyle": "Style1",
+            "IconStyle": "Icon61",
+            "Name": "FinishButton",
+            "X": 0,
+            "Y": 260,
+            "Width": 60,
+            "Height": 60,
+            "Type": "ButtonWithIcon",
+            "Visible": true,
+            "Draggable": false,
+            "Clickable": false,
+            "Fadeable": false,
+            "Moveable": false
           }
         ],
-        "Interactions": [],
-        "Name": "AppMenuScreen",
+        "Interactions": [
+          {
+            "InteractionName": "StartStopActivity",
+            "HasCompletedTrigger": false,
+            "Trigger": {
+              "TriggerComponent": "StartStopButton",
+              "Type": "TriggerClicked"
+            },
+            "Action": {
+              "FunctionName": "StartStopActivity",
+              "Type": "ActionCustom"
+            }
+          },
+          {
+            "InteractionName": "FinishActivity",
+            "HasCompletedTrigger": true,
+            "Trigger": {
+              "TriggerComponent": "FinishButton",
+              "Type": "TriggerClicked"
+            },
+            "Action": {
+              "FunctionName": "FinishActivity",
+              "Type": "ActionCustom"
+            }
+          },
+          {
+            "InteractionName": "GoToAppMenuScreen",
+            "HasCompletedTrigger": false,
+            "Trigger": {
+              "InteractionToTriggerOn": "FinishActivity",
+              "Type": "TriggerInteractionCompleted"
+            },
+            "Action": {
+              "ScreenTransitionType": "ScreenTransitionNone",
+              "ActionComponent": "AppMenuScreen",
+              "Type": "ActionGotoScreen"
+            }
+          }
+        ],
+        "Name": "AppActivityScreen",
         "OverrideDefaultBufferSize": false,
         "CanvasBufferSize": 0
       },
@@ -768,9 +1049,9 @@
         "Components": [
           {
             "Color": {
-              "Red": 100,
-              "Green": 160,
-              "Blue": 200
+              "Red": 211,
+              "Green": 236,
+              "Blue": 252
             },
             "Alpha": 255,
             "Name": "background",
@@ -789,25 +1070,20 @@
             "Pressed": "__designer\\Blue_Buttons_Round_Edge_icon_button_pressed.png",
             "Released": "__designer\\Blue_Buttons_Round_Edge_icon_button.png",
             "Alpha": 255,
-            "TextId": "SingleUseId67",
-            "ReleasedColor": {
-              "Red": 255,
-              "Green": 255,
-              "Blue": 255
-            },
-            "PressedColor": {
-              "Red": 255,
-              "Green": 255,
-              "Blue": 255
-            },
-            "TextRotation": "0",
-            "Style": "Style1",
+            "IconPressed": "__designer\\Blue_Icons_Home_32.png",
+            "IconReleased": "__designer\\Blue_Icons_Home_32.png",
+            "IconX": 15,
+            "IconY": 16,
+            "IconHeight": 29,
+            "IconWidth": 30,
+            "ButtonStyle": "Style1",
+            "IconStyle": "Icon27",
             "Name": "ExitButton",
             "X": 0,
             "Y": 260,
             "Width": 60,
             "Height": 60,
-            "Type": "ButtonWithLabel",
+            "Type": "ButtonWithIcon",
             "Visible": true,
             "Draggable": false,
             "Clickable": false,
@@ -838,6 +1114,62 @@
       },
       {
         "Components": [
+          {
+            "TextId": "SingleUseId78",
+            "TextRotation": "0",
+            "Color": {
+              "Red": 0,
+              "Green": 0,
+              "Blue": 0
+            },
+            "Alpha": 255,
+            "AutoSize": false,
+            "LineSpacing": 0,
+            "Wildcard1": {
+              "TextId": "SingleUseId79",
+              "UseBuffer": true,
+              "BufferSize": 4
+            },
+            "Name": "OutputFilesTextBox",
+            "X": 20,
+            "Y": 95,
+            "Width": 200,
+            "Height": 20,
+            "Type": "TextArea",
+            "Visible": true,
+            "Draggable": false,
+            "Clickable": false,
+            "Fadeable": false,
+            "Moveable": false
+          },
+          {
+            "TextId": "SingleUseId76",
+            "TextRotation": "0",
+            "Color": {
+              "Red": 0,
+              "Green": 0,
+              "Blue": 0
+            },
+            "Alpha": 255,
+            "AutoSize": false,
+            "LineSpacing": 0,
+            "Wildcard1": {
+              "TextId": "SingleUseId77",
+              "UseBuffer": true,
+              "BufferSize": 4
+            },
+            "Name": "InputFilesTextBox",
+            "X": 20,
+            "Y": 75,
+            "Width": 200,
+            "Height": 20,
+            "Type": "TextArea",
+            "Visible": true,
+            "Draggable": false,
+            "Clickable": false,
+            "Fadeable": false,
+            "Moveable": false
+          },
           {
             "TextId": "SingleUseId74",
             "TextRotation": "0",
@@ -921,9 +1253,19 @@
             "Clickable": false,
             "Fadeable": false,
             "Moveable": false
-          },
+          }
+        ],
+        "Interactions": [],
+        "Name": "SDCardContainter",
+        "X": 0,
+        "Y": 0,
+        "Width": 240,
+        "Height": 210
+      },
+      {
+        "Components": [
           {
-            "TextId": "SingleUseId76",
+            "TextId": "SingleUseId92",
             "TextRotation": "0",
             "Color": {
               "Red": 0,
@@ -934,11 +1276,39 @@
             "AutoSize": false,
             "LineSpacing": 0,
             "Wildcard1": {
-              "TextId": "SingleUseId77",
+              "TextId": "SingleUseId93",
               "UseBuffer": true,
-              "BufferSize": 4
+              "BufferSize": 8
             },
-            "Name": "InputFilesTextBox",
+            "Name": "AvgVelocityTextBox",
+            "X": 20,
+            "Y": 95,
+            "Width": 200,
+            "Height": 20,
+            "Type": "TextArea",
+            "Visible": true,
+            "Draggable": false,
+            "Clickable": false,
+            "Fadeable": false,
+            "Moveable": false
+          },
+          {
+            "TextId": "SingleUseId88",
+            "TextRotation": "0",
+            "Color": {
+              "Red": 0,
+              "Green": 0,
+              "Blue": 0
+            },
+            "Alpha": 255,
+            "AutoSize": false,
+            "LineSpacing": 0,
+            "Wildcard1": {
+              "TextId": "SingleUseId89",
+              "UseBuffer": true,
+              "BufferSize": 8
+            },
+            "Name": "VelocityTextBox",
             "X": 20,
             "Y": 75,
             "Width": 200,
@@ -951,7 +1321,7 @@
             "Moveable": false
           },
           {
-            "TextId": "SingleUseId78",
+            "TextId": "SingleUseId82",
             "TextRotation": "0",
             "Color": {
               "Red": 0,
@@ -962,13 +1332,69 @@
             "AutoSize": false,
             "LineSpacing": 0,
             "Wildcard1": {
-              "TextId": "SingleUseId79",
+              "TextId": "SingleUseId83",
               "UseBuffer": true,
-              "BufferSize": 4
+              "BufferSize": 8
             },
-            "Name": "OutputFilesTextBox",
+            "Name": "DistanceTextBox",
             "X": 20,
-            "Y": 95,
+            "Y": 55,
+            "Width": 200,
+            "Height": 20,
+            "Type": "TextArea",
+            "Visible": true,
+            "Draggable": false,
+            "Clickable": false,
+            "Fadeable": false,
+            "Moveable": false
+          },
+          {
+            "TextId": "SingleUseId90",
+            "TextRotation": "0",
+            "Color": {
+              "Red": 0,
+              "Green": 0,
+              "Blue": 0
+            },
+            "Alpha": 255,
+            "AutoSize": false,
+            "LineSpacing": 0,
+            "Wildcard1": {
+              "TextId": "SingleUseId91",
+              "UseBuffer": true,
+              "BufferSize": 16
+            },
+            "Name": "TimerTextBox",
+            "X": 20,
+            "Y": 35,
+            "Width": 200,
+            "Height": 20,
+            "Type": "TextArea",
+            "Visible": true,
+            "Draggable": false,
+            "Clickable": false,
+            "Fadeable": false,
+            "Moveable": false
+          },
+          {
+            "TextId": "SingleUseId86",
+            "TextRotation": "0",
+            "Color": {
+              "Red": 0,
+              "Green": 0,
+              "Blue": 0
+            },
+            "Alpha": 255,
+            "AutoSize": false,
+            "LineSpacing": 0,
+            "Wildcard1": {
+              "TextId": "SingleUseId87",
+              "UseBuffer": true,
+              "BufferSize": 16
+            },
+            "Name": "ActivityTextBox",
+            "X": 20,
+            "Y": 15,
             "Width": 200,
             "Height": 20,
             "Type": "TextArea",
@@ -980,7 +1406,7 @@
           }
         ],
         "Interactions": [],
-        "Name": "SDCardContainter",
+        "Name": "ActivityDataContainter",
         "X": 0,
         "Y": 0,
         "Width": 240,
@@ -998,10 +1424,6 @@
       },
       {
         "TextEntryId": "SingleUseId26",
-        "IsResource": false
-      },
-      {
-        "TextEntryId": "SingleUseId28",
         "IsResource": false
       },
       {
@@ -1129,10 +1551,6 @@
         "IsResource": false
       },
       {
-        "TextEntryId": "SingleUseId67",
-        "IsResource": false
-      },
-      {
         "TextEntryId": "SingleUseId68",
         "IsResource": false
       },
@@ -1182,6 +1600,62 @@
       },
       {
         "TextEntryId": "SingleUseId79",
+        "IsResource": false
+      },
+      {
+        "TextEntryId": "SingleUseId82",
+        "IsResource": false
+      },
+      {
+        "TextEntryId": "SingleUseId83",
+        "IsResource": false
+      },
+      {
+        "TextEntryId": "SingleUseId86",
+        "IsResource": false
+      },
+      {
+        "TextEntryId": "SingleUseId87",
+        "IsResource": false
+      },
+      {
+        "TextEntryId": "SingleUseId88",
+        "IsResource": false
+      },
+      {
+        "TextEntryId": "SingleUseId89",
+        "IsResource": false
+      },
+      {
+        "TextEntryId": "SingleUseId90",
+        "IsResource": false
+      },
+      {
+        "TextEntryId": "SingleUseId91",
+        "IsResource": false
+      },
+      {
+        "TextEntryId": "SingleUseId92",
+        "IsResource": false
+      },
+      {
+        "TextEntryId": "SingleUseId93",
+        "IsResource": false
+      },
+      {
+        "TextEntryId": "SingleUseId94",
+        "IsResource": false
+      },
+      {
+        "TextEntryId": "SingleUseId95",
+        "IsResource": false
+      },
+      {
+        "TextEntryId": "SingleUseId96",
+        "IsResource": false
+      },
+      {
+        "TextEntryId": "SingleUseId97",
         "IsResource": false
       }
     ],

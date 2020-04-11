@@ -232,6 +232,18 @@
     <Filter Include="Source Files\generated\gui_generated\debugsdcardscreen_screen">
       <UniqueIdentifier>7034A725-FF88-7412-EEAE-B44BCDA7DD80</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\gui\appactivityscreen_screen">
+      <UniqueIdentifier>CF1AD432-31EF-F073-807F-CB2F6E8FB6F4</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\gui\appactivityscreen_screen">
+      <UniqueIdentifier>85537D5B-C30A-C896-35FC-2CCF89B39B67</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\generated\gui_generated\appactivityscreen_screen">
+      <UniqueIdentifier>6EFE2F6F-F71B-15A8-C8E0-7177594E0D9D</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\generated\gui_generated\appactivityscreen_screen">
+      <UniqueIdentifier>AFA8CBD5-EDA4-366D-10CA-48252B0E641F</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="$(TouchGFXReleasePath)\framework\source\platform\driver\touch\SDL2TouchController.cpp">
@@ -323,6 +335,21 @@
     </ClCompile>
     <ClCompile Include="..\..\generated\gui_generated\src\containers\SDCardContainterBase.cpp">
       <Filter>Source Files\generated\gui_generated\containers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\gui\src\containers\ActivityDataContainter.cpp">
+      <Filter>Source Files\gui\containers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\generated\gui_generated\src\containers\ActivityDataContainterBase.cpp">
+      <Filter>Source Files\generated\gui_generated\containers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\gui\src\appactivityscreen_screen\AppActivityScreenPresenter.cpp">
+      <Filter>Source Files\gui\appactivityscreen_screen</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\gui\src\appactivityscreen_screen\AppActivityScreenView.cpp">
+      <Filter>Source Files\gui\appactivityscreen_screen</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\generated\gui_generated\src\appactivityscreen_screen\AppActivityScreenViewBase.cpp">
+      <Filter>Source Files\generated\gui_generated\appactivityscreen_screen</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -819,6 +846,21 @@
     </ClInclude>
     <ClInclude Include="..\..\generated\gui_generated\include\gui_generated\containers\SDCardContainterBase.hpp">
       <Filter>Header Files\generated\gui_generated\containers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\gui\include\gui\containers\ActivityDataContainter.hpp">
+      <Filter>Header Files\gui\containers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\generated\gui_generated\include\gui_generated\containers\ActivityDataContainterBase.hpp">
+      <Filter>Header Files\generated\gui_generated\containers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\gui\include\gui\appactivityscreen_screen\AppActivityScreenPresenter.hpp">
+      <Filter>Header Files\gui\appactivityscreen_screen</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\gui\include\gui\appactivityscreen_screen\AppActivityScreenView.hpp">
+      <Filter>Header Files\gui\appactivityscreen_screen</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\generated\gui_generated\include\gui_generated\appactivityscreen_screen\AppActivityScreenViewBase.hpp">
+      <Filter>Header Files\generated\gui_generated\appactivityscreen_screen</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

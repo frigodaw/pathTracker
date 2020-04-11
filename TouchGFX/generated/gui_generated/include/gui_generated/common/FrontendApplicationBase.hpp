@@ -21,6 +21,9 @@ public:
     // AppMenuScreen
     void gotoAppMenuScreenScreenNoTransition();
 
+    // AppActivityScreen
+    void gotoAppActivityScreenScreenNoTransition();
+
     // DebugGpsDataScreen
     void gotoDebugGpsDataScreenScreenNoTransition();
 
@@ -40,6 +43,9 @@ protected:
 
     // AppMenuScreen
     void gotoAppMenuScreenScreenNoTransitionImpl();
+
+    // AppActivityScreen
+    void gotoAppActivityScreenScreenNoTransitionImpl();
 
     // DebugGpsDataScreen
     void gotoDebugGpsDataScreenScreenNoTransitionImpl();

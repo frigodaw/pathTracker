@@ -13,6 +13,8 @@
 #include <gui/startscreen_screen/StartScreenPresenter.hpp>
 #include <gui/appmenuscreen_screen/AppMenuScreenView.hpp>
 #include <gui/appmenuscreen_screen/AppMenuScreenPresenter.hpp>
+#include <gui/appactivityscreen_screen/AppActivityScreenView.hpp>
+#include <gui/appactivityscreen_screen/AppActivityScreenPresenter.hpp>
 #include <gui/debuggpsdatascreen_screen/DebugGpsDataScreenView.hpp>
 #include <gui/debuggpsdatascreen_screen/DebugGpsDataScreenPresenter.hpp>
 #include <gui/debugsdcardscreen_screen/DebugSdCardScreenView.hpp>
@@ -61,6 +63,19 @@ void FrontendApplicationBase::gotoAppMenuScreenScreenNoTransition()
 void FrontendApplicationBase::gotoAppMenuScreenScreenNoTransitionImpl()
 {
     touchgfx::makeTransition<AppMenuScreenView, AppMenuScreenPresenter, touchgfx::NoTransition, Model >(&currentScreen, &currentPresenter, frontendHeap, &currentTransition, &model);
+}
+
+// AppActivityScreen
+
+void FrontendApplicationBase::gotoAppActivityScreenScreenNoTransition()
+{
+    transitionCallback = touchgfx::Callback<FrontendApplicationBase>(this, &FrontendApplication::gotoAppActivityScreenScreenNoTransitionImpl);
+    pendingScreenTransitionCallback = &transitionCallback;
+}
+
+void FrontendApplicationBase::gotoAppActivityScreenScreenNoTransitionImpl()
+{
+    touchgfx::makeTransition<AppActivityScreenView, AppActivityScreenPresenter, touchgfx::NoTransition, Model >(&currentScreen, &currentPresenter, frontendHeap, &currentTransition, &model);
 }
 
 // DebugGpsDataScreen

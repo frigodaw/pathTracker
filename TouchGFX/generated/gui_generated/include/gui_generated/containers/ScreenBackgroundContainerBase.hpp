@@ -7,7 +7,7 @@
 #include <gui/common/FrontendApplication.hpp>
 #include <touchgfx/containers/Container.hpp>
 #include <touchgfx/widgets/Box.hpp>
-#include <touchgfx/widgets/ButtonWithLabel.hpp>
+#include <touchgfx/widgets/ButtonWithIcon.hpp>
 
 class ScreenBackgroundContainerBase : public touchgfx::Container
 {
@@ -25,7 +25,7 @@ protected:
      * Member Declarations
      */
     touchgfx::Box background;
-    touchgfx::ButtonWithLabel ExitButton;
+    touchgfx::ButtonWithIcon ExitButton;
 
 private:
 

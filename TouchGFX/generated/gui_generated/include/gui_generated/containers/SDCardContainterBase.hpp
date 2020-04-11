@@ -23,25 +23,25 @@ protected:
     /*
      * Member Declarations
      */
+    touchgfx::TextAreaWithOneWildcard OutputFilesTextBox;
+    touchgfx::TextAreaWithOneWildcard InputFilesTextBox;
     touchgfx::TextAreaWithOneWildcard FreeSpaceTextBox;
     touchgfx::TextAreaWithOneWildcard TotalSpaceTextBox;
     touchgfx::TextAreaWithOneWildcard StateTextBox;
-    touchgfx::TextAreaWithOneWildcard InputFilesTextBox;
-    touchgfx::TextAreaWithOneWildcard OutputFilesTextBox;
 
     /*
      * Wildcard Buffers
      */
+    static const uint16_t OUTPUTFILESTEXTBOX_SIZE = 4;
+    touchgfx::Unicode::UnicodeChar OutputFilesTextBoxBuffer[OUTPUTFILESTEXTBOX_SIZE];
+    static const uint16_t INPUTFILESTEXTBOX_SIZE = 4;
+    touchgfx::Unicode::UnicodeChar InputFilesTextBoxBuffer[INPUTFILESTEXTBOX_SIZE];
     static const uint16_t FREESPACETEXTBOX_SIZE = 16;
     touchgfx::Unicode::UnicodeChar FreeSpaceTextBoxBuffer[FREESPACETEXTBOX_SIZE];
     static const uint16_t TOTALSPACETEXTBOX_SIZE = 16;
     touchgfx::Unicode::UnicodeChar TotalSpaceTextBoxBuffer[TOTALSPACETEXTBOX_SIZE];
     static const uint16_t STATETEXTBOX_SIZE = 16;
     touchgfx::Unicode::UnicodeChar StateTextBoxBuffer[STATETEXTBOX_SIZE];
-    static const uint16_t INPUTFILESTEXTBOX_SIZE = 4;
-    touchgfx::Unicode::UnicodeChar InputFilesTextBoxBuffer[INPUTFILESTEXTBOX_SIZE];
-    static const uint16_t OUTPUTFILESTEXTBOX_SIZE = 4;
-    touchgfx::Unicode::UnicodeChar OutputFilesTextBoxBuffer[OUTPUTFILESTEXTBOX_SIZE];
 
 private:
 
