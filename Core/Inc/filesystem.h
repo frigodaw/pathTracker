@@ -57,6 +57,13 @@ typedef enum
     FS_UNINITIALIZED,
     FS_INITIALIZED
 }FS_cardInitState;
+
+//enum to select mode during opening a new file
+typedef enum
+{
+    FS_MODEREAD,
+    FS_MODEWRITE
+}FS_fileMode;
 /* END OF THE ENUM AREA */
 
 
@@ -122,8 +129,8 @@ extern FS_DirsCollection_T dirInfo;
 /* START OF THE FUNCTIONS PROTOTYPES AREA */
 void FS_Init(void);
 void FS_Main(void);
-uint8_t FS_OpenFile(FS_File_T* file, FS_FullPathType path, uint8_t mode);
-uint8_t FS_CloseFile(FS_File_T* file);
+uint8_t FS_OpenFile(FS_File_T** file, FS_FullPathType path, FS_fileMode mode);
+uint8_t FS_CloseFile(FS_File_T** file);
 uint8_t FS_ReadFile(FS_File_T* file, uint8_t *buff, uint16_t len);
 uint8_t FS_WriteFile(FS_File_T* file, uint8_t *buff);
 FRESULT FS_ReadDir(FS_Dir_T* dir);

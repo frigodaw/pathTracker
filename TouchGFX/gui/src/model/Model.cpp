@@ -6,7 +6,7 @@
 
 
 
-/* Constructor of the class Model */
+/* Constructor of the class Model. */
 Model::Model() : modelListener(0), modelTicks(0)
 {
     dataNotifier = {0u};
@@ -14,7 +14,7 @@ Model::Model() : modelListener(0), modelTicks(0)
 
 
 /* Method called to bind current presenter
-   to modelListener */
+   to modelListener. */
 void Model::bind(ModelListener* listener)
 {
     modelListener = listener;
@@ -22,19 +22,19 @@ void Model::bind(ModelListener* listener)
 
 
 /* Method called about 60 times per second,
-   its purpose is to be like 'Main' function */
+   its purpose is to be like 'Main' function. */
 void Model::tick(void)
 {
     ReadInputSignals();
 
-    RefreshScreens();
-
     NotifyScreens();
+
+    TryCallPresenterMainFunction();
 }
 
 
 /* Method called to read all input signals
-   from peripherals and save them inside the object */
+   from peripherals and save them inside the object. */
 void Model::ReadInputSignals(void)
 {
     /* neoGps */
@@ -60,13 +60,20 @@ void Model::ReadInputSignals(void)
 
 
 /* Method called to call periodically other 
-   functions which can refresh data on the screen */
-void Model::RefreshScreens(void)
+   functions which can refresh data on the screen. */
+void Model::TryCallPresenterMainFunction(void)
 {
+    uint16_t timePeriodInTicks = (mainTimePeriod * MODEL_TICKS_PER_SEC) / MODEL_MS_IN_SEC;
     modelTicks++;
-    if(modelTicks >= MODEL_GPSDATA_TIME_INTERVAL)
+
+    if(modelTicks >= timePeriodInTicks)
     {
         modelTicks = 0u;
+
+        if(modelListener != NULL)
+        {
+            modelListener->Main();
+        }
     }
     else
     {
@@ -76,7 +83,7 @@ void Model::RefreshScreens(void)
 
 
 /* Method called to inform active presenter that some
-   signals have changed and give it a new value */
+   signals have changed and give it a new value. */
 void Model::NotifyScreens(void)
 {
     if(modelListener != NULL)
@@ -126,7 +133,7 @@ void Model::UpdateElement(T (*getDataPtr)(void), T &currentData, uint8_t &dataNo
 
 /* Method called to notify active presenter
    if given variable has changed since
-   last call */
+   last call. */
 template <typename T>
 void Model::NotifyElement(void (ModelListener::*notifySignalChangedElement)(T), T currentData, uint8_t &dataNotifier)
 {
@@ -140,9 +147,17 @@ void Model::NotifyElement(void (ModelListener::*notifySignalChangedElement)(T), 
 
 /* Method called to set all dataNotifier structure
    to true to force Model to update current
-   presenter with proper signal value */
+   presenter with proper signal value. */
 void Model::SignalRequestFromPresenter(void)
 {
     memset(&dataNotifier, true, sizeof(dataNotifier));
     NotifyScreens();
+}
+
+
+/* Method called to get time interval needed
+   to call presenter's main function. */
+void Model::MainPeriodFromPresenter(uint16_t timePeriod)
+{
+    mainTimePeriod = timePeriod;
 }

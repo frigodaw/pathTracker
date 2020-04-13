@@ -1,18 +1,69 @@
 #ifndef APPACTIVITYSCREENPRESENTER_HPP
 #define APPACTIVITYSCREENPRESENTER_HPP
 
+/* START OF THE INCLUDE AREA */
 #include <gui/model/ModelListener.hpp>
 #include <mvp/Presenter.hpp>
+/* END OF THE DEFINE AREA */
 
 using namespace touchgfx;
 
+/* START OF THE DEFINE AREA */
+#define APP_FILENAMEMAXLEN          32u
+#define APP_TIME_COEFF1             100u
+#define APP_TIME_COEFF2             10000u
+#define APP_DATE_COEFF1             100u
+#define APP_DATE_COEFF2             10000u
+#define APP_MAXFILEBUFFERSIZE       128u
+/* END OF THE DEFINE AREA */
+
+
+/* START OF THE ENUM AREA */
 typedef enum
 {
-    ACTIVITY_READY,
-    ACTIVITY_RUNNING,
-    ACTIVITY_PAUSED,
-    ACTIVITY_FINISHED
+    APP_READY,
+    APP_RUNNING,
+    APP_PAUSED,
+    APP_FINISHED
 }AppActivity_activityState_T;
+
+typedef enum
+{
+    APP_NOFILE,
+    APP_FILECREATED,
+    APP_FILECLOSED,
+    APP_FILEERROR
+}AppActivity_fileStatus;
+/* END OF THE ENUM AREA */
+
+
+/* START OF THE STRUCT AREA */
+typedef struct
+{
+    float latitude;
+    float longitude;
+    float altitude;
+    uint8_t timeSec;
+    uint8_t timeMin;
+    uint8_t timeHr;
+    uint8_t dateYear;
+    uint8_t dateMon;
+    uint8_t dateDay;
+    uint8_t fixQuality;
+    uint8_t satellitesNum;
+    char latDir;
+    char lonDir;
+}AppActivity_gpsSignals_T;
+
+typedef struct
+{
+    char name[APP_FILENAMEMAXLEN];
+    uint16_t lines;
+    AppActivity_fileStatus fileStatus;
+    void* filePtr;
+}AppActivity_fileInfo_T;
+/* END OF THE STRUCT AREA */
+
 
 class AppActivityScreenView;
 
@@ -24,8 +75,11 @@ public:
     void activate();
     void deactivate();
 
+    void Main(void);
     void StartStopActivity(void);
     void FinishActivity(void);
+    void SetBitmapButton(const uint16_t bitmapId);
+    void InitActivity(void);
 
     void NotifySignalChanged_gpsData_latitude(float newLatitude);
     void NotifySignalChanged_gpsData_longitude(float newLongitude);
@@ -41,18 +95,11 @@ private:
     AppActivityScreenPresenter();
     AppActivityScreenView& view;
 
-    AppActivity_activityState_T activityState;
 
-    /* gps data */
-    float latitude;
-    float longitude;
-    float altitude;
-    uint32_t time;
-    uint32_t date;
-    uint8_t fixQuality;
-    uint8_t satellitesNum;
-    char lonDir;
-    char latDir;
+    AppActivity_gpsSignals_T        gpsSignals;
+    AppActivity_fileInfo_T          fileInfo;
+    AppActivity_activityState_T     activityState;
+    uint16_t                        mainTimePeriod;
 };
 
 #endif // APPACTIVITYSCREENPRESENTER_HPP

@@ -14,6 +14,7 @@ public:
 
     void StartStopActivity(void);
     void FinishActivity(void);
+    void SetBitmapButton(const uint16_t bitmapId);
 protected:
 };
 

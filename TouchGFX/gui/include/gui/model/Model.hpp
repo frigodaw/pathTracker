@@ -7,8 +7,8 @@
 
 
 /* START OF THE DEFINE AREA */
-#define MODEL_TICKS_PER_SECOND          60u
-#define MODEL_GPSDATA_TIME_INTERVAL     15u     //15:60 = 0.25s = 250ms
+#define MODEL_TICKS_PER_SEC     60u
+#define MODEL_MS_IN_SEC         1000u
 /* END OF THE DEFINE AREA */
 
 
@@ -50,9 +50,10 @@ public:
 
     /* Signal processing */
     void ReadInputSignals(void);
-    void RefreshScreens(void);
     void NotifyScreens(void);
+    void TryCallPresenterMainFunction(void);
     void SignalRequestFromPresenter(void);
+    void MainPeriodFromPresenter(uint16_t timePeriod);
     template <typename T> void UpdateElement(T (*getDataPtr)(void), T &currentData, uint8_t &dataNotifier);
     template <typename T> void NotifyElement(void (ModelListener::*notifySignalChangedElement)(T), T currentData, uint8_t &dataNotifier);
 
@@ -80,6 +81,7 @@ private:
     uint8_t  dirInfo_out_filesNum;
     /* internal data */
     Model_dataNotifier_T dataNotifier;
+    uint16_t mainTimePeriod;
     uint8_t  timeZoneOffset;
     uint8_t  modelTicks;
 };

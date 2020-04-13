@@ -43,6 +43,7 @@ protected:
     ScreenBackgroundContainer BackgroundCC;
     ActivityDataContainter ActivityDataCC;
     touchgfx::TextArea NameLabel;
+    touchgfx::ButtonWithIcon ButtonForLabel;
     touchgfx::ButtonWithIcon StartStopButton;
     touchgfx::ButtonWithIcon FinishButton;
 

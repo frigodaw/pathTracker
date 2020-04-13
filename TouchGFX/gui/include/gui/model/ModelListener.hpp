@@ -16,6 +16,8 @@ public:
         model = m;
     }
 
+    /* all */
+    virtual void Main(){}
     /* neoGps */
     virtual void NotifySignalChanged_gpsData_latitude(float newLatitude){}
     virtual void NotifySignalChanged_gpsData_longitude(float newLongitude){}

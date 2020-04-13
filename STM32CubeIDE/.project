@@ -688,5 +688,10 @@
 			<type>1</type>
 			<locationURI>$%7BPARENT-1-PROJECT_LOC%7D/TouchGFX/generated/images/src/__designer/Blue_Icons_Stop_32.cpp</locationURI>
 		</link>
+		<link>
+			<name>Application/User/generated/Blue_Icons_Play_32.cpp</name>
+			<type>1</type>
+			<locationURI>$%7BPARENT-1-PROJECT_LOC%7D/TouchGFX/generated/images/src/__designer/Blue_Icons_Play_32.cpp</locationURI>
+		</link>
 	</linkedResources>
 </projectDescription>

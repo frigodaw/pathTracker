@@ -19,6 +19,10 @@ AppActivityScreenViewBase::AppActivityScreenViewBase() :
     NameLabel.setLinespacing(0);
     NameLabel.setTypedText(touchgfx::TypedText(T_SINGLEUSEID97));
 
+    ButtonForLabel.setXY(90, 260);
+    ButtonForLabel.setBitmaps(touchgfx::Bitmap(BITMAP_BLUE_BUTTONS_ROUND_EDGE_ICON_BUTTON_ID), touchgfx::Bitmap(BITMAP_BLUE_BUTTONS_ROUND_EDGE_ICON_BUTTON_PRESSED_ID), touchgfx::Bitmap(BITMAP_BLUE_ICONS_PLAY_32_ID), touchgfx::Bitmap(BITMAP_BLUE_ICONS_PLAY_32_ID));
+    ButtonForLabel.setIconXY(20, 15);
+
     StartStopButton.setXY(90, 260);
     StartStopButton.setBitmaps(touchgfx::Bitmap(BITMAP_BLUE_BUTTONS_ROUND_EDGE_ICON_BUTTON_ID), touchgfx::Bitmap(BITMAP_BLUE_BUTTONS_ROUND_EDGE_ICON_BUTTON_PRESSED_ID), touchgfx::Bitmap(BITMAP_BLUE_ICONS_PAUSE_32_ID), touchgfx::Bitmap(BITMAP_BLUE_ICONS_PAUSE_32_ID));
     StartStopButton.setIconXY(18, 15);
@@ -32,6 +36,7 @@ AppActivityScreenViewBase::AppActivityScreenViewBase() :
     add(BackgroundCC);
     add(ActivityDataCC);
     add(NameLabel);
+    add(ButtonForLabel);
     add(StartStopButton);
     add(FinishButton);
 }

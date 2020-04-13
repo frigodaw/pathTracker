@@ -71,8 +71,8 @@ extern "C" {
 #define GPS_LIMIT_VDOP_UPPER                100.f
 #define GPS_LIMIT_MODETWO_LOWER             1u
 #define GPS_LIMIT_MODETWO_UPPER             3u
-#define GPS_LIMIT_SATELLITESNUM_LOWER        0u
-#define GPS_LIMIT_SATELLITESNUM_UPPER        33u     //max number of satellites
+#define GPS_LIMIT_SATELLITESNUM_LOWER       0u
+#define GPS_LIMIT_SATELLITESNUM_UPPER       33u     //max number of satellites
 #define GPS_LIMIT_GROUNDSPEEDKMH_LOWER      0.f
 #define GPS_LIMIT_GROUNDSPEEDKMH_UPPER      300.f
 /* END OF THE DEFINE AREA */
