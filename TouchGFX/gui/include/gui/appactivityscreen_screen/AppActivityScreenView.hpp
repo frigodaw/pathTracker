@@ -15,6 +15,9 @@ public:
     void StartStopActivity(void);
     void FinishActivity(void);
     void SetBitmapButton(const uint16_t bitmapId);
+
+    void NotifySignalChanged_gpsData_fixQuality(uint8_t newFixQuality);
+    void NotifySignalChanged_activityData_timer(uint32_t newTimer);
 protected:
 };
 

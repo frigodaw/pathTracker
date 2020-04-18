@@ -9,33 +9,40 @@ ActivityDataContainterBase::ActivityDataContainterBase()
 {
     setWidth(240);
     setHeight(210);
-    AvgVelocityTextBox.setPosition(20, 95, 200, 20);
+    AvgVelocityTextBox.setPosition(20, 115, 200, 20);
     AvgVelocityTextBox.setColor(touchgfx::Color::getColorFrom24BitRGB(0, 0, 0));
     AvgVelocityTextBox.setLinespacing(0);
     Unicode::snprintf(AvgVelocityTextBoxBuffer, AVGVELOCITYTEXTBOX_SIZE, "%s", touchgfx::TypedText(T_SINGLEUSEID93).getText());
     AvgVelocityTextBox.setWildcard(AvgVelocityTextBoxBuffer);
     AvgVelocityTextBox.setTypedText(touchgfx::TypedText(T_SINGLEUSEID92));
 
-    VelocityTextBox.setPosition(20, 75, 200, 20);
+    VelocityTextBox.setPosition(20, 95, 200, 20);
     VelocityTextBox.setColor(touchgfx::Color::getColorFrom24BitRGB(0, 0, 0));
     VelocityTextBox.setLinespacing(0);
     Unicode::snprintf(VelocityTextBoxBuffer, VELOCITYTEXTBOX_SIZE, "%s", touchgfx::TypedText(T_SINGLEUSEID89).getText());
     VelocityTextBox.setWildcard(VelocityTextBoxBuffer);
     VelocityTextBox.setTypedText(touchgfx::TypedText(T_SINGLEUSEID88));
 
-    DistanceTextBox.setPosition(20, 55, 200, 20);
+    DistanceTextBox.setPosition(20, 75, 200, 20);
     DistanceTextBox.setColor(touchgfx::Color::getColorFrom24BitRGB(0, 0, 0));
     DistanceTextBox.setLinespacing(0);
     Unicode::snprintf(DistanceTextBoxBuffer, DISTANCETEXTBOX_SIZE, "%s", touchgfx::TypedText(T_SINGLEUSEID83).getText());
     DistanceTextBox.setWildcard(DistanceTextBoxBuffer);
     DistanceTextBox.setTypedText(touchgfx::TypedText(T_SINGLEUSEID82));
 
-    TimerTextBox.setPosition(20, 35, 200, 20);
+    TimerTextBox.setPosition(20, 55, 200, 20);
     TimerTextBox.setColor(touchgfx::Color::getColorFrom24BitRGB(0, 0, 0));
     TimerTextBox.setLinespacing(0);
     Unicode::snprintf(TimerTextBoxBuffer, TIMERTEXTBOX_SIZE, "%s", touchgfx::TypedText(T_SINGLEUSEID91).getText());
     TimerTextBox.setWildcard(TimerTextBoxBuffer);
     TimerTextBox.setTypedText(touchgfx::TypedText(T_SINGLEUSEID90));
+
+    FixTextBox.setPosition(20, 35, 200, 20);
+    FixTextBox.setColor(touchgfx::Color::getColorFrom24BitRGB(0, 0, 0));
+    FixTextBox.setLinespacing(0);
+    Unicode::snprintf(FixTextBoxBuffer, FIXTEXTBOX_SIZE, "%s", touchgfx::TypedText(T_SINGLEUSEID99).getText());
+    FixTextBox.setWildcard(FixTextBoxBuffer);
+    FixTextBox.setTypedText(touchgfx::TypedText(T_SINGLEUSEID98));
 
     ActivityTextBox.setPosition(20, 15, 200, 20);
     ActivityTextBox.setColor(touchgfx::Color::getColorFrom24BitRGB(0, 0, 0));
@@ -48,6 +55,7 @@ ActivityDataContainterBase::ActivityDataContainterBase()
     add(VelocityTextBox);
     add(DistanceTextBox);
     add(TimerTextBox);
+    add(FixTextBox);
     add(ActivityTextBox);
 }
 

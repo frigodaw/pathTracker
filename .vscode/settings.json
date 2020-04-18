@@ -20,6 +20,7 @@
         "xutility": "c",
         "xmemory": "cpp",
         "stm32f4xx_hal_conf.h": "c",
-        "cstdio": "cpp"
+        "cstdio": "cpp",
+        "stdio.h": "c"
     }
 }

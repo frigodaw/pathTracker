@@ -9,6 +9,9 @@ public:
     ActivityDataContainter();
     ~ActivityDataContainter() {}
     void initialize();
+
+    void NotifySignalChanged_gpsData_fixQuality(uint8_t newFixQuality);
+    void NotifySignalChanged_activityData_timer(uint32_t newTimer);
 protected:
 };
 

@@ -27,6 +27,7 @@ protected:
     touchgfx::TextAreaWithOneWildcard VelocityTextBox;
     touchgfx::TextAreaWithOneWildcard DistanceTextBox;
     touchgfx::TextAreaWithOneWildcard TimerTextBox;
+    touchgfx::TextAreaWithOneWildcard FixTextBox;
     touchgfx::TextAreaWithOneWildcard ActivityTextBox;
 
     /*
@@ -40,6 +41,8 @@ protected:
     touchgfx::Unicode::UnicodeChar DistanceTextBoxBuffer[DISTANCETEXTBOX_SIZE];
     static const uint16_t TIMERTEXTBOX_SIZE = 16;
     touchgfx::Unicode::UnicodeChar TimerTextBoxBuffer[TIMERTEXTBOX_SIZE];
+    static const uint16_t FIXTEXTBOX_SIZE = 8;
+    touchgfx::Unicode::UnicodeChar FixTextBoxBuffer[FIXTEXTBOX_SIZE];
     static const uint16_t ACTIVITYTEXTBOX_SIZE = 16;
     touchgfx::Unicode::UnicodeChar ActivityTextBoxBuffer[ACTIVITYTEXTBOX_SIZE];
 

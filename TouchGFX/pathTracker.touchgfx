@@ -1306,7 +1306,7 @@
             },
             "Name": "AvgVelocityTextBox",
             "X": 20,
-            "Y": 95,
+            "Y": 115,
             "Width": 200,
             "Height": 20,
             "Type": "TextArea",
@@ -1334,7 +1334,7 @@
             },
             "Name": "VelocityTextBox",
             "X": 20,
-            "Y": 75,
+            "Y": 95,
             "Width": 200,
             "Height": 20,
             "Type": "TextArea",
@@ -1362,7 +1362,7 @@
             },
             "Name": "DistanceTextBox",
             "X": 20,
-            "Y": 55,
+            "Y": 75,
             "Width": 200,
             "Height": 20,
             "Type": "TextArea",
@@ -1389,6 +1389,34 @@
               "BufferSize": 16
             },
             "Name": "TimerTextBox",
+            "X": 20,
+            "Y": 55,
+            "Width": 200,
+            "Height": 20,
+            "Type": "TextArea",
+            "Visible": true,
+            "Draggable": false,
+            "Clickable": false,
+            "Fadeable": false,
+            "Moveable": false
+          },
+          {
+            "TextId": "SingleUseId98",
+            "TextRotation": "0",
+            "Color": {
+              "Red": 0,
+              "Green": 0,
+              "Blue": 0
+            },
+            "Alpha": 255,
+            "AutoSize": false,
+            "LineSpacing": 0,
+            "Wildcard1": {
+              "TextId": "SingleUseId99",
+              "UseBuffer": true,
+              "BufferSize": 8
+            },
+            "Name": "FixTextBox",
             "X": 20,
             "Y": 35,
             "Width": 200,
@@ -1680,6 +1708,14 @@
       },
       {
         "TextEntryId": "SingleUseId97",
+        "IsResource": false
+      },
+      {
+        "TextEntryId": "SingleUseId98",
+        "IsResource": false
+      },
+      {
+        "TextEntryId": "SingleUseId99",
         "IsResource": false
       }
     ],

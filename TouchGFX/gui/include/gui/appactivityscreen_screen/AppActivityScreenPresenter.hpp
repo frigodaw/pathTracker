@@ -14,7 +14,14 @@ using namespace touchgfx;
 #define APP_TIME_COEFF2             10000u
 #define APP_DATE_COEFF1             100u
 #define APP_DATE_COEFF2             10000u
-#define APP_MAXFILEBUFFERSIZE       128u
+#define APP_MAXFILEBUFFERSIZE       127u
+#define APP_LATLON_PRECISION        6u
+#define APP_ALT_PRECISION           1u
+#define APP_LOCATION_COEFF_DIV      100.f
+#define APP_LOCATION_COEFF_MUL      (100.f/60.f)
+
+#define APP_MAINPERIOD_MS           100u
+#define APP_MS_IN_SEC               1000u
 /* END OF THE DEFINE AREA */
 
 
@@ -60,8 +67,24 @@ typedef struct
     char name[APP_FILENAMEMAXLEN];
     uint16_t lines;
     AppActivity_fileStatus fileStatus;
+    uint8_t errorStatus;
     void* filePtr;
 }AppActivity_fileInfo_T;
+
+typedef struct
+{
+    float speed;
+    float avgSpeed;
+    float distance;
+    uint32_t timer;
+    AppActivity_activityState_T state;
+}AppActivity_activityData_T;
+
+typedef struct
+{
+    uint32_t frac;
+    int16_t  sint;
+}AppActivity_floatToInt_T;
 /* END OF THE STRUCT AREA */
 
 
@@ -80,6 +103,9 @@ public:
     void FinishActivity(void);
     void SetBitmapButton(const uint16_t bitmapId);
     void InitActivity(void);
+    void InsertDataIntoFile(void);
+    void ConvertFloatToInt(float data, AppActivity_floatToInt_T &intData, uint8_t precision);
+    void ConvertLatLon(float data, float &newData);
 
     void NotifySignalChanged_gpsData_latitude(float newLatitude);
     void NotifySignalChanged_gpsData_longitude(float newLongitude);
@@ -98,7 +124,7 @@ private:
 
     AppActivity_gpsSignals_T        gpsSignals;
     AppActivity_fileInfo_T          fileInfo;
-    AppActivity_activityState_T     activityState;
+    AppActivity_activityData_T      activityData;
     uint16_t                        mainTimePeriod;
 };
 
