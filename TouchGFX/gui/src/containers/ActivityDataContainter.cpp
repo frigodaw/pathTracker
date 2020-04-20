@@ -10,14 +10,14 @@ void ActivityDataContainter::initialize()
     ActivityDataContainterBase::initialize();
 }
 
-void ActivityDataContainter::NotifySignalChanged_gpsData_fixQuality(uint8_t newFixQuality)
-{
-    Unicode::snprintf(FixTextBoxBuffer, FIXTEXTBOX_SIZE, "%d", newFixQuality);
-    FixTextBox.invalidate();
-}
-
 void ActivityDataContainter::NotifySignalChanged_activityData_timer(uint32_t newTimer)
 {
-    Unicode::snprintf(TimerTextBoxBuffer, TIMERTEXTBOX_SIZE, "%d", newTimer);
+    uint8_t timerMs  = newTimer % ACTIVTYCONTAINER_TIMER_COEFF3;
+    newTimer /= ACTIVTYCONTAINER_TIMER_COEFF3;
+    uint8_t timerHr  = (uint8_t)(newTimer / ACTIVTYCONTAINER_TIMER_COEFF1);
+    uint8_t timerMin = (uint8_t)((newTimer - timerHr * ACTIVTYCONTAINER_TIMER_COEFF1)/(ACTIVTYCONTAINER_TIMER_COEFF2));
+    uint8_t timerSec = newTimer - (timerHr * ACTIVTYCONTAINER_TIMER_COEFF1 + timerMin * ACTIVTYCONTAINER_TIMER_COEFF2);
+
+    Unicode::snprintf(TimerTextBoxBuffer, TIMERTEXTBOX_SIZE, "%.2d:%.2d:%.2d.%.1d", timerHr, timerMin, timerSec, timerMs);
     TimerTextBox.invalidate();
 }

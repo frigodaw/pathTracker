@@ -441,6 +441,22 @@
             "Clickable": false,
             "Fadeable": false,
             "Moveable": false
+          },
+          {
+            "Filename": "gps.png",
+            "Alpha": 255,
+            "ScalingAlgorithm": "Nearest-neighbor",
+            "Name": "FixImage",
+            "X": 195,
+            "Y": 5,
+            "Width": 40,
+            "Height": 40,
+            "Type": "ScalableImage",
+            "Visible": true,
+            "Draggable": false,
+            "Clickable": false,
+            "Fadeable": false,
+            "Moveable": false
           }
         ],
         "Interactions": [
@@ -1306,8 +1322,8 @@
             },
             "Name": "AvgVelocityTextBox",
             "X": 20,
-            "Y": 115,
-            "Width": 200,
+            "Y": 76,
+            "Width": 175,
             "Height": 20,
             "Type": "TextArea",
             "Visible": true,
@@ -1334,8 +1350,8 @@
             },
             "Name": "VelocityTextBox",
             "X": 20,
-            "Y": 95,
-            "Width": 200,
+            "Y": 56,
+            "Width": 175,
             "Height": 20,
             "Type": "TextArea",
             "Visible": true,
@@ -1362,9 +1378,9 @@
             },
             "Name": "DistanceTextBox",
             "X": 20,
-            "Y": 75,
-            "Width": 200,
-            "Height": 20,
+            "Y": 35,
+            "Width": 175,
+            "Height": 21,
             "Type": "TextArea",
             "Visible": true,
             "Draggable": false,
@@ -1390,64 +1406,8 @@
             },
             "Name": "TimerTextBox",
             "X": 20,
-            "Y": 55,
-            "Width": 200,
-            "Height": 20,
-            "Type": "TextArea",
-            "Visible": true,
-            "Draggable": false,
-            "Clickable": false,
-            "Fadeable": false,
-            "Moveable": false
-          },
-          {
-            "TextId": "SingleUseId98",
-            "TextRotation": "0",
-            "Color": {
-              "Red": 0,
-              "Green": 0,
-              "Blue": 0
-            },
-            "Alpha": 255,
-            "AutoSize": false,
-            "LineSpacing": 0,
-            "Wildcard1": {
-              "TextId": "SingleUseId99",
-              "UseBuffer": true,
-              "BufferSize": 8
-            },
-            "Name": "FixTextBox",
-            "X": 20,
-            "Y": 35,
-            "Width": 200,
-            "Height": 20,
-            "Type": "TextArea",
-            "Visible": true,
-            "Draggable": false,
-            "Clickable": false,
-            "Fadeable": false,
-            "Moveable": false
-          },
-          {
-            "TextId": "SingleUseId86",
-            "TextRotation": "0",
-            "Color": {
-              "Red": 0,
-              "Green": 0,
-              "Blue": 0
-            },
-            "Alpha": 255,
-            "AutoSize": false,
-            "LineSpacing": 0,
-            "Wildcard1": {
-              "TextId": "SingleUseId87",
-              "UseBuffer": true,
-              "BufferSize": 16
-            },
-            "Name": "ActivityTextBox",
-            "X": 20,
             "Y": 15,
-            "Width": 200,
+            "Width": 175,
             "Height": 20,
             "Type": "TextArea",
             "Visible": true,
@@ -1663,14 +1623,6 @@
         "IsResource": false
       },
       {
-        "TextEntryId": "SingleUseId86",
-        "IsResource": false
-      },
-      {
-        "TextEntryId": "SingleUseId87",
-        "IsResource": false
-      },
-      {
         "TextEntryId": "SingleUseId88",
         "IsResource": false
       },
@@ -1708,14 +1660,6 @@
       },
       {
         "TextEntryId": "SingleUseId97",
-        "IsResource": false
-      },
-      {
-        "TextEntryId": "SingleUseId98",
-        "IsResource": false
-      },
-      {
-        "TextEntryId": "SingleUseId99",
         "IsResource": false
       }
     ],

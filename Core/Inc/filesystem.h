@@ -106,8 +106,8 @@ typedef struct
     FIL object;
     FS_FullPathType name;
     uint16_t lastLineNumber;
-    bool isMoreLines;
-    bool isOpen;
+    boolean isMoreLines;
+    boolean isOpen;
 }FS_File_T;
 
 //typedef to store info about all opened read

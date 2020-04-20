@@ -160,4 +160,5 @@ void Model::SignalRequestFromPresenter(void)
 void Model::MainPeriodFromPresenter(uint16_t timePeriod)
 {
     mainTimePeriod = timePeriod;
+    modelTicks = 0u;
 }

@@ -156,8 +156,13 @@ uint8_t FS_OpenFile(FS_File_T** file, FS_FullPathType path, FS_fileMode mode)
     {
         /* Check path length */
         uint8_t len = strlen(path) + 1u;
-        if((FS_FULLCHARLEN >= len) && (FALSE == (*file)->isOpen))
+        if(FS_FULLCHARLEN >= len)
         {
+            if(FALSE != (*file)->isOpen)
+            {
+                FS_CloseFile((FS_File_T**)file);
+            }
+
             /* Open file */
             fresult |= f_open((FIL*)&(*file)->object, (TCHAR*)path, (BYTE)fileMode);
             if(FR_OK == fresult)
@@ -175,7 +180,7 @@ uint8_t FS_OpenFile(FS_File_T** file, FS_FullPathType path, FS_fileMode mode)
         }
         else
         {
-            /* File path too long or another file with given purpose is opened */
+            /* File path too long */
             retVal = RET_NOK;
         }
     }
@@ -196,11 +201,9 @@ uint8_t FS_CloseFile(FS_File_T** file)
     FRESULT fresult = FR_OK;
 
     fresult |= f_close((FIL*)&(*file)->object);
-    if(FR_OK == fresult)
-    {
-        memset(*file, 0u, sizeof(**file));
-    }
-    else
+    memset(*file, 0u, sizeof(**file));
+
+    if(FR_OK != fresult)
     {
         retVal = RET_NOK;
     }

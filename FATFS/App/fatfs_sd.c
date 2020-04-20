@@ -132,7 +132,7 @@ static uint8_t SD_CheckPower(void)
 }
 
 /* 데이터 패킷 수신 */
-static bool SD_RxDataBlock(BYTE *buff, UINT btr) 
+static boolean SD_RxDataBlock(BYTE *buff, UINT btr) 
 {
   uint8_t token;
   
@@ -164,7 +164,7 @@ static bool SD_RxDataBlock(BYTE *buff, UINT btr)
 
 /* 데이터 전송 패킷 */
 #if _READONLY == 0
-static bool SD_TxDataBlock(const BYTE *buff, BYTE token)
+static boolean SD_TxDataBlock(const BYTE *buff, BYTE token)
 {
   uint8_t resp, wc;
   uint8_t i = 0;

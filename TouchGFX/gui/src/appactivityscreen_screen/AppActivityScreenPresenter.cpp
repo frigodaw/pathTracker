@@ -9,8 +9,10 @@
 AppActivityScreenPresenter::AppActivityScreenPresenter(AppActivityScreenView& v)
     : view(v)
 {
-    mainTimePeriod = APP_MAINPERIOD_MS;
+    appInternalData.mainTimePeriod = APP_MAINPERIOD_MS;
+    appInternalData.callCounter = APP_MAX_CALL_COUNTER;
     activityData.state = APP_READY;
+    activityData.timer = 0u;
     fileInfo.fileStatus = APP_NOFILE;
     SetBitmapButton(BITMAP_BLUE_ICONS_PLAY_32_ID);
 }
@@ -18,7 +20,7 @@ AppActivityScreenPresenter::AppActivityScreenPresenter(AppActivityScreenView& v)
 void AppActivityScreenPresenter::activate()
 {
     model->SignalRequestFromPresenter();
-    model->MainPeriodFromPresenter(mainTimePeriod);
+    model->MainPeriodFromPresenter(appInternalData.mainTimePeriod);
 }
 
 void AppActivityScreenPresenter::deactivate()
@@ -75,7 +77,7 @@ void AppActivityScreenPresenter::InitActivity(void)
             "\t\t<name>Cycling</name>\n"
             "\t\t<trkseg>\n";
         fileInfo.errorStatus = FS_WriteFile((FS_File_T*)fileInfo.filePtr, (uint8_t*)initBufferOne);
-        fileInfo.errorStatus = FS_WriteFile((FS_File_T*)fileInfo.filePtr, (uint8_t*)initBufferTwo);
+        fileInfo.errorStatus |= FS_WriteFile((FS_File_T*)fileInfo.filePtr, (uint8_t*)initBufferTwo);
     }
 }
 
@@ -110,20 +112,22 @@ void AppActivityScreenPresenter::FinishActivity(void)
 /* Main method, triggered periodically by model. */
 void AppActivityScreenPresenter::Main(void)
 {
-    const uint8_t maxCallCounter = (APP_MS_IN_SEC) / (APP_MAINPERIOD_MS);
-    static uint8_t callCounter = maxCallCounter;
-
     if((APP_FILECREATED == fileInfo.fileStatus) && (APP_RUNNING == activityData.state))
     {
-        callCounter++;
-
         activityData.timer++;
         view.NotifySignalChanged_activityData_timer(activityData.timer);
 
-        if(callCounter >= maxCallCounter)
+        /* Insert data to file only if fix is present */
+        if(true == IsFix())
         {
-            callCounter = 0u;
-            InsertDataIntoFile();
+            appInternalData.callCounter++;
+
+            /* This parts of code executes every 1 second */
+            if(appInternalData.callCounter >= APP_MAX_CALL_COUNTER)
+            {
+                appInternalData.callCounter = 0u;
+                InsertDataIntoFile();
+            }
         }
     }
 }
@@ -192,6 +196,34 @@ void AppActivityScreenPresenter::ConvertLatLon(float data, float  &newData)
 }
 
 
+/* Method called to tell check whether gps signal
+   is fixed or not. */
+bool AppActivityScreenPresenter::IsFix(void)
+{
+    bool retVal = false;
+
+    if(0u != gpsSignals.fixQuality)
+    {
+        retVal = true;
+    }
+    else
+    {
+        retVal = false;
+    }
+
+    return retVal;
+}
+
+
+/* Method called to update fix icon on the screen. */
+void AppActivityScreenPresenter::UpdateSignalFixStatus(void)
+{
+    bool isFix = IsFix();
+
+    view.ShowFixImage(isFix);
+}
+
+
 /* Method called to collect signals from Model:
     - latitude
     - longitude
@@ -229,7 +261,7 @@ void AppActivityScreenPresenter::NotifySignalChanged_gpsData_date(uint32_t newDa
 void AppActivityScreenPresenter::NotifySignalChanged_gpsData_fixQuality(uint8_t newFixQuality)
 {
     gpsSignals.fixQuality = newFixQuality;
-    view.NotifySignalChanged_gpsData_fixQuality(newFixQuality);
+    UpdateSignalFixStatus();
 }
 void AppActivityScreenPresenter::NotifySignalChanged_gpsData_satellitesNum(uint8_t newSatellitesNum)
 {

@@ -22,7 +22,7 @@ extern "C" {
 
 #define TRUE            1u
 #define FALSE           0u
-#define bool BYTE
+#define boolean BYTE
 /* END OF THE DEFINE AREA */
 
 

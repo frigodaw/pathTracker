@@ -11,6 +11,7 @@
 #include <gui/containers/ActivityDataContainter.hpp>
 #include <touchgfx/widgets/TextArea.hpp>
 #include <touchgfx/widgets/ButtonWithIcon.hpp>
+#include <touchgfx/widgets/ScalableImage.hpp>
 
 class AppActivityScreenViewBase : public touchgfx::View<AppActivityScreenPresenter>
 {
@@ -46,6 +47,7 @@ protected:
     touchgfx::ButtonWithIcon ButtonForLabel;
     touchgfx::ButtonWithIcon StartStopButton;
     touchgfx::ButtonWithIcon FinishButton;
+    touchgfx::ScalableImage FixImage;
 
 private:
 

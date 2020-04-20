@@ -2,6 +2,11 @@
 #define ACTIVITYDATACONTAINTER_HPP
 
 #include <gui_generated/containers/ActivityDataContainterBase.hpp>
+#include <gui/appactivityscreen_screen/AppActivityScreenPresenter.hpp>
+
+#define ACTIVTYCONTAINER_TIMER_COEFF1       3600u
+#define ACTIVTYCONTAINER_TIMER_COEFF2       60u
+#define ACTIVTYCONTAINER_TIMER_COEFF3       APP_MAX_CALL_COUNTER
 
 class ActivityDataContainter : public ActivityDataContainterBase
 {

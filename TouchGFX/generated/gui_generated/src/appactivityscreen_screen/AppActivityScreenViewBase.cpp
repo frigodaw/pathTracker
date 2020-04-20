@@ -33,12 +33,17 @@ AppActivityScreenViewBase::AppActivityScreenViewBase() :
     FinishButton.setIconXY(15, 15);
     FinishButton.setAction(buttonCallback);
 
+    FixImage.setBitmap(touchgfx::Bitmap(BITMAP_GPS_ID));
+    FixImage.setPosition(195, 5, 40, 40);
+    FixImage.setScalingAlgorithm(touchgfx::ScalableImage::NEAREST_NEIGHBOR);
+
     add(BackgroundCC);
     add(ActivityDataCC);
     add(NameLabel);
     add(ButtonForLabel);
     add(StartStopButton);
     add(FinishButton);
+    add(FixImage);
 }
 
 void AppActivityScreenViewBase::setupScreen()

@@ -22,12 +22,14 @@ using namespace touchgfx;
 
 #define APP_MAINPERIOD_MS           100u
 #define APP_MS_IN_SEC               1000u
+#define APP_MAX_CALL_COUNTER        ((APP_MS_IN_SEC)/(APP_MAINPERIOD_MS))
 /* END OF THE DEFINE AREA */
 
 
 /* START OF THE ENUM AREA */
 typedef enum
 {
+    //APP_NOFIX,
     APP_READY,
     APP_RUNNING,
     APP_PAUSED,
@@ -82,6 +84,12 @@ typedef struct
 
 typedef struct
 {
+    uint16_t mainTimePeriod;
+    uint8_t  callCounter;
+}AppActivity_appInternalData_T;
+
+typedef struct
+{
     uint32_t frac;
     int16_t  sint;
 }AppActivity_floatToInt_T;
@@ -106,6 +114,8 @@ public:
     void InsertDataIntoFile(void);
     void ConvertFloatToInt(float data, AppActivity_floatToInt_T &intData, uint8_t precision);
     void ConvertLatLon(float data, float &newData);
+    bool IsFix(void);
+    void UpdateSignalFixStatus(void);
 
     void NotifySignalChanged_gpsData_latitude(float newLatitude);
     void NotifySignalChanged_gpsData_longitude(float newLongitude);
@@ -121,11 +131,10 @@ private:
     AppActivityScreenPresenter();
     AppActivityScreenView& view;
 
-
     AppActivity_gpsSignals_T        gpsSignals;
     AppActivity_fileInfo_T          fileInfo;
     AppActivity_activityData_T      activityData;
-    uint16_t                        mainTimePeriod;
+    AppActivity_appInternalData_T   appInternalData;
 };
 
 #endif // APPACTIVITYSCREENPRESENTER_HPP
