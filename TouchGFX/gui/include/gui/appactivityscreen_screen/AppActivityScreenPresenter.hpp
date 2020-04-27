@@ -20,28 +20,39 @@ using namespace touchgfx;
 #define APP_LOCATION_COEFF_DIV      100.f
 #define APP_LOCATION_COEFF_MUL      (100.f/60.f)
 
+#define APP_DISTANCE_COEFF_PERIMETER    40075.704f
+#define APP_DISTANCE_COEFF_ANGLEFULL    360.f
+#define APP_DISTANCE_COEFF_ANGLEHALF    180.f
+#define APP_DISTANCE_COEFF_KMTOM        1000.f
+#define APP_DISTANCE_COEFF_PI           3.14159f
+#define APP_DISTNACE_COEFF_POWER_TWO    2.f
+#define APP_SPEED_COEFF_PERIOD          1.f
+
+
 #define APP_MAINPERIOD_MS           100u
 #define APP_MS_IN_SEC               1000u
+#define APP_SEC_IN_HR               3600.f
 #define APP_MAX_CALL_COUNTER        ((APP_MS_IN_SEC)/(APP_MAINPERIOD_MS))
+#define APP_TIMER_COEFF_TOSEC       APP_MAX_CALL_COUNTER
 /* END OF THE DEFINE AREA */
 
 
 /* START OF THE ENUM AREA */
 typedef enum
 {
-    //APP_NOFIX,
-    APP_READY,
-    APP_RUNNING,
-    APP_PAUSED,
-    APP_FINISHED
+    APP_STATE_READY,
+    APP_STATE_RUNNING,
+    APP_STATE_PAUSED,
+    APP_STATE_FINISHED
 }AppActivity_activityState_T;
 
 typedef enum
 {
-    APP_NOFILE,
-    APP_FILECREATED,
-    APP_FILECLOSED,
-    APP_FILEERROR
+    APP_FILE_NOFILE,
+    APP_FILE_CREATED,
+    APP_FILE_PENDING,
+    APP_FILE_CLOSED,
+    APP_FILE_ERROR = 0xFF
 }AppActivity_fileStatus;
 /* END OF THE ENUM AREA */
 
@@ -84,6 +95,7 @@ typedef struct
 
 typedef struct
 {
+    uint32_t lastTime;
     uint16_t mainTimePeriod;
     uint8_t  callCounter;
 }AppActivity_appInternalData_T;
@@ -116,6 +128,9 @@ public:
     void ConvertLatLon(float data, float &newData);
     bool IsFix(void);
     void UpdateSignalFixStatus(void);
+    void CalculateDistance(void);
+    void IncrementTimer(void);
+
 
     void NotifySignalChanged_gpsData_latitude(float newLatitude);
     void NotifySignalChanged_gpsData_longitude(float newLongitude);

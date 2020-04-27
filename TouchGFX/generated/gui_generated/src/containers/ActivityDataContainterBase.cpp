@@ -9,19 +9,19 @@ ActivityDataContainterBase::ActivityDataContainterBase()
 {
     setWidth(240);
     setHeight(210);
-    AvgVelocityTextBox.setPosition(20, 76, 175, 20);
-    AvgVelocityTextBox.setColor(touchgfx::Color::getColorFrom24BitRGB(0, 0, 0));
-    AvgVelocityTextBox.setLinespacing(0);
-    Unicode::snprintf(AvgVelocityTextBoxBuffer, AVGVELOCITYTEXTBOX_SIZE, "%s", touchgfx::TypedText(T_SINGLEUSEID93).getText());
-    AvgVelocityTextBox.setWildcard(AvgVelocityTextBoxBuffer);
-    AvgVelocityTextBox.setTypedText(touchgfx::TypedText(T_SINGLEUSEID92));
+    AvgSpeedTextBox.setPosition(20, 76, 175, 20);
+    AvgSpeedTextBox.setColor(touchgfx::Color::getColorFrom24BitRGB(0, 0, 0));
+    AvgSpeedTextBox.setLinespacing(0);
+    Unicode::snprintf(AvgSpeedTextBoxBuffer, AVGSPEEDTEXTBOX_SIZE, "%s", touchgfx::TypedText(T_SINGLEUSEID93).getText());
+    AvgSpeedTextBox.setWildcard(AvgSpeedTextBoxBuffer);
+    AvgSpeedTextBox.setTypedText(touchgfx::TypedText(T_SINGLEUSEID92));
 
-    VelocityTextBox.setPosition(20, 56, 175, 20);
-    VelocityTextBox.setColor(touchgfx::Color::getColorFrom24BitRGB(0, 0, 0));
-    VelocityTextBox.setLinespacing(0);
-    Unicode::snprintf(VelocityTextBoxBuffer, VELOCITYTEXTBOX_SIZE, "%s", touchgfx::TypedText(T_SINGLEUSEID89).getText());
-    VelocityTextBox.setWildcard(VelocityTextBoxBuffer);
-    VelocityTextBox.setTypedText(touchgfx::TypedText(T_SINGLEUSEID88));
+    SpeedTextBox.setPosition(20, 56, 175, 20);
+    SpeedTextBox.setColor(touchgfx::Color::getColorFrom24BitRGB(0, 0, 0));
+    SpeedTextBox.setLinespacing(0);
+    Unicode::snprintf(SpeedTextBoxBuffer, SPEEDTEXTBOX_SIZE, "%s", touchgfx::TypedText(T_SINGLEUSEID89).getText());
+    SpeedTextBox.setWildcard(SpeedTextBoxBuffer);
+    SpeedTextBox.setTypedText(touchgfx::TypedText(T_SINGLEUSEID88));
 
     DistanceTextBox.setPosition(20, 35, 175, 21);
     DistanceTextBox.setColor(touchgfx::Color::getColorFrom24BitRGB(0, 0, 0));
@@ -37,8 +37,8 @@ ActivityDataContainterBase::ActivityDataContainterBase()
     TimerTextBox.setWildcard(TimerTextBoxBuffer);
     TimerTextBox.setTypedText(touchgfx::TypedText(T_SINGLEUSEID90));
 
-    add(AvgVelocityTextBox);
-    add(VelocityTextBox);
+    add(AvgSpeedTextBox);
+    add(SpeedTextBox);
     add(DistanceTextBox);
     add(TimerTextBox);
 }

@@ -21,3 +21,21 @@ void ActivityDataContainter::NotifySignalChanged_activityData_timer(uint32_t new
     Unicode::snprintf(TimerTextBoxBuffer, TIMERTEXTBOX_SIZE, "%.2d:%.2d:%.2d.%.1d", timerHr, timerMin, timerSec, timerMs);
     TimerTextBox.invalidate();
 }
+
+void ActivityDataContainter::NotifySignalChanged_activityData_distance(float newDistance)
+{
+    Unicode::snprintfFloats(DistanceTextBoxBuffer, DISTANCETEXTBOX_SIZE, "%#.2f", &newDistance);
+    DistanceTextBox.invalidate();
+}
+
+void ActivityDataContainter::NotifySignalChanged_activityData_speed(float newSpeed)
+{
+    Unicode::snprintfFloats(SpeedTextBoxBuffer, SPEEDTEXTBOX_SIZE, "%#.2f", &newSpeed);
+    SpeedTextBox.invalidate();
+}
+
+void ActivityDataContainter::NotifySignalChanged_activityData_avgSpeed(float newAvgSpeed)
+{
+    Unicode::snprintfFloats(AvgSpeedTextBoxBuffer, AVGSPEEDTEXTBOX_SIZE, "%#.2f", &newAvgSpeed);
+    AvgSpeedTextBox.invalidate();
+}

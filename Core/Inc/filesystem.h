@@ -40,6 +40,7 @@ extern "C" {
 
 #define FS_INPUTPATH        "in"
 #define FS_OUTPUTPATH       "out"
+#define FS_REPORTSPATH      "reports"
 /* END OF THE DEFINE AREA */
 
 
@@ -61,6 +62,7 @@ typedef enum
 //enum to select mode during opening a new file
 typedef enum
 {
+    FS_NOMODE,
     FS_MODEREAD,
     FS_MODEWRITE
 }FS_fileMode;
@@ -98,6 +100,7 @@ typedef struct
 {
     FS_Dir_T in;
     FS_Dir_T out;
+    FS_Dir_T reports;
 }FS_DirsCollection_T;
 
 //typedef to store info about opened file
@@ -108,6 +111,7 @@ typedef struct
     uint16_t lastLineNumber;
     boolean isMoreLines;
     boolean isOpen;
+    FS_fileMode mode;
 }FS_File_T;
 
 //typedef to store info about all opened read
@@ -131,6 +135,7 @@ void FS_Init(void);
 void FS_Main(void);
 uint8_t FS_OpenFile(FS_File_T** file, FS_FullPathType path, FS_fileMode mode);
 uint8_t FS_CloseFile(FS_File_T** file);
+uint8_t FS_RenameFile(FS_File_T** file, FS_FullPathType newPath);
 uint8_t FS_ReadFile(FS_File_T* file, uint8_t *buff, uint16_t len);
 uint8_t FS_WriteFile(FS_File_T* file, uint8_t *buff);
 FRESULT FS_ReadDir(FS_Dir_T* dir);

@@ -34,11 +34,6 @@ void AppActivityScreenView::SetBitmapButton(const uint16_t bitmapId)
 }
 
 
-void AppActivityScreenView::NotifySignalChanged_activityData_timer(uint32_t newTimer)
-{
-    ActivityDataCC.NotifySignalChanged_activityData_timer(newTimer);
-}
-
 void AppActivityScreenView::ShowFixImage(bool isFix)
 {
     if(true == isFix)
@@ -50,4 +45,21 @@ void AppActivityScreenView::ShowFixImage(bool isFix)
         FixImage.setAlpha(APP_ALPHA_INVISIBLE);
     }
     FixImage.invalidate();
+}
+
+void AppActivityScreenView::NotifySignalChanged_activityData_timer(uint32_t newTimer)
+{
+    ActivityDataCC.NotifySignalChanged_activityData_timer(newTimer);
+}
+void AppActivityScreenView::NotifySignalChanged_activityData_distance(float newDistance)
+{
+    ActivityDataCC.NotifySignalChanged_activityData_distance(newDistance);
+}
+void AppActivityScreenView::NotifySignalChanged_activityData_speed(float newSpeed)
+{
+    ActivityDataCC.NotifySignalChanged_activityData_speed(newSpeed);
+}
+void AppActivityScreenView::NotifySignalChanged_activityData_avgSpeed(float newAvgSpeed)
+{
+    ActivityDataCC.NotifySignalChanged_activityData_avgSpeed(newAvgSpeed);
 }

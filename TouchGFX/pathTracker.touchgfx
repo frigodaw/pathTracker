@@ -1320,7 +1320,7 @@
               "UseBuffer": true,
               "BufferSize": 8
             },
-            "Name": "AvgVelocityTextBox",
+            "Name": "AvgSpeedTextBox",
             "X": 20,
             "Y": 76,
             "Width": 175,
@@ -1348,7 +1348,7 @@
               "UseBuffer": true,
               "BufferSize": 8
             },
-            "Name": "VelocityTextBox",
+            "Name": "SpeedTextBox",
             "X": 20,
             "Y": 56,
             "Width": 175,

@@ -22,6 +22,9 @@ public:
 
     void NotifySignalChanged_gpsData_fixQuality(uint8_t newFixQuality);
     void NotifySignalChanged_activityData_timer(uint32_t newTimer);
+    void NotifySignalChanged_activityData_distance(float newDistance);
+    void NotifySignalChanged_activityData_speed(float newSpeed);
+    void NotifySignalChanged_activityData_avgSpeed(float newAvgSpeed);
 protected:
 };
 

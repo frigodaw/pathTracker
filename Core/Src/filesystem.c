@@ -33,6 +33,7 @@ void FS_Init(void)
     /* Set path to 'in' and 'out' directories */
     memcpy(&dirInfo.in.path, FS_INPUTPATH, strlen(FS_INPUTPATH) + 1u);
     memcpy(&dirInfo.out.path, FS_OUTPUTPATH, strlen(FS_OUTPUTPATH) + 1u);
+    memcpy(&dirInfo.reports.path, FS_REPORTSPATH, strlen(FS_REPORTSPATH) + 1u);
 
     /* Mount SD Card */
     fresult = f_mount(&fs, "", (uint8_t)FS_MOUNTNOW);
@@ -122,6 +123,7 @@ FRESULT FS_GetSdCardInfo(void)
     fresult |= FS_GetSDcardCapacity();
     fresult |= FS_ReadDir(&dirInfo.in);
     fresult |= FS_ReadDir(&dirInfo.out);
+    fresult |= FS_ReadDir(&dirInfo.reports);
 
     return fresult;
 }
@@ -171,6 +173,7 @@ uint8_t FS_OpenFile(FS_File_T** file, FS_FullPathType path, FS_fileMode mode)
                 (*file)->lastLineNumber = 0u;
                 (*file)->isMoreLines = TRUE;
                 (*file)->isOpen = TRUE;
+                (*file)->mode = mode;
             }
             else
             {
@@ -206,6 +209,47 @@ uint8_t FS_CloseFile(FS_File_T** file)
     if(FR_OK != fresult)
     {
         retVal = RET_NOK;
+    }
+
+    return retVal;
+}
+
+
+/* Function called to rename existing file in a runtime. */
+uint8_t FS_RenameFile(FS_File_T** file, FS_FullPathType newPath)
+{
+    uint8_t retVal = RET_NOK;
+    FRESULT fresult = FR_OK;
+
+    uint8_t len = strlen(newPath);
+
+    if(len > 0u)
+    {
+        boolean reopen = FALSE;
+        FS_fileMode mode = FS_NOMODE;
+
+        /* Opened file need to be closes before renaming */
+        if(TRUE == (*file)->isOpen)
+        {
+            reopen = TRUE;
+            mode = (*file)->mode;
+            FS_FullPathType oldPath;
+            memcpy(&oldPath, (*file)->name, sizeof(FS_FullPathType));
+            retVal = FS_CloseFile(file);
+        }
+
+        fresult = f_rename((const TCHAR*)(*file)->name, (const TCHAR*)newPath);
+
+        /* Reopen file again if was opened before */
+        if(TRUE == reopen)
+        {
+            retVal = FS_OpenFile(file, newPath, mode);
+        }
+
+        if(FR_OK == fresult)
+        {
+            retVal = RET_OK;
+        }
     }
 
     return retVal;
@@ -269,7 +313,7 @@ FRESULT FS_ReadDir(FS_Dir_T* dir)
             memset(&fileInfo, 0u, sizeof(fileInfo));
             fresult |= f_readdir(&openedDir, &fileInfo);
 
-            if(0u != fileInfo.fsize)
+            if((0u != fileInfo.fsize) || (0u != fileInfo.fdate))
             {
                 /* Due to memory issues, save names only for the first FS_SAVEDFILESNUM files */
                 if(i < FS_SAVEDFILESNUM)

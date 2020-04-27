@@ -2,18 +2,24 @@
 #include <gui/appactivityscreen_screen/AppActivityScreenPresenter.hpp>
 #include <stdio.h>
 #include <string.h>
+#include <math.h>
 #include "BitmapDatabase.hpp"
 #include "filesystem.h"
+#include "dataCollector.h"
 
 
 AppActivityScreenPresenter::AppActivityScreenPresenter(AppActivityScreenView& v)
     : view(v)
 {
+    memset(&activityData, 0u, sizeof(activityData));
+    memset(&appInternalData, 0u, sizeof(appInternalData));
+    memset(&fileInfo, 0u, sizeof(fileInfo));
+    memset(&gpsSignals, 0u, sizeof(gpsSignals));
+
     appInternalData.mainTimePeriod = APP_MAINPERIOD_MS;
     appInternalData.callCounter = APP_MAX_CALL_COUNTER;
-    activityData.state = APP_READY;
-    activityData.timer = 0u;
-    fileInfo.fileStatus = APP_NOFILE;
+    activityData.state = APP_STATE_READY;
+    fileInfo.fileStatus = APP_FILE_NOFILE;
     SetBitmapButton(BITMAP_BLUE_ICONS_PLAY_32_ID);
 }
 
@@ -34,20 +40,18 @@ void AppActivityScreenPresenter::deactivate()
    to proper state. */
 void AppActivityScreenPresenter::StartStopActivity(void)
 {
-    if(APP_READY == activityData.state)
+    if(APP_STATE_READY == activityData.state)
     {
-        activityData.state = APP_RUNNING;
         InitActivity();
+    }
+    else if(APP_STATE_PAUSED == activityData.state)
+    {
+        activityData.state = APP_STATE_RUNNING;
         SetBitmapButton(BITMAP_BLUE_ICONS_PAUSE_32_ID);
     }
-    else if(APP_PAUSED == activityData.state)
+    else if(APP_STATE_RUNNING == activityData.state)
     {
-        activityData.state = APP_RUNNING;
-        SetBitmapButton(BITMAP_BLUE_ICONS_PAUSE_32_ID);
-    }
-    else if(APP_RUNNING == activityData.state)
-    {
-        activityData.state = APP_PAUSED;
+        activityData.state = APP_STATE_PAUSED;
         SetBitmapButton(BITMAP_BLUE_ICONS_PLAY_32_ID);
     }
 }
@@ -57,27 +61,45 @@ void AppActivityScreenPresenter::StartStopActivity(void)
    prepare output file. */
 void AppActivityScreenPresenter::InitActivity(void)
 {
-    snprintf(fileInfo.name, APP_FILENAMEMAXLEN, "%s/20%.2d%.2d%.2d_%.2d%.2d%.2d.gpx",
-             FS_OUTPUTPATH, gpsSignals.dateYear, gpsSignals.dateMon, gpsSignals.dateDay,
-             gpsSignals.timeHr, gpsSignals.timeMin, gpsSignals.timeSec);
-
-    uint8_t retVal = FS_OpenFile((FS_File_T**)&fileInfo.filePtr, fileInfo.name, FS_MODEWRITE);
-    if(RET_OK == retVal)
+    if(true == IsFix())
     {
-        fileInfo.fileStatus = APP_FILECREATED;
+        appInternalData.lastTime = DC_get_main_tim_t_100ms();
 
-        const char* initBufferOne = 
-            "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
-            "<gpx version=\"1.1\" creator=\"Path Tracker\">\n"
-            "\t<metadata>\n";
-        const char* initBufferTwo = 
-            "\t\t<name>Activity</name>\n"
-            "\t</metadata>\n"
-            "\t<trk>\n"
-            "\t\t<name>Cycling</name>\n"
-            "\t\t<trkseg>\n";
-        fileInfo.errorStatus = FS_WriteFile((FS_File_T*)fileInfo.filePtr, (uint8_t*)initBufferOne);
-        fileInfo.errorStatus |= FS_WriteFile((FS_File_T*)fileInfo.filePtr, (uint8_t*)initBufferTwo);
+        snprintf(fileInfo.name, APP_FILENAMEMAXLEN, "%s/20%.2d%.2d%.2d_%.2d%.2d%.2d.gpx",
+                FS_OUTPUTPATH, gpsSignals.dateYear, gpsSignals.dateMon, gpsSignals.dateDay,
+                gpsSignals.timeHr, gpsSignals.timeMin, gpsSignals.timeSec);
+
+        uint8_t retVal = FS_OpenFile((FS_File_T**)&fileInfo.filePtr, fileInfo.name, FS_MODEWRITE);
+        if(RET_OK == retVal)
+        {
+            fileInfo.fileStatus = APP_FILE_CREATED;
+            activityData.state = APP_STATE_RUNNING;
+            SetBitmapButton(BITMAP_BLUE_ICONS_PAUSE_32_ID);
+
+            const char* initBufferOne = 
+                "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"
+                "<gpx version=\"1.1\" creator=\"Path Tracker\">\n"
+                "\t<metadata>\n";
+            const char* initBufferTwo = 
+                "\t\t<name>Activity</name>\n"
+                "\t</metadata>\n"
+                "\t<trk>\n"
+                "\t\t<name>Cycling</name>\n"
+                "\t\t<trkseg>\n";
+            fileInfo.errorStatus = FS_WriteFile((FS_File_T*)fileInfo.filePtr, (uint8_t*)initBufferOne);
+            fileInfo.errorStatus |= FS_WriteFile((FS_File_T*)fileInfo.filePtr, (uint8_t*)initBufferTwo);
+        }
+        else
+        {
+            /* File can not be created */
+            fileInfo.fileStatus = APP_FILE_ERROR;
+            fileInfo.errorStatus = 0xFFu;
+        }
+    }
+    else
+    {
+        /* No fix, file will not be created */
+        fileInfo.fileStatus = APP_FILE_PENDING;
     }
 }
 
@@ -86,7 +108,7 @@ void AppActivityScreenPresenter::InitActivity(void)
    to change activityData.state. */
 void AppActivityScreenPresenter::FinishActivity(void)
 {
-    if(APP_NOFILE != fileInfo.fileStatus)
+    if(APP_FILE_NOFILE != fileInfo.fileStatus)
     {
         const char* finishBuffer = 
             "\t\t</trkseg>\n"
@@ -97,14 +119,14 @@ void AppActivityScreenPresenter::FinishActivity(void)
         uint8_t retVal = FS_CloseFile((FS_File_T**)&fileInfo.filePtr);
         if(RET_OK == retVal)
         {
-            fileInfo.fileStatus = APP_FILECLOSED;
+            fileInfo.fileStatus = APP_FILE_CLOSED;
         }
         else
         {
-            fileInfo.fileStatus = APP_FILEERROR;
+            fileInfo.fileStatus = APP_FILE_ERROR;
         }
         fileInfo.filePtr = NULL;
-        activityData.state = APP_FINISHED;
+        activityData.state = APP_STATE_FINISHED;
     }
 }
 
@@ -112,23 +134,32 @@ void AppActivityScreenPresenter::FinishActivity(void)
 /* Main method, triggered periodically by model. */
 void AppActivityScreenPresenter::Main(void)
 {
-    if((APP_FILECREATED == fileInfo.fileStatus) && (APP_RUNNING == activityData.state))
+    if(APP_FILE_CREATED == fileInfo.fileStatus)
     {
-        activityData.timer++;
-        view.NotifySignalChanged_activityData_timer(activityData.timer);
-
-        /* Insert data to file only if fix is present */
-        if(true == IsFix())
+        if(APP_STATE_RUNNING == activityData.state)
         {
-            appInternalData.callCounter++;
+            IncrementTimer();
 
-            /* This parts of code executes every 1 second */
-            if(appInternalData.callCounter >= APP_MAX_CALL_COUNTER)
+            /* Insert data to file only if fix is present */
+            if(true == IsFix())
             {
-                appInternalData.callCounter = 0u;
-                InsertDataIntoFile();
+                appInternalData.callCounter++;
+
+                /* This parts of code executes every 1 second */
+                if(appInternalData.callCounter >= APP_MAX_CALL_COUNTER)
+                {
+                    appInternalData.callCounter = 0u;
+
+                    InsertDataIntoFile();
+
+                    CalculateDistance();
+                }
             }
         }
+    }
+    else if(APP_FILE_PENDING == fileInfo.fileStatus)
+    {
+        InitActivity();
     }
 }
 
@@ -221,6 +252,46 @@ void AppActivityScreenPresenter::UpdateSignalFixStatus(void)
     bool isFix = IsFix();
 
     view.ShowFixImage(isFix);
+}
+
+
+/* Method called to calculate total distance. */
+void AppActivityScreenPresenter::CalculateDistance(void)
+{
+    static float lastLat = 0.f;
+    static float lastLon = 0.f;
+
+    if((0.f == lastLat) || (0.f == lastLon))
+    {
+        /* Do not proceed on first entry */
+    }
+    else
+    {
+        float distance = sqrtf( powf( (gpsSignals.latitude - lastLat), APP_DISTNACE_COEFF_POWER_TWO ) + 
+                                powf( (cos(lastLat * APP_DISTANCE_COEFF_PI / APP_DISTANCE_COEFF_ANGLEHALF) * (gpsSignals.longitude - lastLon) ), APP_DISTNACE_COEFF_POWER_TWO ) ) *
+                            APP_DISTANCE_COEFF_PERIMETER/APP_DISTANCE_COEFF_ANGLEFULL;
+        activityData.distance += distance;
+        activityData.speed = distance * APP_SEC_IN_HR;
+        activityData.avgSpeed = (float)(activityData.distance / (activityData.timer / APP_SEC_IN_HR / APP_TIMER_COEFF_TOSEC));
+    }
+
+    view.NotifySignalChanged_activityData_distance(activityData.distance);
+    view.NotifySignalChanged_activityData_speed(activityData.speed);
+    view.NotifySignalChanged_activityData_avgSpeed(activityData.avgSpeed);
+
+    lastLat = gpsSignals.latitude;
+    lastLon = gpsSignals.longitude;
+}
+
+
+void AppActivityScreenPresenter::IncrementTimer(void)
+{
+    uint32_t newTime = DC_get_main_tim_t_100ms();
+
+    activityData.timer += newTime - appInternalData.lastTime;
+    appInternalData.lastTime = newTime;
+
+    view.NotifySignalChanged_activityData_timer(activityData.timer);
 }
 
 

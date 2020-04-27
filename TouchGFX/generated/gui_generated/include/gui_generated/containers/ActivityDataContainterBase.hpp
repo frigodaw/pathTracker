@@ -23,18 +23,18 @@ protected:
     /*
      * Member Declarations
      */
-    touchgfx::TextAreaWithOneWildcard AvgVelocityTextBox;
-    touchgfx::TextAreaWithOneWildcard VelocityTextBox;
+    touchgfx::TextAreaWithOneWildcard AvgSpeedTextBox;
+    touchgfx::TextAreaWithOneWildcard SpeedTextBox;
     touchgfx::TextAreaWithOneWildcard DistanceTextBox;
     touchgfx::TextAreaWithOneWildcard TimerTextBox;
 
     /*
      * Wildcard Buffers
      */
-    static const uint16_t AVGVELOCITYTEXTBOX_SIZE = 8;
-    touchgfx::Unicode::UnicodeChar AvgVelocityTextBoxBuffer[AVGVELOCITYTEXTBOX_SIZE];
-    static const uint16_t VELOCITYTEXTBOX_SIZE = 8;
-    touchgfx::Unicode::UnicodeChar VelocityTextBoxBuffer[VELOCITYTEXTBOX_SIZE];
+    static const uint16_t AVGSPEEDTEXTBOX_SIZE = 8;
+    touchgfx::Unicode::UnicodeChar AvgSpeedTextBoxBuffer[AVGSPEEDTEXTBOX_SIZE];
+    static const uint16_t SPEEDTEXTBOX_SIZE = 8;
+    touchgfx::Unicode::UnicodeChar SpeedTextBoxBuffer[SPEEDTEXTBOX_SIZE];
     static const uint16_t DISTANCETEXTBOX_SIZE = 8;
     touchgfx::Unicode::UnicodeChar DistanceTextBoxBuffer[DISTANCETEXTBOX_SIZE];
     static const uint16_t TIMERTEXTBOX_SIZE = 16;
