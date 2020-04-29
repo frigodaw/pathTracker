@@ -9,63 +9,85 @@ extern const uint32_t indicesGb[];
 TEXT_LOCATION_FLASH_PRAGMA
 KEEP extern const uint32_t indicesGb[] TEXT_LOCATION_FLASH_ATTRIBUTE =
 {
-    243, // T_SingleUseId1
-    336, // T_SingleUseId25
-    255, // T_SingleUseId26
-    318, // T_SingleUseId29
-    318, // T_SingleUseId31
-    318, // T_SingleUseId32
-    318, // T_SingleUseId33
-    318, // T_SingleUseId34
-    318, // T_SingleUseId35
-    318, // T_SingleUseId36
-    318, // T_SingleUseId37
-    318, // T_SingleUseId38
-    318, // T_SingleUseId39
+    255, // T_SingleUseId1
+    406, // T_SingleUseId25
+    243, // T_SingleUseId26
+    338, // T_SingleUseId29
+    338, // T_SingleUseId31
+    338, // T_SingleUseId32
+    338, // T_SingleUseId33
+    338, // T_SingleUseId34
+    338, // T_SingleUseId35
+    338, // T_SingleUseId36
+    338, // T_SingleUseId37
+    338, // T_SingleUseId38
+    338, // T_SingleUseId39
     177, // T_SingleUseId40
-    300, // T_SingleUseId41
-    48, // T_SingleUseId42
-    352, // T_SingleUseId43
-    57, // T_SingleUseId44
-    352, // T_SingleUseId45
+    365, // T_SingleUseId41
+    72, // T_SingleUseId42
+    422, // T_SingleUseId43
+    63, // T_SingleUseId44
+    422, // T_SingleUseId45
     110, // T_SingleUseId46
-    352, // T_SingleUseId47
+    422, // T_SingleUseId47
     236, // T_SingleUseId48
-    352, // T_SingleUseId49
+    422, // T_SingleUseId49
     229, // T_SingleUseId50
-    352, // T_SingleUseId51
-    221, // T_SingleUseId52
+    422, // T_SingleUseId51
+    193, // T_SingleUseId52
     289, // T_SingleUseId53
     185, // T_SingleUseId54
-    352, // T_SingleUseId55
-    159, // T_SingleUseId56
-    352, // T_SingleUseId57
-    129, // T_SingleUseId58
-    342, // T_SingleUseId60
-    278, // T_SingleUseId63
-    342, // T_SingleUseId68
-    193, // T_SingleUseId69
-    342, // T_SingleUseId59
-    168, // T_SingleUseId70
-    207, // T_SingleUseId71
-    33, // T_SingleUseId72
-    276, // T_SingleUseId73
+    422, // T_SingleUseId55
+    168, // T_SingleUseId56
+    422, // T_SingleUseId57
+    138, // T_SingleUseId58
+    412, // T_SingleUseId60
+    267, // T_SingleUseId63
+    412, // T_SingleUseId68
+    215, // T_SingleUseId69
+    412, // T_SingleUseId59
+    129, // T_SingleUseId70
+    201, // T_SingleUseId71
+    81, // T_SingleUseId72
+    287, // T_SingleUseId73
     96, // T_SingleUseId74
-    276, // T_SingleUseId75
-    81, // T_SingleUseId76
-    276, // T_SingleUseId77
+    287, // T_SingleUseId75
+    48, // T_SingleUseId76
+    287, // T_SingleUseId77
     17, // T_SingleUseId78
-    276, // T_SingleUseId79
-    66, // T_SingleUseId82
-    347, // T_SingleUseId83
+    287, // T_SingleUseId79
+    33, // T_SingleUseId82
+    417, // T_SingleUseId83
     3, // T_SingleUseId88
-    274, // T_SingleUseId89
+    285, // T_SingleUseId89
     120, // T_SingleUseId90
-    267, // T_SingleUseId91
+    278, // T_SingleUseId91
     0, // T_SingleUseId92
-    274, // T_SingleUseId93
-    309, // T_SingleUseId94
-    327, // T_SingleUseId95
-    144, // T_SingleUseId96
-    327  // T_SingleUseId97
+    285, // T_SingleUseId93
+    320, // T_SingleUseId94
+    356, // T_SingleUseId95
+    153, // T_SingleUseId96
+    374, // T_SingleUseId97
+    31, // T_SingleUseId100
+    417, // T_SingleUseId101
+    31, // T_SingleUseId102
+    417, // T_SingleUseId103
+    31, // T_SingleUseId104
+    278, // T_SingleUseId105
+    394, // T_SingleUseId106
+    347, // T_SingleUseId107
+    400, // T_SingleUseId108
+    310, // T_SingleUseId109
+    300, // T_SingleUseId110
+    31, // T_SingleUseId111
+    417, // T_SingleUseId112
+    382, // T_SingleUseId113
+    31, // T_SingleUseId114
+    329, // T_SingleUseId115
+    31, // T_SingleUseId98
+    388, // T_SingleUseId117
+    388, // T_SingleUseId118
+    417, // T_SingleUseId119
+    388, // T_SingleUseId120
+    45  // T_SingleUseId121
 };

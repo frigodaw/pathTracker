@@ -337,9 +337,23 @@
             "CustomContainerDefinitionName": "ActivityDataContainter",
             "Name": "ActivityDataCC",
             "X": 0,
-            "Y": 40,
+            "Y": 30,
             "Width": 240,
-            "Height": 210,
+            "Height": 230,
+            "Type": "CustomContainerInstance",
+            "Visible": false,
+            "Draggable": false,
+            "Clickable": false,
+            "Fadeable": false,
+            "Moveable": false
+          },
+          {
+            "CustomContainerDefinitionName": "ActivityDataContainter_Main",
+            "Name": "ActivityDataCC_Main",
+            "X": 0,
+            "Y": 35,
+            "Width": 240,
+            "Height": 225,
             "Type": "CustomContainerInstance",
             "Visible": true,
             "Draggable": false,
@@ -359,9 +373,9 @@
             "AutoSize": true,
             "LineSpacing": 0,
             "Name": "NameLabel",
-            "X": 83,
-            "Y": 15,
-            "Width": 74,
+            "X": 84,
+            "Y": 5,
+            "Width": 72,
             "Height": 25,
             "Type": "TextArea",
             "Visible": true,
@@ -384,6 +398,30 @@
             "IconStyle": "Icon45",
             "Name": "ButtonForLabel",
             "X": 90,
+            "Y": 260,
+            "Width": 60,
+            "Height": 60,
+            "Type": "ButtonWithIcon",
+            "Visible": true,
+            "Draggable": false,
+            "Clickable": false,
+            "Fadeable": false,
+            "Moveable": false
+          },
+          {
+            "Pressed": "__designer\\Blue_Buttons_Round_Edge_icon_button_pressed.png",
+            "Released": "__designer\\Blue_Buttons_Round_Edge_icon_button.png",
+            "Alpha": 255,
+            "IconPressed": "__designer\\Blue_Icons_Settings_32.png",
+            "IconReleased": "__designer\\Blue_Icons_Settings_32.png",
+            "IconX": 15,
+            "IconY": 15,
+            "IconHeight": 30,
+            "IconWidth": 30,
+            "ButtonStyle": "Style1",
+            "IconStyle": "Icon57",
+            "Name": "SettingsButton",
+            "X": 180,
             "Y": 260,
             "Width": 60,
             "Height": 60,
@@ -447,10 +485,10 @@
             "Alpha": 255,
             "ScalingAlgorithm": "Nearest-neighbor",
             "Name": "FixImage",
-            "X": 195,
+            "X": 210,
             "Y": 5,
-            "Width": 40,
-            "Height": 40,
+            "Width": 25,
+            "Height": 25,
             "Type": "ScalableImage",
             "Visible": true,
             "Draggable": false,
@@ -500,7 +538,7 @@
         ],
         "Name": "AppActivityScreen",
         "OverrideDefaultBufferSize": false,
-        "CanvasBufferSize": 0
+        "CanvasBufferSize": 3600
       },
       {
         "Components": [
@@ -1422,7 +1460,490 @@
         "X": 0,
         "Y": 0,
         "Width": 240,
-        "Height": 210
+        "Height": 230
+      },
+      {
+        "Components": [
+          {
+            "Color": {
+              "Red": 10,
+              "Green": 9,
+              "Blue": 9
+            },
+            "Alpha": 255,
+            "StartX": 0,
+            "StartY": 150,
+            "EndX": 240,
+            "EndY": 150,
+            "LineWidth": 2,
+            "LineEndingStyle": "Round",
+            "Name": "LineHorizontalTwo",
+            "X": 0,
+            "Y": 0,
+            "Width": 240,
+            "Height": 225,
+            "Type": "Line",
+            "Visible": true,
+            "Draggable": false,
+            "Clickable": false,
+            "Fadeable": false,
+            "Moveable": false
+          },
+          {
+            "Color": {
+              "Red": 10,
+              "Green": 9,
+              "Blue": 9
+            },
+            "Alpha": 255,
+            "StartX": 0,
+            "StartY": 75,
+            "EndX": 240,
+            "EndY": 75,
+            "LineWidth": 2,
+            "LineEndingStyle": "Round",
+            "Name": "LineHorizontalOne",
+            "X": 0,
+            "Y": 0,
+            "Width": 240,
+            "Height": 225,
+            "Type": "Line",
+            "Visible": true,
+            "Draggable": false,
+            "Clickable": false,
+            "Fadeable": false,
+            "Moveable": false
+          },
+          {
+            "Color": {
+              "Red": 10,
+              "Green": 9,
+              "Blue": 9
+            },
+            "Alpha": 255,
+            "StartX": 120,
+            "StartY": 0,
+            "EndX": 120,
+            "EndY": 230,
+            "LineWidth": 2,
+            "LineEndingStyle": "Round",
+            "Name": "LineVertical",
+            "X": 0,
+            "Y": 0,
+            "Width": 240,
+            "Height": 226,
+            "Type": "Line",
+            "Visible": true,
+            "Draggable": false,
+            "Clickable": false,
+            "Fadeable": false,
+            "Moveable": false
+          },
+          {
+            "TextId": "SingleUseId111",
+            "TextRotation": "0",
+            "Color": {
+              "Red": 0,
+              "Green": 0,
+              "Blue": 0
+            },
+            "Alpha": 255,
+            "AutoSize": false,
+            "LineSpacing": 0,
+            "Wildcard1": {
+              "TextId": "SingleUseId112",
+              "UseBuffer": true,
+              "BufferSize": 8
+            },
+            "Name": "MaxSpeedTextBox",
+            "X": 120,
+            "Y": 175,
+            "Width": 90,
+            "Height": 30,
+            "Type": "TextArea",
+            "Visible": true,
+            "Draggable": false,
+            "Clickable": false,
+            "Fadeable": false,
+            "Moveable": false
+          },
+          {
+            "TextId": "SingleUseId117",
+            "TextRotation": "0",
+            "Color": {
+              "Red": 0,
+              "Green": 0,
+              "Blue": 0
+            },
+            "Alpha": 255,
+            "AutoSize": false,
+            "LineSpacing": 0,
+            "Name": "MaxSpeedUnitLabel",
+            "X": 213,
+            "Y": 170,
+            "Width": 27,
+            "Height": 35,
+            "Type": "TextArea",
+            "Visible": true,
+            "Draggable": false,
+            "Clickable": false,
+            "Fadeable": false,
+            "Moveable": false
+          },
+          {
+            "TextId": "SingleUseId110",
+            "TextRotation": "0",
+            "Color": {
+              "Red": 0,
+              "Green": 0,
+              "Blue": 0
+            },
+            "Alpha": 255,
+            "AutoSize": false,
+            "LineSpacing": 0,
+            "Name": "MaxSpeedLabel",
+            "X": 120,
+            "Y": 150,
+            "Width": 120,
+            "Height": 20,
+            "Type": "TextArea",
+            "Visible": true,
+            "Draggable": false,
+            "Clickable": false,
+            "Fadeable": false,
+            "Moveable": false
+          },
+          {
+            "TextId": "SingleUseId114",
+            "TextRotation": "0",
+            "Color": {
+              "Red": 0,
+              "Green": 0,
+              "Blue": 0
+            },
+            "Alpha": 255,
+            "AutoSize": false,
+            "LineSpacing": 0,
+            "Wildcard1": {
+              "TextId": "SingleUseId115",
+              "UseBuffer": true,
+              "BufferSize": 16
+            },
+            "Name": "ClockTextBox",
+            "X": 0,
+            "Y": 100,
+            "Width": 120,
+            "Height": 30,
+            "Type": "TextArea",
+            "Visible": true,
+            "Draggable": false,
+            "Clickable": false,
+            "Fadeable": false,
+            "Moveable": false
+          },
+          {
+            "TextId": "SingleUseId113",
+            "TextRotation": "0",
+            "Color": {
+              "Red": 0,
+              "Green": 0,
+              "Blue": 0
+            },
+            "Alpha": 255,
+            "AutoSize": false,
+            "LineSpacing": 0,
+            "Name": "ClockLabel",
+            "X": 0,
+            "Y": 75,
+            "Width": 120,
+            "Height": 20,
+            "Type": "TextArea",
+            "Visible": true,
+            "Draggable": false,
+            "Clickable": false,
+            "Fadeable": false,
+            "Moveable": false
+          },
+          {
+            "TextId": "SingleUseId98",
+            "TextRotation": "0",
+            "Color": {
+              "Red": 0,
+              "Green": 0,
+              "Blue": 0
+            },
+            "Alpha": 255,
+            "AutoSize": false,
+            "LineSpacing": 0,
+            "Wildcard1": {
+              "TextId": "SingleUseId119",
+              "UseBuffer": true,
+              "BufferSize": 8
+            },
+            "Name": "AvgSpeedTextBox",
+            "X": 0,
+            "Y": 175,
+            "Width": 90,
+            "Height": 30,
+            "Type": "TextArea",
+            "Visible": true,
+            "Draggable": false,
+            "Clickable": false,
+            "Fadeable": false,
+            "Moveable": false
+          },
+          {
+            "TextId": "SingleUseId120",
+            "TextRotation": "0",
+            "Color": {
+              "Red": 0,
+              "Green": 0,
+              "Blue": 0
+            },
+            "Alpha": 255,
+            "AutoSize": false,
+            "LineSpacing": 0,
+            "Name": "AvgSpeedUnitLabel",
+            "X": 93,
+            "Y": 173,
+            "Width": 27,
+            "Height": 35,
+            "Type": "TextArea",
+            "Visible": true,
+            "Draggable": false,
+            "Clickable": false,
+            "Fadeable": false,
+            "Moveable": false
+          },
+          {
+            "TextId": "SingleUseId109",
+            "TextRotation": "0",
+            "Color": {
+              "Red": 0,
+              "Green": 0,
+              "Blue": 0
+            },
+            "Alpha": 255,
+            "AutoSize": false,
+            "LineSpacing": 0,
+            "Name": "AvgSpeedLabel",
+            "X": 0,
+            "Y": 150,
+            "Width": 120,
+            "Height": 20,
+            "Type": "TextArea",
+            "Visible": true,
+            "Draggable": false,
+            "Clickable": false,
+            "Fadeable": false,
+            "Moveable": false
+          },
+          {
+            "TextId": "SingleUseId100",
+            "TextRotation": "0",
+            "Color": {
+              "Red": 0,
+              "Green": 0,
+              "Blue": 0
+            },
+            "Alpha": 255,
+            "AutoSize": false,
+            "LineSpacing": 0,
+            "Wildcard1": {
+              "TextId": "SingleUseId101",
+              "UseBuffer": true,
+              "BufferSize": 8
+            },
+            "Name": "SpeedTextBox",
+            "X": 120,
+            "Y": 100,
+            "Width": 90,
+            "Height": 30,
+            "Type": "TextArea",
+            "Visible": true,
+            "Draggable": false,
+            "Clickable": false,
+            "Fadeable": false,
+            "Moveable": false
+          },
+          {
+            "TextId": "SingleUseId118",
+            "TextRotation": "0",
+            "Color": {
+              "Red": 0,
+              "Green": 0,
+              "Blue": 0
+            },
+            "Alpha": 255,
+            "AutoSize": false,
+            "LineSpacing": 0,
+            "Name": "SpeedUnitLabel",
+            "X": 213,
+            "Y": 95,
+            "Width": 27,
+            "Height": 35,
+            "Type": "TextArea",
+            "Visible": true,
+            "Draggable": false,
+            "Clickable": false,
+            "Fadeable": false,
+            "Moveable": false
+          },
+          {
+            "TextId": "SingleUseId108",
+            "TextRotation": "0",
+            "Color": {
+              "Red": 0,
+              "Green": 0,
+              "Blue": 0
+            },
+            "Alpha": 255,
+            "AutoSize": false,
+            "LineSpacing": 0,
+            "Name": "SpeedLabel",
+            "X": 120,
+            "Y": 75,
+            "Width": 120,
+            "Height": 20,
+            "Type": "TextArea",
+            "Visible": true,
+            "Draggable": false,
+            "Clickable": false,
+            "Fadeable": false,
+            "Moveable": false
+          },
+          {
+            "TextId": "SingleUseId102",
+            "TextRotation": "0",
+            "Color": {
+              "Red": 0,
+              "Green": 0,
+              "Blue": 0
+            },
+            "Alpha": 255,
+            "AutoSize": false,
+            "LineSpacing": 0,
+            "Wildcard1": {
+              "TextId": "SingleUseId103",
+              "UseBuffer": true,
+              "BufferSize": 8
+            },
+            "Name": "DistanceTextBox",
+            "X": 120,
+            "Y": 25,
+            "Width": 90,
+            "Height": 30,
+            "Type": "TextArea",
+            "Visible": true,
+            "Draggable": false,
+            "Clickable": false,
+            "Fadeable": false,
+            "Moveable": false
+          },
+          {
+            "TextId": "SingleUseId107",
+            "TextRotation": "0",
+            "Color": {
+              "Red": 0,
+              "Green": 0,
+              "Blue": 0
+            },
+            "Alpha": 255,
+            "AutoSize": false,
+            "LineSpacing": 0,
+            "Name": "DistanceLabel",
+            "X": 120,
+            "Y": 0,
+            "Width": 120,
+            "Height": 20,
+            "Type": "TextArea",
+            "Visible": true,
+            "Draggable": false,
+            "Clickable": false,
+            "Fadeable": false,
+            "Moveable": false
+          },
+          {
+            "TextId": "SingleUseId104",
+            "TextRotation": "0",
+            "Color": {
+              "Red": 0,
+              "Green": 0,
+              "Blue": 0
+            },
+            "Alpha": 255,
+            "AutoSize": false,
+            "LineSpacing": 0,
+            "Wildcard1": {
+              "TextId": "SingleUseId105",
+              "UseBuffer": true,
+              "BufferSize": 16
+            },
+            "Name": "TimerTextBox",
+            "X": 0,
+            "Y": 25,
+            "Width": 120,
+            "Height": 30,
+            "Type": "TextArea",
+            "Visible": true,
+            "Draggable": false,
+            "Clickable": false,
+            "Fadeable": false,
+            "Moveable": false
+          },
+          {
+            "TextId": "SingleUseId106",
+            "TextRotation": "0",
+            "Color": {
+              "Red": 0,
+              "Green": 0,
+              "Blue": 0
+            },
+            "Alpha": 255,
+            "AutoSize": false,
+            "LineSpacing": 0,
+            "Name": "TimerLabel",
+            "X": 0,
+            "Y": 0,
+            "Width": 120,
+            "Height": 20,
+            "Type": "TextArea",
+            "Visible": true,
+            "Draggable": false,
+            "Clickable": false,
+            "Fadeable": false,
+            "Moveable": false
+          },
+          {
+            "TextId": "SingleUseId121",
+            "TextRotation": "0",
+            "Color": {
+              "Red": 0,
+              "Green": 0,
+              "Blue": 0
+            },
+            "Alpha": 255,
+            "AutoSize": false,
+            "LineSpacing": 0,
+            "Name": "DistanceUnitLabel",
+            "X": 213,
+            "Y": 35,
+            "Width": 25,
+            "Height": 20,
+            "Type": "TextArea",
+            "Visible": true,
+            "Draggable": false,
+            "Clickable": false,
+            "Fadeable": false,
+            "Moveable": false
+          }
+        ],
+        "Interactions": [],
+        "Name": "ActivityDataContainter_Main",
+        "X": 0,
+        "Y": 0,
+        "Width": 240,
+        "Height": 225
       }
     ],
     "TextEntries": [
@@ -1660,6 +2181,94 @@
       },
       {
         "TextEntryId": "SingleUseId97",
+        "IsResource": false
+      },
+      {
+        "TextEntryId": "SingleUseId100",
+        "IsResource": false
+      },
+      {
+        "TextEntryId": "SingleUseId101",
+        "IsResource": false
+      },
+      {
+        "TextEntryId": "SingleUseId102",
+        "IsResource": false
+      },
+      {
+        "TextEntryId": "SingleUseId103",
+        "IsResource": false
+      },
+      {
+        "TextEntryId": "SingleUseId104",
+        "IsResource": false
+      },
+      {
+        "TextEntryId": "SingleUseId105",
+        "IsResource": false
+      },
+      {
+        "TextEntryId": "SingleUseId106",
+        "IsResource": false
+      },
+      {
+        "TextEntryId": "SingleUseId107",
+        "IsResource": false
+      },
+      {
+        "TextEntryId": "SingleUseId108",
+        "IsResource": false
+      },
+      {
+        "TextEntryId": "SingleUseId109",
+        "IsResource": false
+      },
+      {
+        "TextEntryId": "SingleUseId110",
+        "IsResource": false
+      },
+      {
+        "TextEntryId": "SingleUseId111",
+        "IsResource": false
+      },
+      {
+        "TextEntryId": "SingleUseId112",
+        "IsResource": false
+      },
+      {
+        "TextEntryId": "SingleUseId113",
+        "IsResource": false
+      },
+      {
+        "TextEntryId": "SingleUseId114",
+        "IsResource": false
+      },
+      {
+        "TextEntryId": "SingleUseId115",
+        "IsResource": false
+      },
+      {
+        "TextEntryId": "SingleUseId98",
+        "IsResource": false
+      },
+      {
+        "TextEntryId": "SingleUseId117",
+        "IsResource": false
+      },
+      {
+        "TextEntryId": "SingleUseId118",
+        "IsResource": false
+      },
+      {
+        "TextEntryId": "SingleUseId119",
+        "IsResource": false
+      },
+      {
+        "TextEntryId": "SingleUseId120",
+        "IsResource": false
+      },
+      {
+        "TextEntryId": "SingleUseId121",
         "IsResource": false
       }
     ],

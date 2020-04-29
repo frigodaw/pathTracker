@@ -25,6 +25,7 @@ using namespace touchgfx;
 #define APP_DISTANCE_COEFF_ANGLEHALF    180.f
 #define APP_DISTANCE_COEFF_KMTOM        1000.f
 #define APP_DISTANCE_COEFF_PI           3.14159f
+#define APP_DISTANCE_MAXVALUE_PERSEC    0.03f
 #define APP_DISTNACE_COEFF_POWER_TWO    2.f
 #define APP_SPEED_COEFF_PERIOD          1.f
 
@@ -88,13 +89,16 @@ typedef struct
 {
     float speed;
     float avgSpeed;
+    float maxSpeed;
     float distance;
     uint32_t timer;
+    uint32_t time;
     AppActivity_activityState_T state;
 }AppActivity_activityData_T;
 
 typedef struct
 {
+    float    maxDistancePerSecond;
     uint32_t lastTime;
     uint16_t mainTimePeriod;
     uint8_t  callCounter;
@@ -128,8 +132,9 @@ public:
     void ConvertLatLon(float data, float &newData);
     bool IsFix(void);
     void UpdateSignalFixStatus(void);
-    void CalculateDistance(void);
+    void CalculateSpeedAndDistance(void);
     void IncrementTimer(void);
+    void UpdateTime(void);
 
 
     void NotifySignalChanged_gpsData_latitude(float newLatitude);

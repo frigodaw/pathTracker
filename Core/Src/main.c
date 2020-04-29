@@ -32,6 +32,8 @@
 #include "usbd_cdc_if.h"
 #include "fatfs_sd.h"
 #include "filesystem.h"
+#include "l3gd20.h"
+#include "stm32f429i_discovery_gyroscope.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -77,6 +79,7 @@ osThreadId gpsTaskHandle;
 TimerTypeT tim = {0u};
 CounterTypeT cnt = {0u};
 static FMC_SDRAM_CommandTypeDef Command;
+static float gyro_xyz[3];
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -166,6 +169,7 @@ int main(void)
   /* USER CODE BEGIN 2 */
   Gps_Init();
   Main_Init();
+  BSP_GYRO_Init();
   FS_Init();
   /* USER CODE END 2 */
 
@@ -1027,6 +1031,7 @@ void DefaultTask(void const * argument)
   for(;;)
   {
     FS_Main();
+    BSP_GYRO_GetXYZ(gyro_xyz);
     DC_inc_main_cnt_c_defaultTask();
     osDelay(1000);
   }

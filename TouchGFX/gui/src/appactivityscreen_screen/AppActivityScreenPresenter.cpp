@@ -16,6 +16,7 @@ AppActivityScreenPresenter::AppActivityScreenPresenter(AppActivityScreenView& v)
     memset(&fileInfo, 0u, sizeof(fileInfo));
     memset(&gpsSignals, 0u, sizeof(gpsSignals));
 
+    appInternalData.maxDistancePerSecond = APP_DISTANCE_MAXVALUE_PERSEC;
     appInternalData.mainTimePeriod = APP_MAINPERIOD_MS;
     appInternalData.callCounter = APP_MAX_CALL_COUNTER;
     activityData.state = APP_STATE_READY;
@@ -27,6 +28,8 @@ void AppActivityScreenPresenter::activate()
 {
     model->SignalRequestFromPresenter();
     model->MainPeriodFromPresenter(appInternalData.mainTimePeriod);
+
+    UpdateTime();
 }
 
 void AppActivityScreenPresenter::deactivate()
@@ -134,6 +137,8 @@ void AppActivityScreenPresenter::FinishActivity(void)
 /* Main method, triggered periodically by model. */
 void AppActivityScreenPresenter::Main(void)
 {
+    UpdateTime();
+
     if(APP_FILE_CREATED == fileInfo.fileStatus)
     {
         if(APP_STATE_RUNNING == activityData.state)
@@ -152,7 +157,7 @@ void AppActivityScreenPresenter::Main(void)
 
                     InsertDataIntoFile();
 
-                    CalculateDistance();
+                    CalculateSpeedAndDistance();
                 }
             }
         }
@@ -255,8 +260,8 @@ void AppActivityScreenPresenter::UpdateSignalFixStatus(void)
 }
 
 
-/* Method called to calculate total distance. */
-void AppActivityScreenPresenter::CalculateDistance(void)
+/* Method called to calculate total distance and speed. */
+void AppActivityScreenPresenter::CalculateSpeedAndDistance(void)
 {
     static float lastLat = 0.f;
     static float lastLon = 0.f;
@@ -270,20 +275,29 @@ void AppActivityScreenPresenter::CalculateDistance(void)
         float distance = sqrtf( powf( (gpsSignals.latitude - lastLat), APP_DISTNACE_COEFF_POWER_TWO ) + 
                                 powf( (cos(lastLat * APP_DISTANCE_COEFF_PI / APP_DISTANCE_COEFF_ANGLEHALF) * (gpsSignals.longitude - lastLon) ), APP_DISTNACE_COEFF_POWER_TWO ) ) *
                             APP_DISTANCE_COEFF_PERIMETER/APP_DISTANCE_COEFF_ANGLEFULL;
-        activityData.distance += distance;
-        activityData.speed = distance * APP_SEC_IN_HR;
-        activityData.avgSpeed = (float)(activityData.distance / (activityData.timer / APP_SEC_IN_HR / APP_TIMER_COEFF_TOSEC));
+
+        /* To prevent calculation and data acquisition mistakes */
+        if(appInternalData.maxDistancePerSecond > distance)
+        {
+            activityData.distance += distance;
+            activityData.speed = distance * APP_SEC_IN_HR;
+            activityData.avgSpeed = (float)(activityData.distance / (activityData.timer / APP_SEC_IN_HR / APP_TIMER_COEFF_TOSEC));
+            activityData.maxSpeed = (activityData.speed > activityData.maxSpeed) ? activityData.speed : activityData.maxSpeed;
+        }
     }
 
     view.NotifySignalChanged_activityData_distance(activityData.distance);
     view.NotifySignalChanged_activityData_speed(activityData.speed);
     view.NotifySignalChanged_activityData_avgSpeed(activityData.avgSpeed);
+    view.NotifySignalChanged_activityData_maxSpeed(activityData.maxSpeed);
 
     lastLat = gpsSignals.latitude;
     lastLon = gpsSignals.longitude;
 }
 
 
+/* Method called to increment activity timer. Signal is synchronized
+   with global interrupt timer tim_t_100ms. */
 void AppActivityScreenPresenter::IncrementTimer(void)
 {
     uint32_t newTime = DC_get_main_tim_t_100ms();
@@ -292,6 +306,14 @@ void AppActivityScreenPresenter::IncrementTimer(void)
     appInternalData.lastTime = newTime;
 
     view.NotifySignalChanged_activityData_timer(activityData.timer);
+}
+
+
+/* Method called to update activity time (clock). */
+void AppActivityScreenPresenter::UpdateTime(void)
+{
+    activityData.time = gpsSignals.timeHr * 10000 + gpsSignals.timeMin * 100 + gpsSignals.timeSec;
+    view.NotifySignalChanged_activityData_time(activityData.time);
 }
 
 

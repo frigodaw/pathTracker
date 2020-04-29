@@ -8,7 +8,7 @@
 ActivityDataContainterBase::ActivityDataContainterBase()
 {
     setWidth(240);
-    setHeight(210);
+    setHeight(230);
     AvgSpeedTextBox.setPosition(20, 76, 175, 20);
     AvgSpeedTextBox.setColor(touchgfx::Color::getColorFrom24BitRGB(0, 0, 0));
     AvgSpeedTextBox.setLinespacing(0);

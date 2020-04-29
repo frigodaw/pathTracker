@@ -49,17 +49,25 @@ void AppActivityScreenView::ShowFixImage(bool isFix)
 
 void AppActivityScreenView::NotifySignalChanged_activityData_timer(uint32_t newTimer)
 {
-    ActivityDataCC.NotifySignalChanged_activityData_timer(newTimer);
+    ActivityDataCC_Main.NotifySignalChanged_activityData_timer(newTimer);
 }
 void AppActivityScreenView::NotifySignalChanged_activityData_distance(float newDistance)
 {
-    ActivityDataCC.NotifySignalChanged_activityData_distance(newDistance);
+    ActivityDataCC_Main.NotifySignalChanged_activityData_distance(newDistance);
+}
+void AppActivityScreenView::NotifySignalChanged_activityData_time(uint32_t newTime)
+{
+    ActivityDataCC_Main.NotifySignalChanged_activityData_time(newTime);
 }
 void AppActivityScreenView::NotifySignalChanged_activityData_speed(float newSpeed)
 {
-    ActivityDataCC.NotifySignalChanged_activityData_speed(newSpeed);
+    ActivityDataCC_Main.NotifySignalChanged_activityData_speed(newSpeed);
 }
 void AppActivityScreenView::NotifySignalChanged_activityData_avgSpeed(float newAvgSpeed)
 {
-    ActivityDataCC.NotifySignalChanged_activityData_avgSpeed(newAvgSpeed);
+    ActivityDataCC_Main.NotifySignalChanged_activityData_avgSpeed(newAvgSpeed);
+}
+void AppActivityScreenView::NotifySignalChanged_activityData_maxSpeed(float newMaxSpeed)
+{
+    ActivityDataCC_Main.NotifySignalChanged_activityData_maxSpeed(newMaxSpeed);
 }

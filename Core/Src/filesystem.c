@@ -62,33 +62,7 @@ void FS_Main(void)
         /* Reading info from SD card succeed. Everything is Ok. */
         if(FR_OK == fresult)
         {
-            /* Read from from a test file */
-            /*
-            uint8_t retVal = FS_OpenFile(&files.in, "READ.TXT", FA_READ);
-            if(RET_OK == retVal)
-            {
-                while(TRUE == files.in.isMoreLines)
-                {
-                    retVal |= FS_ReadFile(&files.in, fsBuffer, FS_BUFFSIZE);
-                }
-
-                retVal |= FS_CloseFile(&files.in);
-            }
-            */
-
-            /* Write data to a test file */
-            /*
-            retVal = FS_OpenFile(&files.out, "WRITE.TXT", FA_CREATE_ALWAYS | FA_WRITE);
-            if(RET_OK == retVal)
-            {
-                char str[] = "TEST_FILE";
-                memset(fsBuffer, 0u, sizeof(fsBuffer));
-                memcpy(fsBuffer, str, strlen(str) + 1u);
-
-                retVal = FS_WriteFile(&files.out, fsBuffer);
-                retVal |= FS_CloseFile(&files.out);
-            }
-            */
+            /* OK */
         }
         else if(FR_DISK_ERR == fresult)
         {
@@ -302,7 +276,7 @@ FRESULT FS_ReadDir(FS_Dir_T* dir)
     DIR openedDir = {0u};
     FILINFO fileInfo = {0u};
 
-    FS_FullPathType name[FS_SAVEDFILESNUM] = {0u};
+    //FS_FullPathType name[FS_SAVEDFILESNUM] = {0u};
     uint8_t number = 0u;
 
     fresult |= f_opendir(&openedDir, dir->path);
@@ -316,10 +290,10 @@ FRESULT FS_ReadDir(FS_Dir_T* dir)
             if((0u != fileInfo.fsize) || (0u != fileInfo.fdate))
             {
                 /* Due to memory issues, save names only for the first FS_SAVEDFILESNUM files */
-                if(i < FS_SAVEDFILESNUM)
-                {
-                    memcpy(name[i], fileInfo.fname, strlen(fileInfo.fname) + 1u);
-                }
+                //if(i < FS_SAVEDFILESNUM)
+                //{
+                //    memcpy(name[i], fileInfo.fname, strlen(fileInfo.fname) + 1u);
+                //}
                 number++;
             }
             else
@@ -333,7 +307,7 @@ FRESULT FS_ReadDir(FS_Dir_T* dir)
     }
 
     /* Replace local variables with the global ones */
-    memcpy(dir->fileName, name, sizeof(name));
+    //memcpy(dir->fileName, name, sizeof(name));
     dir->filesNum = number;
     dir->state = fresult;
 

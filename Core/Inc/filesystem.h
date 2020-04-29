@@ -89,7 +89,7 @@ typedef char  FS_FullPathType[FS_FULLCHARLEN];
 typedef struct
 {
     FS_ShortPathType path;
-    FS_FullPathType fileName[FS_SAVEDFILESNUM];
+    //FS_FullPathType fileName[FS_SAVEDFILESNUM];
     uint8_t filesNum;
     FRESULT state;
 }FS_Dir_T;

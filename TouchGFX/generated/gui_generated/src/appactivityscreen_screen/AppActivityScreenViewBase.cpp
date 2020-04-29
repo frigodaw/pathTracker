@@ -10,11 +10,16 @@ AppActivityScreenViewBase::AppActivityScreenViewBase() :
     buttonCallback(this, &AppActivityScreenViewBase::buttonCallbackHandler)
 {
 
+    touchgfx::CanvasWidgetRenderer::setupBuffer(canvasBuffer, CANVAS_BUFFER_SIZE);
+
     BackgroundCC.setXY(0, 0);
 
-    ActivityDataCC.setXY(0, 40);
+    ActivityDataCC.setXY(0, 30);
+    ActivityDataCC.setVisible(false);
 
-    NameLabel.setXY(83, 15);
+    ActivityDataCC_Main.setXY(0, 35);
+
+    NameLabel.setXY(84, 5);
     NameLabel.setColor(touchgfx::Color::getColorFrom24BitRGB(0, 0, 0));
     NameLabel.setLinespacing(0);
     NameLabel.setTypedText(touchgfx::TypedText(T_SINGLEUSEID97));
@@ -22,6 +27,10 @@ AppActivityScreenViewBase::AppActivityScreenViewBase() :
     ButtonForLabel.setXY(90, 260);
     ButtonForLabel.setBitmaps(touchgfx::Bitmap(BITMAP_BLUE_BUTTONS_ROUND_EDGE_ICON_BUTTON_ID), touchgfx::Bitmap(BITMAP_BLUE_BUTTONS_ROUND_EDGE_ICON_BUTTON_PRESSED_ID), touchgfx::Bitmap(BITMAP_BLUE_ICONS_PLAY_32_ID), touchgfx::Bitmap(BITMAP_BLUE_ICONS_PLAY_32_ID));
     ButtonForLabel.setIconXY(20, 15);
+
+    SettingsButton.setXY(180, 260);
+    SettingsButton.setBitmaps(touchgfx::Bitmap(BITMAP_BLUE_BUTTONS_ROUND_EDGE_ICON_BUTTON_ID), touchgfx::Bitmap(BITMAP_BLUE_BUTTONS_ROUND_EDGE_ICON_BUTTON_PRESSED_ID), touchgfx::Bitmap(BITMAP_BLUE_ICONS_SETTINGS_32_ID), touchgfx::Bitmap(BITMAP_BLUE_ICONS_SETTINGS_32_ID));
+    SettingsButton.setIconXY(15, 15);
 
     StartStopButton.setXY(90, 260);
     StartStopButton.setBitmaps(touchgfx::Bitmap(BITMAP_BLUE_BUTTONS_ROUND_EDGE_ICON_BUTTON_ID), touchgfx::Bitmap(BITMAP_BLUE_BUTTONS_ROUND_EDGE_ICON_BUTTON_PRESSED_ID), touchgfx::Bitmap(BITMAP_BLUE_ICONS_PAUSE_32_ID), touchgfx::Bitmap(BITMAP_BLUE_ICONS_PAUSE_32_ID));
@@ -34,13 +43,15 @@ AppActivityScreenViewBase::AppActivityScreenViewBase() :
     FinishButton.setAction(buttonCallback);
 
     FixImage.setBitmap(touchgfx::Bitmap(BITMAP_GPS_ID));
-    FixImage.setPosition(195, 5, 40, 40);
+    FixImage.setPosition(210, 5, 25, 25);
     FixImage.setScalingAlgorithm(touchgfx::ScalableImage::NEAREST_NEIGHBOR);
 
     add(BackgroundCC);
     add(ActivityDataCC);
+    add(ActivityDataCC_Main);
     add(NameLabel);
     add(ButtonForLabel);
+    add(SettingsButton);
     add(StartStopButton);
     add(FinishButton);
     add(FixImage);
@@ -50,6 +61,7 @@ void AppActivityScreenViewBase::setupScreen()
 {
     BackgroundCC.initialize();
     ActivityDataCC.initialize();
+    ActivityDataCC_Main.initialize();
 }
 
 void AppActivityScreenViewBase::buttonCallbackHandler(const touchgfx::AbstractButton& src)

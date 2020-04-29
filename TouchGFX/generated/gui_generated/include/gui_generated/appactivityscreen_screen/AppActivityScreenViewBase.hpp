@@ -9,6 +9,7 @@
 #include <gui/appactivityscreen_screen/AppActivityScreenPresenter.hpp>
 #include <gui/containers/ScreenBackgroundContainer.hpp>
 #include <gui/containers/ActivityDataContainter.hpp>
+#include <gui/containers/ActivityDataContainter_Main.hpp>
 #include <touchgfx/widgets/TextArea.hpp>
 #include <touchgfx/widgets/ButtonWithIcon.hpp>
 #include <touchgfx/widgets/ScalableImage.hpp>
@@ -43,8 +44,10 @@ protected:
      */
     ScreenBackgroundContainer BackgroundCC;
     ActivityDataContainter ActivityDataCC;
+    ActivityDataContainter_Main ActivityDataCC_Main;
     touchgfx::TextArea NameLabel;
     touchgfx::ButtonWithIcon ButtonForLabel;
+    touchgfx::ButtonWithIcon SettingsButton;
     touchgfx::ButtonWithIcon StartStopButton;
     touchgfx::ButtonWithIcon FinishButton;
     touchgfx::ScalableImage FixImage;
@@ -61,6 +64,11 @@ private:
      */
     void buttonCallbackHandler(const touchgfx::AbstractButton& src);
 
+    /*
+     * Canvas Buffer Size
+     */
+    static const uint16_t CANVAS_BUFFER_SIZE = 3600;
+    uint8_t canvasBuffer[CANVAS_BUFFER_SIZE];
 };
 
 #endif // APPACTIVITYSCREENVIEWBASE_HPP
