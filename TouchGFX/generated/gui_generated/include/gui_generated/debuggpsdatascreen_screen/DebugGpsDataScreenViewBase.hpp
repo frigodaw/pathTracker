@@ -8,7 +8,7 @@
 #include <mvp/View.hpp>
 #include <gui/debuggpsdatascreen_screen/DebugGpsDataScreenPresenter.hpp>
 #include <gui/containers/ScreenBackgroundContainer.hpp>
-#include <touchgfx/widgets/ButtonWithLabel.hpp>
+#include <touchgfx/widgets/ButtonWithIcon.hpp>
 #include <gui/containers/GpsDataContainer.hpp>
 #include <touchgfx/widgets/TextArea.hpp>
 
@@ -28,7 +28,7 @@ protected:
      * Member Declarations
      */
     ScreenBackgroundContainer BackgroundCC;
-    touchgfx::ButtonWithLabel NextButton;
+    touchgfx::ButtonWithIcon NextButton;
     GpsDataContainer GpsDataCC;
     touchgfx::TextArea NameLabel;
 

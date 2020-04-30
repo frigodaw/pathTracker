@@ -17,6 +17,8 @@ public:
 
     void StartStopActivity(void);
     void FinishActivity(void);
+    void ChangeActivityDataCC(void);
+    void SetActivityDataScreen(AppActivity_activeScreen_T screen);
     void SetBitmapButton(const uint16_t bitmapId);
     void ShowFixImage(bool isFix);
 
@@ -27,6 +29,12 @@ public:
     void NotifySignalChanged_activityData_speed(float newSpeed);
     void NotifySignalChanged_activityData_avgSpeed(float newAvgSpeed);
     void NotifySignalChanged_activityData_maxSpeed(float newMaxSpeed);
+    void NotifySignalChanged_activityData_altitude(int32_t newAltitude);
+    void NotifySignalChanged_activityData_slope(float newSlope);
+    void NotifySignalChanged_activityData_altiUp(int32_t newAltiUp);
+    void NotifySignalChanged_activityData_altiDown(int32_t newAltiDown);
+    void NotifySignalChanged_activityData_altiMax(int32_t newAltiMax);
+    void NotifySignalChanged_activityData_slopeMax(float newSlopeMax);
 protected:
 };
 

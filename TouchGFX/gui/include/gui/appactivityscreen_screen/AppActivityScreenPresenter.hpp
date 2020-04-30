@@ -16,7 +16,12 @@ using namespace touchgfx;
 #define APP_DATE_COEFF2             10000u
 #define APP_MAXFILEBUFFERSIZE       127u
 #define APP_LATLON_PRECISION        6u
-#define APP_ALT_PRECISION           1u
+#define APP_ALTI_PRECISION          1u
+#define APP_ALTI_FIRSTCALL          255u
+#define APP_ALTI_INTERVAL           7u
+#define APP_ALTI_EVEN               2u
+#define APP_SLOPE_100PERCENT        100.f
+#define APP_SLOPE_MTOKM             1000.f
 #define APP_LOCATION_COEFF_DIV      100.f
 #define APP_LOCATION_COEFF_MUL      (100.f/60.f)
 
@@ -54,7 +59,17 @@ typedef enum
     APP_FILE_PENDING,
     APP_FILE_CLOSED,
     APP_FILE_ERROR = 0xFF
-}AppActivity_fileStatus;
+}AppActivity_fileStatus_T;
+
+typedef enum
+{
+    APP_SCREEN_MAIN,
+    APP_SCREEN_ALTI,
+    //APP_SCREEN_ALTICHART,
+    //APP_SCREEN_MAP,
+    //APP_SCREEN_SETTINGS
+    APP_MAX_SCREENS
+}AppActivity_activeScreen_T;
 /* END OF THE ENUM AREA */
 
 
@@ -80,7 +95,7 @@ typedef struct
 {
     char name[APP_FILENAMEMAXLEN];
     uint16_t lines;
-    AppActivity_fileStatus fileStatus;
+    AppActivity_fileStatus_T fileStatus;
     uint8_t errorStatus;
     void* filePtr;
 }AppActivity_fileInfo_T;
@@ -93,7 +108,13 @@ typedef struct
     float distance;
     uint32_t timer;
     uint32_t time;
-    AppActivity_activityState_T state;
+
+    float slope;
+    float slopeMax;
+    int32_t altitude;
+    int32_t altiUp;
+    int32_t altiDown;
+    int32_t altiMax;
 }AppActivity_activityData_T;
 
 typedef struct
@@ -102,6 +123,8 @@ typedef struct
     uint32_t lastTime;
     uint16_t mainTimePeriod;
     uint8_t  callCounter;
+    AppActivity_activeScreen_T screen;
+    AppActivity_activityState_T state;
 }AppActivity_appInternalData_T;
 
 typedef struct
@@ -125,6 +148,7 @@ public:
     void Main(void);
     void StartStopActivity(void);
     void FinishActivity(void);
+    void ChangeActivityDataCC(void);
     void SetBitmapButton(const uint16_t bitmapId);
     void InitActivity(void);
     void InsertDataIntoFile(void);
@@ -133,8 +157,10 @@ public:
     bool IsFix(void);
     void UpdateSignalFixStatus(void);
     void CalculateSpeedAndDistance(void);
+    void CalculateAltitude(void);
     void IncrementTimer(void);
     void UpdateTime(void);
+    template <typename T> T MedianFromArray(T* array, const uint8_t size);
 
 
     void NotifySignalChanged_gpsData_latitude(float newLatitude);

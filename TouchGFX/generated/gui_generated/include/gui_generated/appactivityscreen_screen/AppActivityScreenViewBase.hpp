@@ -8,7 +8,7 @@
 #include <mvp/View.hpp>
 #include <gui/appactivityscreen_screen/AppActivityScreenPresenter.hpp>
 #include <gui/containers/ScreenBackgroundContainer.hpp>
-#include <gui/containers/ActivityDataContainter.hpp>
+#include <gui/containers/ActivityDataContainter_Alti.hpp>
 #include <gui/containers/ActivityDataContainter_Main.hpp>
 #include <touchgfx/widgets/TextArea.hpp>
 #include <touchgfx/widgets/ButtonWithIcon.hpp>
@@ -34,6 +34,11 @@ public:
         // Override and implement this function in AppActivityScreen
     }
 
+    virtual void ChangeActivityDataCC()
+    {
+        // Override and implement this function in AppActivityScreen
+    }
+
 protected:
     FrontendApplication& application() {
         return *static_cast<FrontendApplication*>(touchgfx::Application::getInstance());
@@ -43,11 +48,11 @@ protected:
      * Member Declarations
      */
     ScreenBackgroundContainer BackgroundCC;
-    ActivityDataContainter ActivityDataCC;
+    ActivityDataContainter_Alti ActivityDataCC_Alti;
     ActivityDataContainter_Main ActivityDataCC_Main;
     touchgfx::TextArea NameLabel;
     touchgfx::ButtonWithIcon ButtonForLabel;
-    touchgfx::ButtonWithIcon SettingsButton;
+    touchgfx::ButtonWithIcon NextButton;
     touchgfx::ButtonWithIcon StartStopButton;
     touchgfx::ButtonWithIcon FinishButton;
     touchgfx::ScalableImage FixImage;

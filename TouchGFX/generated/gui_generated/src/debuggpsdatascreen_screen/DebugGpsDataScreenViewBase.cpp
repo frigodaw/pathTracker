@@ -13,10 +13,8 @@ DebugGpsDataScreenViewBase::DebugGpsDataScreenViewBase() :
     BackgroundCC.setXY(0, 0);
 
     NextButton.setXY(180, 260);
-    NextButton.setBitmaps(touchgfx::Bitmap(BITMAP_BLUE_BUTTONS_ROUND_EDGE_ICON_BUTTON_ID), touchgfx::Bitmap(BITMAP_BLUE_BUTTONS_ROUND_EDGE_ICON_BUTTON_PRESSED_ID));
-    NextButton.setLabelText(touchgfx::TypedText(T_SINGLEUSEID59));
-    NextButton.setLabelColor(touchgfx::Color::getColorFrom24BitRGB(255, 255, 255));
-    NextButton.setLabelColorPressed(touchgfx::Color::getColorFrom24BitRGB(255, 255, 255));
+    NextButton.setBitmaps(touchgfx::Bitmap(BITMAP_BLUE_BUTTONS_ROUND_EDGE_ICON_BUTTON_ID), touchgfx::Bitmap(BITMAP_BLUE_BUTTONS_ROUND_EDGE_ICON_BUTTON_PRESSED_ID), touchgfx::Bitmap(BITMAP_BLUE_ICONS_NEXT_ARROW_32_ID), touchgfx::Bitmap(BITMAP_BLUE_ICONS_NEXT_ARROW_32_ID));
+    NextButton.setIconXY(22, 15);
     NextButton.setAction(buttonCallback);
 
     GpsDataCC.setXY(0, 50);

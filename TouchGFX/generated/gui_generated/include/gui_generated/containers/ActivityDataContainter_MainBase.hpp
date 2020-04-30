@@ -35,31 +35,31 @@ protected:
     touchgfx::TextAreaWithOneWildcard MaxSpeedTextBox;
     touchgfx::TextArea MaxSpeedUnitLabel;
     touchgfx::TextArea MaxSpeedLabel;
-    touchgfx::TextAreaWithOneWildcard ClockTextBox;
-    touchgfx::TextArea ClockLabel;
     touchgfx::TextAreaWithOneWildcard AvgSpeedTextBox;
     touchgfx::TextArea AvgSpeedUnitLabel;
     touchgfx::TextArea AvgSpeedLabel;
     touchgfx::TextAreaWithOneWildcard SpeedTextBox;
     touchgfx::TextArea SpeedUnitLabel;
     touchgfx::TextArea SpeedLabel;
+    touchgfx::TextAreaWithOneWildcard ClockTextBox;
+    touchgfx::TextArea ClockLabel;
     touchgfx::TextAreaWithOneWildcard DistanceTextBox;
+    touchgfx::TextArea DistanceUnitLabel;
     touchgfx::TextArea DistanceLabel;
     touchgfx::TextAreaWithOneWildcard TimerTextBox;
     touchgfx::TextArea TimerLabel;
-    touchgfx::TextArea DistanceUnitLabel;
 
     /*
      * Wildcard Buffers
      */
     static const uint16_t MAXSPEEDTEXTBOX_SIZE = 8;
     touchgfx::Unicode::UnicodeChar MaxSpeedTextBoxBuffer[MAXSPEEDTEXTBOX_SIZE];
-    static const uint16_t CLOCKTEXTBOX_SIZE = 16;
-    touchgfx::Unicode::UnicodeChar ClockTextBoxBuffer[CLOCKTEXTBOX_SIZE];
     static const uint16_t AVGSPEEDTEXTBOX_SIZE = 8;
     touchgfx::Unicode::UnicodeChar AvgSpeedTextBoxBuffer[AVGSPEEDTEXTBOX_SIZE];
     static const uint16_t SPEEDTEXTBOX_SIZE = 8;
     touchgfx::Unicode::UnicodeChar SpeedTextBoxBuffer[SPEEDTEXTBOX_SIZE];
+    static const uint16_t CLOCKTEXTBOX_SIZE = 16;
+    touchgfx::Unicode::UnicodeChar ClockTextBoxBuffer[CLOCKTEXTBOX_SIZE];
     static const uint16_t DISTANCETEXTBOX_SIZE = 8;
     touchgfx::Unicode::UnicodeChar DistanceTextBoxBuffer[DISTANCETEXTBOX_SIZE];
     static const uint16_t TIMERTEXTBOX_SIZE = 16;

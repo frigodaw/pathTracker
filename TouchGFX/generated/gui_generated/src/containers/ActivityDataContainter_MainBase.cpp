@@ -50,18 +50,6 @@ ActivityDataContainter_MainBase::ActivityDataContainter_MainBase()
     MaxSpeedLabel.setLinespacing(0);
     MaxSpeedLabel.setTypedText(touchgfx::TypedText(T_SINGLEUSEID110));
 
-    ClockTextBox.setPosition(0, 100, 120, 30);
-    ClockTextBox.setColor(touchgfx::Color::getColorFrom24BitRGB(0, 0, 0));
-    ClockTextBox.setLinespacing(0);
-    Unicode::snprintf(ClockTextBoxBuffer, CLOCKTEXTBOX_SIZE, "%s", touchgfx::TypedText(T_SINGLEUSEID115).getText());
-    ClockTextBox.setWildcard(ClockTextBoxBuffer);
-    ClockTextBox.setTypedText(touchgfx::TypedText(T_SINGLEUSEID114));
-
-    ClockLabel.setPosition(0, 75, 120, 20);
-    ClockLabel.setColor(touchgfx::Color::getColorFrom24BitRGB(0, 0, 0));
-    ClockLabel.setLinespacing(0);
-    ClockLabel.setTypedText(touchgfx::TypedText(T_SINGLEUSEID113));
-
     AvgSpeedTextBox.setPosition(0, 175, 90, 30);
     AvgSpeedTextBox.setColor(touchgfx::Color::getColorFrom24BitRGB(0, 0, 0));
     AvgSpeedTextBox.setLinespacing(0);
@@ -96,12 +84,29 @@ ActivityDataContainter_MainBase::ActivityDataContainter_MainBase()
     SpeedLabel.setLinespacing(0);
     SpeedLabel.setTypedText(touchgfx::TypedText(T_SINGLEUSEID108));
 
+    ClockTextBox.setPosition(0, 100, 120, 30);
+    ClockTextBox.setColor(touchgfx::Color::getColorFrom24BitRGB(0, 0, 0));
+    ClockTextBox.setLinespacing(0);
+    Unicode::snprintf(ClockTextBoxBuffer, CLOCKTEXTBOX_SIZE, "%s", touchgfx::TypedText(T_SINGLEUSEID115).getText());
+    ClockTextBox.setWildcard(ClockTextBoxBuffer);
+    ClockTextBox.setTypedText(touchgfx::TypedText(T_SINGLEUSEID114));
+
+    ClockLabel.setPosition(0, 75, 120, 20);
+    ClockLabel.setColor(touchgfx::Color::getColorFrom24BitRGB(0, 0, 0));
+    ClockLabel.setLinespacing(0);
+    ClockLabel.setTypedText(touchgfx::TypedText(T_SINGLEUSEID113));
+
     DistanceTextBox.setPosition(120, 25, 90, 30);
     DistanceTextBox.setColor(touchgfx::Color::getColorFrom24BitRGB(0, 0, 0));
     DistanceTextBox.setLinespacing(0);
     Unicode::snprintf(DistanceTextBoxBuffer, DISTANCETEXTBOX_SIZE, "%s", touchgfx::TypedText(T_SINGLEUSEID103).getText());
     DistanceTextBox.setWildcard(DistanceTextBoxBuffer);
     DistanceTextBox.setTypedText(touchgfx::TypedText(T_SINGLEUSEID102));
+
+    DistanceUnitLabel.setPosition(213, 35, 25, 20);
+    DistanceUnitLabel.setColor(touchgfx::Color::getColorFrom24BitRGB(0, 0, 0));
+    DistanceUnitLabel.setLinespacing(0);
+    DistanceUnitLabel.setTypedText(touchgfx::TypedText(T_SINGLEUSEID121));
 
     DistanceLabel.setPosition(120, 0, 120, 20);
     DistanceLabel.setColor(touchgfx::Color::getColorFrom24BitRGB(0, 0, 0));
@@ -120,30 +125,25 @@ ActivityDataContainter_MainBase::ActivityDataContainter_MainBase()
     TimerLabel.setLinespacing(0);
     TimerLabel.setTypedText(touchgfx::TypedText(T_SINGLEUSEID106));
 
-    DistanceUnitLabel.setPosition(213, 35, 25, 20);
-    DistanceUnitLabel.setColor(touchgfx::Color::getColorFrom24BitRGB(0, 0, 0));
-    DistanceUnitLabel.setLinespacing(0);
-    DistanceUnitLabel.setTypedText(touchgfx::TypedText(T_SINGLEUSEID121));
-
     add(LineHorizontalTwo);
     add(LineHorizontalOne);
     add(LineVertical);
     add(MaxSpeedTextBox);
     add(MaxSpeedUnitLabel);
     add(MaxSpeedLabel);
-    add(ClockTextBox);
-    add(ClockLabel);
     add(AvgSpeedTextBox);
     add(AvgSpeedUnitLabel);
     add(AvgSpeedLabel);
     add(SpeedTextBox);
     add(SpeedUnitLabel);
     add(SpeedLabel);
+    add(ClockTextBox);
+    add(ClockLabel);
     add(DistanceTextBox);
+    add(DistanceUnitLabel);
     add(DistanceLabel);
     add(TimerTextBox);
     add(TimerLabel);
-    add(DistanceUnitLabel);
 }
 
 void ActivityDataContainter_MainBase::initialize()

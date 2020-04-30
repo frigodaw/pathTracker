@@ -19,7 +19,9 @@ AppActivityScreenPresenter::AppActivityScreenPresenter(AppActivityScreenView& v)
     appInternalData.maxDistancePerSecond = APP_DISTANCE_MAXVALUE_PERSEC;
     appInternalData.mainTimePeriod = APP_MAINPERIOD_MS;
     appInternalData.callCounter = APP_MAX_CALL_COUNTER;
-    activityData.state = APP_STATE_READY;
+    appInternalData.screen = APP_SCREEN_MAIN;
+    appInternalData.state = APP_STATE_READY;
+
     fileInfo.fileStatus = APP_FILE_NOFILE;
     SetBitmapButton(BITMAP_BLUE_ICONS_PLAY_32_ID);
 }
@@ -39,22 +41,22 @@ void AppActivityScreenPresenter::deactivate()
 
 
 /* Method called after pause/start button
-   is pressed. Its point is to change activityData.state
+   is pressed. Its point is to change appInternalData.state
    to proper state. */
 void AppActivityScreenPresenter::StartStopActivity(void)
 {
-    if(APP_STATE_READY == activityData.state)
+    if(APP_STATE_READY == appInternalData.state)
     {
         InitActivity();
     }
-    else if(APP_STATE_PAUSED == activityData.state)
+    else if(APP_STATE_PAUSED == appInternalData.state)
     {
-        activityData.state = APP_STATE_RUNNING;
+        appInternalData.state = APP_STATE_RUNNING;
         SetBitmapButton(BITMAP_BLUE_ICONS_PAUSE_32_ID);
     }
-    else if(APP_STATE_RUNNING == activityData.state)
+    else if(APP_STATE_RUNNING == appInternalData.state)
     {
-        activityData.state = APP_STATE_PAUSED;
+        appInternalData.state = APP_STATE_PAUSED;
         SetBitmapButton(BITMAP_BLUE_ICONS_PLAY_32_ID);
     }
 }
@@ -76,7 +78,7 @@ void AppActivityScreenPresenter::InitActivity(void)
         if(RET_OK == retVal)
         {
             fileInfo.fileStatus = APP_FILE_CREATED;
-            activityData.state = APP_STATE_RUNNING;
+            appInternalData.state = APP_STATE_RUNNING;
             SetBitmapButton(BITMAP_BLUE_ICONS_PAUSE_32_ID);
 
             const char* initBufferOne = 
@@ -108,7 +110,7 @@ void AppActivityScreenPresenter::InitActivity(void)
 
 
 /* Method called to finish activity, close file and
-   to change activityData.state. */
+   to change appInternalData.state. */
 void AppActivityScreenPresenter::FinishActivity(void)
 {
     if(APP_FILE_NOFILE != fileInfo.fileStatus)
@@ -129,7 +131,7 @@ void AppActivityScreenPresenter::FinishActivity(void)
             fileInfo.fileStatus = APP_FILE_ERROR;
         }
         fileInfo.filePtr = NULL;
-        activityData.state = APP_STATE_FINISHED;
+        appInternalData.state = APP_STATE_FINISHED;
     }
 }
 
@@ -141,7 +143,7 @@ void AppActivityScreenPresenter::Main(void)
 
     if(APP_FILE_CREATED == fileInfo.fileStatus)
     {
-        if(APP_STATE_RUNNING == activityData.state)
+        if(APP_STATE_RUNNING == appInternalData.state)
         {
             IncrementTimer();
 
@@ -158,6 +160,8 @@ void AppActivityScreenPresenter::Main(void)
                     InsertDataIntoFile();
 
                     CalculateSpeedAndDistance();
+
+                    CalculateAltitude();
                 }
             }
         }
@@ -166,6 +170,15 @@ void AppActivityScreenPresenter::Main(void)
     {
         InitActivity();
     }
+}
+
+
+/* Method called after "NEXT" button is clicked to change
+   visible data widget to another one. */
+void AppActivityScreenPresenter::ChangeActivityDataCC(void)
+{
+    appInternalData.screen = ((appInternalData.screen + 1u) >= APP_MAX_SCREENS) ? APP_SCREEN_MAIN : (AppActivity_activeScreen_T)(appInternalData.screen + 1u);
+    view.SetActivityDataScreen(appInternalData.screen);
 }
 
 
@@ -189,12 +202,12 @@ void AppActivityScreenPresenter::InsertDataIntoFile(void)
 
     ConvertFloatToInt(gpsSignals.latitude,  lat, APP_LATLON_PRECISION);
     ConvertFloatToInt(gpsSignals.longitude, lon, APP_LATLON_PRECISION);
-    ConvertFloatToInt(gpsSignals.altitude,  alt, APP_ALT_PRECISION);
+    ConvertFloatToInt(gpsSignals.altitude,  alt, APP_ALTI_PRECISION);
 
     snprintf((char*)buffer, APP_MAXFILEBUFFERSIZE,
         "\t\t\t<trkpt lat=\"%d.%.*lu\" lon=\"%d.%.*lu\">\n"
         "\t\t\t\t<ele>%d.%.*lu</ele>\n",
-        lat.sint, APP_LATLON_PRECISION, lat.frac, lon.sint, APP_LATLON_PRECISION, lon.frac, alt.sint, APP_ALT_PRECISION, alt.frac);
+        lat.sint, APP_LATLON_PRECISION, lat.frac, lon.sint, APP_LATLON_PRECISION, lon.frac, alt.sint, APP_ALTI_PRECISION, alt.frac);
     fileInfo.errorStatus = FS_WriteFile((FS_File_T*)fileInfo.filePtr, (uint8_t*)buffer);
 
     memset(buffer, 0u, sizeof(buffer));
@@ -286,13 +299,112 @@ void AppActivityScreenPresenter::CalculateSpeedAndDistance(void)
         }
     }
 
-    view.NotifySignalChanged_activityData_distance(activityData.distance);
-    view.NotifySignalChanged_activityData_speed(activityData.speed);
-    view.NotifySignalChanged_activityData_avgSpeed(activityData.avgSpeed);
-    view.NotifySignalChanged_activityData_maxSpeed(activityData.maxSpeed);
+    if(APP_SCREEN_MAIN == appInternalData.screen)
+    {
+        view.NotifySignalChanged_activityData_distance(activityData.distance);
+        view.NotifySignalChanged_activityData_speed(activityData.speed);
+        view.NotifySignalChanged_activityData_avgSpeed(activityData.avgSpeed);
+        view.NotifySignalChanged_activityData_maxSpeed(activityData.maxSpeed);
+    }
 
     lastLat = gpsSignals.latitude;
     lastLon = gpsSignals.longitude;
+}
+
+
+/* Method called to calculate all parameters related to altitude. */
+void AppActivityScreenPresenter::CalculateAltitude(void)
+{
+    static uint8_t  idx = 0u;
+    static float    lastDist[APP_ALTI_INTERVAL] = {0u};
+    static int32_t  lastAlti[APP_ALTI_INTERVAL] = {0u};
+    static float    lastDistMedian = activityData.distance;
+    static int32_t  lastAltiMedian = (uint16_t)gpsSignals.altitude;
+
+    /* Add new data to cyclic buffer */
+    lastDist[idx] = activityData.distance;
+    lastAlti[idx] = (uint16_t)gpsSignals.altitude;
+
+    float distMedian = MedianFromArray<float>(lastDist, APP_ALTI_INTERVAL);
+    int32_t altiMedian = MedianFromArray<int32_t>(lastAlti, APP_ALTI_INTERVAL);
+
+    float distDiff = distMedian - lastDistMedian;
+    int32_t altiDiff = altiMedian - lastAltiMedian;
+
+    if(altiDiff >= 0)
+    {
+        activityData.altiUp += altiDiff;
+    }
+    else
+    {
+        /* Subtraction of negative value gives positive number */
+        activityData.altiDown -= altiDiff;
+    }
+
+    if(distDiff > 0.f)
+    {
+        activityData.slope = ((float)altiDiff / APP_SLOPE_MTOKM) / distDiff * APP_SLOPE_100PERCENT;
+    }
+
+    activityData.altitude = altiMedian;
+    activityData.altiMax = (activityData.altitude > activityData.altiMax) ? activityData.altitude : activityData.altiMax;
+    activityData.slopeMax = (activityData.slope > activityData.slopeMax) ? activityData.slope : activityData.slopeMax;
+
+    if(APP_SCREEN_ALTI == appInternalData.screen)
+    {
+        view.NotifySignalChanged_activityData_altitude(activityData.altitude);
+        view.NotifySignalChanged_activityData_slope(activityData.slope);
+        view.NotifySignalChanged_activityData_altiUp(activityData.altiUp);
+        view.NotifySignalChanged_activityData_altiDown(activityData.altiDown);
+        view.NotifySignalChanged_activityData_altiMax(activityData.altiMax);
+        view.NotifySignalChanged_activityData_slopeMax(activityData.slopeMax);
+    }
+
+    lastDistMedian = distMedian;
+    lastAltiMedian = altiMedian;
+    idx = (idx >= (APP_ALTI_INTERVAL - 1u)) ? 0u : (idx + 1u);
+}
+
+
+/* Method called to sort array and return median value. */
+template <typename T>
+T AppActivityScreenPresenter::MedianFromArray(T* array, const uint8_t size)
+{
+    T median = 0;
+    T cpyArr[size] = {0};
+    
+    for(uint8_t i = 0u; i < size; i++)
+    {
+        cpyArr[i] = array[i];
+    }
+
+    /* Sort array */
+    for(uint8_t i = 0u; i < (size - 1u); i++)
+    {
+        for(uint8_t j = 0u; j < (size - i- 1u); j++)
+        {
+            if(cpyArr[j] > cpyArr[j + 1u])
+            {
+                T tmp = cpyArr[j];
+                cpyArr[j] = cpyArr[j + 1u];
+                cpyArr[j + 1u] = tmp;
+            }
+        }
+    }
+
+    if((size % APP_ALTI_EVEN) == 0u)
+    {
+        uint8_t halfUp = size / APP_ALTI_EVEN;
+        uint8_t halfDown = halfUp - 1u;
+        median = (cpyArr[halfUp] + cpyArr[halfDown]) / APP_ALTI_EVEN;
+    }
+    else
+    {
+        uint8_t half = (uint8_t)(size / APP_ALTI_EVEN);
+        median = cpyArr[half];
+    }
+
+    return median;
 }
 
 
@@ -305,15 +417,22 @@ void AppActivityScreenPresenter::IncrementTimer(void)
     activityData.timer += newTime - appInternalData.lastTime;
     appInternalData.lastTime = newTime;
 
-    view.NotifySignalChanged_activityData_timer(activityData.timer);
+    if(APP_SCREEN_MAIN == appInternalData.screen)
+    {
+        view.NotifySignalChanged_activityData_timer(activityData.timer);
+    }
 }
 
 
 /* Method called to update activity time (clock). */
 void AppActivityScreenPresenter::UpdateTime(void)
 {
-    activityData.time = gpsSignals.timeHr * 10000 + gpsSignals.timeMin * 100 + gpsSignals.timeSec;
-    view.NotifySignalChanged_activityData_time(activityData.time);
+    activityData.time = gpsSignals.timeHr * APP_TIME_COEFF2 + gpsSignals.timeMin * APP_TIME_COEFF1 + gpsSignals.timeSec;
+
+    if(APP_SCREEN_MAIN == appInternalData.screen)
+    {
+        view.NotifySignalChanged_activityData_time(activityData.time);
+    }
 }
 
 

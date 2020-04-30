@@ -339,6 +339,16 @@
 			<locationURI>$%7BPARENT-1-PROJECT_LOC%7D/TouchGFX/generated/gui_generated/src/containers/ActivityDataContainterBase.cpp</locationURI>
 		</link>
 		<link>
+			<name>Application/User/generated/ActivityDataContainter_AltiBase.cpp</name>
+			<type>1</type>
+			<locationURI>$%7BPARENT-1-PROJECT_LOC%7D/TouchGFX/generated/gui_generated/src/containers/ActivityDataContainter_AltiBase.cpp</locationURI>
+		</link>
+		<link>
+			<name>Application/User/generated/ActivityDataContainter_MainBase.cpp</name>
+			<type>1</type>
+			<locationURI>$%7BPARENT-1-PROJECT_LOC%7D/TouchGFX/generated/gui_generated/src/containers/ActivityDataContainter_MainBase.cpp</locationURI>
+		</link>
+		<link>
 			<name>Application/User/generated/AppActivityScreenViewBase.cpp</name>
 			<type>1</type>
 			<locationURI>$%7BPARENT-1-PROJECT_LOC%7D/TouchGFX/generated/gui_generated/src/appactivityscreen_screen/AppActivityScreenViewBase.cpp</locationURI>
@@ -382,6 +392,11 @@
 			<name>Application/User/generated/Blue_Icons_Home_32.cpp</name>
 			<type>1</type>
 			<locationURI>$%7BPARENT-1-PROJECT_LOC%7D/TouchGFX/generated/images/src/__designer/Blue_Icons_Home_32.cpp</locationURI>
+		</link>
+		<link>
+			<name>Application/User/generated/Blue_Icons_Next_arrow_32.cpp</name>
+			<type>1</type>
+			<locationURI>$%7BPARENT-1-PROJECT_LOC%7D/TouchGFX/generated/images/src/__designer/Blue_Icons_Next_arrow_32.cpp</locationURI>
 		</link>
 		<link>
 			<name>Application/User/generated/Blue_Icons_Pause_32.cpp</name>
@@ -434,6 +449,11 @@
 			<locationURI>$%7BPARENT-1-PROJECT_LOC%7D/TouchGFX/generated/fonts/src/FontCache.cpp</locationURI>
 		</link>
 		<link>
+			<name>Application/User/generated/Font_ARIALN_TTF_28_4bpp_0.cpp</name>
+			<type>1</type>
+			<locationURI>$%7BPARENT-1-PROJECT_LOC%7D/TouchGFX/generated/fonts/src/Font_ARIALN_TTF_28_4bpp_0.cpp</locationURI>
+		</link>
+		<link>
 			<name>Application/User/generated/Font_verdana_15_4bpp_0.cpp</name>
 			<type>1</type>
 			<locationURI>$%7BPARENT-1-PROJECT_LOC%7D/TouchGFX/generated/fonts/src/Font_verdana_15_4bpp_0.cpp</locationURI>
@@ -462,6 +482,11 @@
 			<name>Application/User/generated/GpsDataContainerBase.cpp</name>
 			<type>1</type>
 			<locationURI>$%7BPARENT-1-PROJECT_LOC%7D/TouchGFX/generated/gui_generated/src/containers/GpsDataContainerBase.cpp</locationURI>
+		</link>
+		<link>
+			<name>Application/User/generated/Kerning_ARIALN_TTF_28_4bpp.cpp</name>
+			<type>1</type>
+			<locationURI>$%7BPARENT-1-PROJECT_LOC%7D/TouchGFX/generated/fonts/src/Kerning_ARIALN_TTF_28_4bpp.cpp</locationURI>
 		</link>
 		<link>
 			<name>Application/User/generated/Kerning_verdana_15_4bpp.cpp</name>
@@ -499,6 +524,11 @@
 			<locationURI>$%7BPARENT-1-PROJECT_LOC%7D/TouchGFX/generated/gui_generated/src/startscreen_screen/StartScreenViewBase.cpp</locationURI>
 		</link>
 		<link>
+			<name>Application/User/generated/Table_ARIALN_TTF_28_4bpp.cpp</name>
+			<type>1</type>
+			<locationURI>$%7BPARENT-1-PROJECT_LOC%7D/TouchGFX/generated/fonts/src/Table_ARIALN_TTF_28_4bpp.cpp</locationURI>
+		</link>
+		<link>
 			<name>Application/User/generated/Table_verdana_15_4bpp.cpp</name>
 			<type>1</type>
 			<locationURI>$%7BPARENT-1-PROJECT_LOC%7D/TouchGFX/generated/fonts/src/Table_verdana_15_4bpp.cpp</locationURI>
@@ -532,6 +562,16 @@
 			<name>Application/User/gui/ActivityDataContainter.cpp</name>
 			<type>1</type>
 			<locationURI>$%7BPARENT-1-PROJECT_LOC%7D/TouchGFX/gui/src/containers/ActivityDataContainter.cpp</locationURI>
+		</link>
+		<link>
+			<name>Application/User/gui/ActivityDataContainter_Alti.cpp</name>
+			<type>1</type>
+			<locationURI>$%7BPARENT-1-PROJECT_LOC%7D/TouchGFX/gui/src/containers/ActivityDataContainter_Alti.cpp</locationURI>
+		</link>
+		<link>
+			<name>Application/User/gui/ActivityDataContainter_Main.cpp</name>
+			<type>1</type>
+			<locationURI>$%7BPARENT-1-PROJECT_LOC%7D/TouchGFX/gui/src/containers/ActivityDataContainter_Main.cpp</locationURI>
 		</link>
 		<link>
 			<name>Application/User/gui/AppActivityScreenPresenter.cpp</name>
@@ -692,51 +732,6 @@
 			<name>Application/User/TouchGFX/target/generated/TouchGFXGeneratedHAL.cpp</name>
 			<type>1</type>
 			<locationURI>$%7BPARENT-1-PROJECT_LOC%7D/TouchGFX/target/generated/TouchGFXGeneratedHAL.cpp</locationURI>
-		</link>
-		<link>
-			<name>Application/User/gui/ActivityDataContainter_Main.cpp</name>
-			<type>1</type>
-			<locationURI>$%7BPARENT-1-PROJECT_LOC%7D/TouchGFX/gui/src/containers/ActivityDataContainter_Main.cpp</locationURI>
-		</link>
-		<link>
-			<name>Application/User/generated/Font_ARIALN_TTF_25_4bpp_0.cpp</name>
-			<type>1</type>
-			<locationURI>$%7BPARENT-1-PROJECT_LOC%7D/TouchGFX/generated/fonts/src/Font_ARIALN_TTF_25_4bpp_0.cpp</locationURI>
-		</link>
-		<link>
-			<name>Application/User/generated/Kerning_ARIALN_TTF_25_4bpp.cpp</name>
-			<type>1</type>
-			<locationURI>$%7BPARENT-1-PROJECT_LOC%7D/TouchGFX/generated/fonts/src/Kerning_ARIALN_TTF_25_4bpp.cpp</locationURI>
-		</link>
-		<link>
-			<name>Application/User/generated/Table_ARIALN_TTF_25_4bpp.cpp</name>
-			<type>1</type>
-			<locationURI>$%7BPARENT-1-PROJECT_LOC%7D/TouchGFX/generated/fonts/src/Table_ARIALN_TTF_25_4bpp.cpp</locationURI>
-		</link>
-		<link>
-			<name>Application/User/generated/ActivityDataContainter_MainBase.cpp</name>
-			<type>1</type>
-			<locationURI>$%7BPARENT-1-PROJECT_LOC%7D/TouchGFX/generated/gui_generated/src/containers/ActivityDataContainter_MainBase.cpp</locationURI>
-		</link>
-		<link>
-			<name>Application/User/generated/Blue_Icons_Settings_32.cpp</name>
-			<type>1</type>
-			<locationURI>$%7BPARENT-1-PROJECT_LOC%7D/TouchGFX/generated/images/src/__designer/Blue_Icons_Settings_32.cpp</locationURI>
-		</link>
-		<link>
-			<name>Application/User/generated/Font_ARIALN_TTF_28_4bpp_0.cpp</name>
-			<type>1</type>
-			<locationURI>$%7BPARENT-1-PROJECT_LOC%7D/TouchGFX/generated/fonts/src/Font_ARIALN_TTF_28_4bpp_0.cpp</locationURI>
-		</link>
-		<link>
-			<name>Application/User/generated/Kerning_ARIALN_TTF_28_4bpp.cpp</name>
-			<type>1</type>
-			<locationURI>$%7BPARENT-1-PROJECT_LOC%7D/TouchGFX/generated/fonts/src/Kerning_ARIALN_TTF_28_4bpp.cpp</locationURI>
-		</link>
-		<link>
-			<name>Application/User/generated/Table_ARIALN_TTF_28_4bpp.cpp</name>
-			<type>1</type>
-			<locationURI>$%7BPARENT-1-PROJECT_LOC%7D/TouchGFX/generated/fonts/src/Table_ARIALN_TTF_28_4bpp.cpp</locationURI>
 		</link>
 	</linkedResources>
 </projectDescription>

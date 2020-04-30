@@ -28,6 +28,33 @@ void AppActivityScreenView::FinishActivity(void)
     presenter->FinishActivity();
 }
 
+void AppActivityScreenView::ChangeActivityDataCC(void)
+{
+    presenter->ChangeActivityDataCC();
+}
+
+void AppActivityScreenView::SetActivityDataScreen(AppActivity_activeScreen_T screen)
+{
+    ActivityDataCC_Main.setVisible(false);
+    ActivityDataCC_Alti.setVisible(false);
+
+    switch (screen)
+    {
+        case APP_SCREEN_MAIN:
+            ActivityDataCC_Main.setVisible(true);
+            break;
+        case APP_SCREEN_ALTI:
+            ActivityDataCC_Alti.setVisible(true);
+            break;
+        default:
+            ActivityDataCC_Main.setVisible(true);
+            break;
+    }
+
+    ActivityDataCC_Main.invalidate();
+    ActivityDataCC_Alti.invalidate();
+}
+
 void AppActivityScreenView::SetBitmapButton(const uint16_t bitmapId)
 {
     StartStopButton.setBitmaps(touchgfx::Bitmap(BITMAP_BLUE_BUTTONS_ROUND_EDGE_ICON_BUTTON_ID), touchgfx::Bitmap(BITMAP_BLUE_BUTTONS_ROUND_EDGE_ICON_BUTTON_PRESSED_ID), touchgfx::Bitmap(bitmapId), touchgfx::Bitmap(bitmapId));
@@ -70,4 +97,28 @@ void AppActivityScreenView::NotifySignalChanged_activityData_avgSpeed(float newA
 void AppActivityScreenView::NotifySignalChanged_activityData_maxSpeed(float newMaxSpeed)
 {
     ActivityDataCC_Main.NotifySignalChanged_activityData_maxSpeed(newMaxSpeed);
+}
+void AppActivityScreenView::NotifySignalChanged_activityData_altitude(int32_t newAltitude)
+{
+    ActivityDataCC_Alti.NotifySignalChanged_activityData_altitude(newAltitude);
+}
+void AppActivityScreenView::NotifySignalChanged_activityData_slope(float newSlope)
+{
+    ActivityDataCC_Alti.NotifySignalChanged_activityData_slope(newSlope);
+}
+void AppActivityScreenView::NotifySignalChanged_activityData_altiUp(int32_t newAltiUp)
+{
+    ActivityDataCC_Alti.NotifySignalChanged_activityData_altiUp(newAltiUp);
+}
+void AppActivityScreenView::NotifySignalChanged_activityData_altiDown(int32_t newAltiDown)
+{
+    ActivityDataCC_Alti.NotifySignalChanged_activityData_altiDown(newAltiDown);
+}
+void AppActivityScreenView::NotifySignalChanged_activityData_altiMax(int32_t newAltiMax)
+{
+    ActivityDataCC_Alti.NotifySignalChanged_activityData_altiMax(newAltiMax);
+}
+void AppActivityScreenView::NotifySignalChanged_activityData_slopeMax(float newSlopeMax)
+{
+    ActivityDataCC_Alti.NotifySignalChanged_activityData_slopeMax(newSlopeMax);
 }

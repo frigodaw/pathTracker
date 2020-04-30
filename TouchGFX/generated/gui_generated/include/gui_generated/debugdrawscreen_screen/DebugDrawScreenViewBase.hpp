@@ -8,7 +8,7 @@
 #include <mvp/View.hpp>
 #include <gui/debugdrawscreen_screen/DebugDrawScreenPresenter.hpp>
 #include <gui/containers/ScreenBackgroundContainer.hpp>
-#include <touchgfx/widgets/ButtonWithLabel.hpp>
+#include <touchgfx/widgets/ButtonWithIcon.hpp>
 #include <touchgfx/widgets/Box.hpp>
 #include <touchgfx/widgets/TextArea.hpp>
 
@@ -28,7 +28,7 @@ protected:
      * Member Declarations
      */
     ScreenBackgroundContainer BackgroundCC;
-    touchgfx::ButtonWithLabel NextButton;
+    touchgfx::ButtonWithIcon NextButton;
     touchgfx::Box DrawBox;
     touchgfx::TextArea NameLabel;
 

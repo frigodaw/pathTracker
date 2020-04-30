@@ -8,7 +8,7 @@
 #include <mvp/View.hpp>
 #include <gui/debugsdcardscreen_screen/DebugSdCardScreenPresenter.hpp>
 #include <gui/containers/ScreenBackgroundContainer.hpp>
-#include <touchgfx/widgets/ButtonWithLabel.hpp>
+#include <touchgfx/widgets/ButtonWithIcon.hpp>
 #include <touchgfx/widgets/TextArea.hpp>
 #include <gui/containers/SDCardContainter.hpp>
 
@@ -28,7 +28,7 @@ protected:
      * Member Declarations
      */
     ScreenBackgroundContainer BackgroundCC;
-    touchgfx::ButtonWithLabel NextButton;
+    touchgfx::ButtonWithIcon NextButton;
     touchgfx::TextArea NameLabel;
     SDCardContainter SDCardDataCC;
 

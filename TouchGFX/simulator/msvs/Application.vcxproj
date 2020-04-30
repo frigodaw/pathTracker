@@ -48,6 +48,8 @@
     <ClCompile Include="..\..\generated\gui_generated\src\appactivityscreen_screen\AppActivityScreenViewBase.cpp"/>
     <ClCompile Include="..\..\gui\src\containers\ActivityDataContainter_Main.cpp"/>
     <ClCompile Include="..\..\generated\gui_generated\src\containers\ActivityDataContainter_MainBase.cpp"/>
+    <ClCompile Include="..\..\gui\src\containers\ActivityDataContainter_Alti.cpp"/>
+    <ClCompile Include="..\..\generated\gui_generated\src\containers\ActivityDataContainter_AltiBase.cpp"/>
   </ItemGroup>
   <ItemGroup>
     <None Include="$(ApplicationRoot)\assets\texts\texts.xlsx"/>
@@ -223,6 +225,8 @@
     <ClInclude Include="..\..\generated\gui_generated\include\gui_generated\appactivityscreen_screen\AppActivityScreenViewBase.hpp"/>
     <ClInclude Include="..\..\gui\include\gui\containers\ActivityDataContainter_Main.hpp"/>
     <ClInclude Include="..\..\generated\gui_generated\include\gui_generated\containers\ActivityDataContainter_MainBase.hpp"/>
+    <ClInclude Include="..\..\gui\include\gui\containers\ActivityDataContainter_Alti.hpp"/>
+    <ClInclude Include="..\..\generated\gui_generated\include\gui_generated\containers\ActivityDataContainter_AltiBase.hpp"/>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="$(ApplicationRoot)\generated\simulator\touchgfx.rc"/>
