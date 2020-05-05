@@ -54,6 +54,11 @@
 			<locationURI>PARENT-1-PROJECT_LOC/Core/Src/dataCollector.c</locationURI>
 		</link>
 		<link>
+			<name>Application/User/envSensors.c</name>
+			<type>1</type>
+			<locationURI>PARENT-1-PROJECT_LOC/Core/Src/envSensors.c</locationURI>
+		</link>
+		<link>
 			<name>Application/User/filesystem.c</name>
 			<type>1</type>
 			<locationURI>PARENT-1-PROJECT_LOC/Core/Src/filesystem.c</locationURI>
@@ -732,6 +737,31 @@
 			<name>Application/User/TouchGFX/target/generated/TouchGFXGeneratedHAL.cpp</name>
 			<type>1</type>
 			<locationURI>$%7BPARENT-1-PROJECT_LOC%7D/TouchGFX/target/generated/TouchGFXGeneratedHAL.cpp</locationURI>
+		</link>
+		<link>
+			<name>Application/User/gui/EnvSensorsContainter.cpp</name>
+			<type>1</type>
+			<locationURI>$%7BPARENT-1-PROJECT_LOC%7D/TouchGFX/gui/src/containers/EnvSensorsContainter.cpp</locationURI>
+		</link>
+		<link>
+			<name>Application/User/gui/DebugEnvSensorsScreenPresenter.cpp</name>
+			<type>1</type>
+			<locationURI>$%7BPARENT-1-PROJECT_LOC%7D/TouchGFX/gui/src/debugenvsensorsscreen_screen/DebugEnvSensorsScreenPresenter.cpp</locationURI>
+		</link>
+		<link>
+			<name>Application/User/gui/DebugEnvSensorsScreenView.cpp</name>
+			<type>1</type>
+			<locationURI>$%7BPARENT-1-PROJECT_LOC%7D/TouchGFX/gui/src/debugenvsensorsscreen_screen/DebugEnvSensorsScreenView.cpp</locationURI>
+		</link>
+		<link>
+			<name>Application/User/generated/EnvSensorsContainterBase.cpp</name>
+			<type>1</type>
+			<locationURI>$%7BPARENT-1-PROJECT_LOC%7D/TouchGFX/generated/gui_generated/src/containers/EnvSensorsContainterBase.cpp</locationURI>
+		</link>
+		<link>
+			<name>Application/User/generated/DebugEnvSensorsScreenViewBase.cpp</name>
+			<type>1</type>
+			<locationURI>$%7BPARENT-1-PROJECT_LOC%7D/TouchGFX/generated/gui_generated/src/debugenvsensorsscreen_screen/DebugEnvSensorsScreenViewBase.cpp</locationURI>
 		</link>
 	</linkedResources>
 </projectDescription>

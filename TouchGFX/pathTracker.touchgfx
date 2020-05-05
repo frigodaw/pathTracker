@@ -729,6 +729,103 @@
         ],
         "Interactions": [
           {
+            "InteractionName": "GoToDebugEnvSensorsScreen",
+            "HasCompletedTrigger": false,
+            "Trigger": {
+              "TriggerComponent": "NextButton",
+              "Type": "TriggerClicked"
+            },
+            "Action": {
+              "ScreenTransitionType": "ScreenTransitionNone",
+              "ActionComponent": "DebugEnvSensorsScreen",
+              "Type": "ActionGotoScreen"
+            }
+          }
+        ],
+        "Name": "DebugSdCardScreen",
+        "OverrideDefaultBufferSize": false,
+        "CanvasBufferSize": 0
+      },
+      {
+        "Components": [
+          {
+            "CustomContainerDefinitionName": "ScreenBackgroundContainer",
+            "Name": "BackgroundCC",
+            "X": 0,
+            "Y": 0,
+            "Width": 240,
+            "Height": 320,
+            "Type": "CustomContainerInstance",
+            "Visible": true,
+            "Draggable": false,
+            "Clickable": false,
+            "Fadeable": false,
+            "Moveable": false
+          },
+          {
+            "Pressed": "__designer\\Blue_Buttons_Round_Edge_icon_button_pressed.png",
+            "Released": "__designer\\Blue_Buttons_Round_Edge_icon_button.png",
+            "Alpha": 255,
+            "IconPressed": "__designer\\Blue_Icons_Next_arrow_32.png",
+            "IconReleased": "__designer\\Blue_Icons_Next_arrow_32.png",
+            "IconX": 22,
+            "IconY": 15,
+            "IconHeight": 30,
+            "IconWidth": 17,
+            "ButtonStyle": "Style1",
+            "IconStyle": "Icon39",
+            "Name": "NextButton",
+            "X": 180,
+            "Y": 260,
+            "Width": 60,
+            "Height": 60,
+            "Type": "ButtonWithIcon",
+            "Visible": true,
+            "Draggable": false,
+            "Clickable": false,
+            "Fadeable": false,
+            "Moveable": false
+          },
+          {
+            "TextId": "SingleUseId199",
+            "TextRotation": "0",
+            "Color": {
+              "Red": 0,
+              "Green": 0,
+              "Blue": 0
+            },
+            "Alpha": 255,
+            "AutoSize": true,
+            "LineSpacing": 0,
+            "Name": "NameLabel",
+            "X": 26,
+            "Y": 15,
+            "Width": 189,
+            "Height": 25,
+            "Type": "TextArea",
+            "Visible": true,
+            "Draggable": false,
+            "Clickable": false,
+            "Fadeable": false,
+            "Moveable": false
+          },
+          {
+            "CustomContainerDefinitionName": "EnvSensorsContainter",
+            "Name": "EnvSensorsDataCC",
+            "X": 0,
+            "Y": 50,
+            "Width": 240,
+            "Height": 210,
+            "Type": "CustomContainerInstance",
+            "Visible": true,
+            "Draggable": false,
+            "Clickable": false,
+            "Fadeable": false,
+            "Moveable": false
+          }
+        ],
+        "Interactions": [
+          {
             "InteractionName": "GoToDebugDrawScreen",
             "HasCompletedTrigger": false,
             "Trigger": {
@@ -742,7 +839,7 @@
             }
           }
         ],
-        "Name": "DebugSdCardScreen",
+        "Name": "DebugEnvSensorsScreen",
         "OverrideDefaultBufferSize": false,
         "CanvasBufferSize": 0
       },
@@ -850,6 +947,73 @@
       }
     ],
     "CustomContainerDefinitions": [
+      {
+        "Components": [
+          {
+            "Color": {
+              "Red": 211,
+              "Green": 236,
+              "Blue": 252
+            },
+            "Alpha": 255,
+            "Name": "background",
+            "X": 0,
+            "Y": 0,
+            "Width": 240,
+            "Height": 320,
+            "Type": "Box",
+            "Visible": true,
+            "Draggable": false,
+            "Clickable": false,
+            "Fadeable": false,
+            "Moveable": false
+          },
+          {
+            "Pressed": "__designer\\Blue_Buttons_Round_Edge_icon_button_pressed.png",
+            "Released": "__designer\\Blue_Buttons_Round_Edge_icon_button.png",
+            "Alpha": 255,
+            "IconPressed": "__designer\\Blue_Icons_Home_32.png",
+            "IconReleased": "__designer\\Blue_Icons_Home_32.png",
+            "IconX": 15,
+            "IconY": 16,
+            "IconHeight": 29,
+            "IconWidth": 30,
+            "ButtonStyle": "Style1",
+            "IconStyle": "Icon27",
+            "Name": "ExitButton",
+            "X": 0,
+            "Y": 260,
+            "Width": 60,
+            "Height": 60,
+            "Type": "ButtonWithIcon",
+            "Visible": true,
+            "Draggable": false,
+            "Clickable": false,
+            "Fadeable": false,
+            "Moveable": false
+          }
+        ],
+        "Interactions": [
+          {
+            "InteractionName": "GoToStartScreen",
+            "HasCompletedTrigger": false,
+            "Trigger": {
+              "TriggerComponent": "ExitButton",
+              "Type": "TriggerClicked"
+            },
+            "Action": {
+              "ScreenTransitionType": "ScreenTransitionNone",
+              "ActionComponent": "StartScreen",
+              "Type": "ActionGotoScreen"
+            }
+          }
+        ],
+        "Name": "ScreenBackgroundContainer",
+        "X": 0,
+        "Y": 0,
+        "Width": 240,
+        "Height": 320
+      },
       {
         "Components": [
           {
@@ -1123,73 +1287,6 @@
       {
         "Components": [
           {
-            "Color": {
-              "Red": 211,
-              "Green": 236,
-              "Blue": 252
-            },
-            "Alpha": 255,
-            "Name": "background",
-            "X": 0,
-            "Y": 0,
-            "Width": 240,
-            "Height": 320,
-            "Type": "Box",
-            "Visible": true,
-            "Draggable": false,
-            "Clickable": false,
-            "Fadeable": false,
-            "Moveable": false
-          },
-          {
-            "Pressed": "__designer\\Blue_Buttons_Round_Edge_icon_button_pressed.png",
-            "Released": "__designer\\Blue_Buttons_Round_Edge_icon_button.png",
-            "Alpha": 255,
-            "IconPressed": "__designer\\Blue_Icons_Home_32.png",
-            "IconReleased": "__designer\\Blue_Icons_Home_32.png",
-            "IconX": 15,
-            "IconY": 16,
-            "IconHeight": 29,
-            "IconWidth": 30,
-            "ButtonStyle": "Style1",
-            "IconStyle": "Icon27",
-            "Name": "ExitButton",
-            "X": 0,
-            "Y": 260,
-            "Width": 60,
-            "Height": 60,
-            "Type": "ButtonWithIcon",
-            "Visible": true,
-            "Draggable": false,
-            "Clickable": false,
-            "Fadeable": false,
-            "Moveable": false
-          }
-        ],
-        "Interactions": [
-          {
-            "InteractionName": "GoToStartScreen",
-            "HasCompletedTrigger": false,
-            "Trigger": {
-              "TriggerComponent": "ExitButton",
-              "Type": "TriggerClicked"
-            },
-            "Action": {
-              "ScreenTransitionType": "ScreenTransitionNone",
-              "ActionComponent": "StartScreen",
-              "Type": "ActionGotoScreen"
-            }
-          }
-        ],
-        "Name": "ScreenBackgroundContainer",
-        "X": 0,
-        "Y": 0,
-        "Width": 240,
-        "Height": 320
-      },
-      {
-        "Components": [
-          {
             "TextId": "SingleUseId78",
             "TextRotation": "0",
             "Color": {
@@ -1332,6 +1429,100 @@
         ],
         "Interactions": [],
         "Name": "SDCardContainter",
+        "X": 0,
+        "Y": 0,
+        "Width": 240,
+        "Height": 210
+      },
+      {
+        "Components": [
+          {
+            "TextId": "SingleUseId214",
+            "TextRotation": "0",
+            "Color": {
+              "Red": 0,
+              "Green": 0,
+              "Blue": 0
+            },
+            "Alpha": 255,
+            "AutoSize": false,
+            "LineSpacing": 0,
+            "Wildcard1": {
+              "TextId": "SingleUseId215",
+              "UseBuffer": true,
+              "BufferSize": 8
+            },
+            "Name": "TemperatureTextBox",
+            "X": 20,
+            "Y": 55,
+            "Width": 200,
+            "Height": 20,
+            "Type": "TextArea",
+            "Visible": true,
+            "Draggable": false,
+            "Clickable": false,
+            "Fadeable": false,
+            "Moveable": false
+          },
+          {
+            "TextId": "SingleUseId216",
+            "TextRotation": "0",
+            "Color": {
+              "Red": 0,
+              "Green": 0,
+              "Blue": 0
+            },
+            "Alpha": 255,
+            "AutoSize": false,
+            "LineSpacing": 0,
+            "Wildcard1": {
+              "TextId": "SingleUseId217",
+              "UseBuffer": true,
+              "BufferSize": 16
+            },
+            "Name": "PressureTextBox",
+            "X": 20,
+            "Y": 35,
+            "Width": 200,
+            "Height": 20,
+            "Type": "TextArea",
+            "Visible": true,
+            "Draggable": false,
+            "Clickable": false,
+            "Fadeable": false,
+            "Moveable": false
+          },
+          {
+            "TextId": "SingleUseId218",
+            "TextRotation": "0",
+            "Color": {
+              "Red": 0,
+              "Green": 0,
+              "Blue": 0
+            },
+            "Alpha": 255,
+            "AutoSize": false,
+            "LineSpacing": 0,
+            "Wildcard1": {
+              "TextId": "SingleUseId219",
+              "UseBuffer": true,
+              "BufferSize": 16
+            },
+            "Name": "AltitudeTextBox",
+            "X": 20,
+            "Y": 15,
+            "Width": 200,
+            "Height": 20,
+            "Type": "TextArea",
+            "Visible": true,
+            "Draggable": false,
+            "Clickable": false,
+            "Fadeable": false,
+            "Moveable": false
+          }
+        ],
+        "Interactions": [],
+        "Name": "EnvSensorsContainter",
         "X": 0,
         "Y": 0,
         "Width": 240,
@@ -3063,6 +3254,74 @@
       },
       {
         "TextEntryId": "SingleUseId198",
+        "IsResource": false
+      },
+      {
+        "TextEntryId": "SingleUseId199",
+        "IsResource": false
+      },
+      {
+        "TextEntryId": "SingleUseId200",
+        "IsResource": false
+      },
+      {
+        "TextEntryId": "SingleUseId201",
+        "IsResource": false
+      },
+      {
+        "TextEntryId": "SingleUseId202",
+        "IsResource": false
+      },
+      {
+        "TextEntryId": "SingleUseId203",
+        "IsResource": false
+      },
+      {
+        "TextEntryId": "SingleUseId204",
+        "IsResource": false
+      },
+      {
+        "TextEntryId": "SingleUseId205",
+        "IsResource": false
+      },
+      {
+        "TextEntryId": "SingleUseId206",
+        "IsResource": false
+      },
+      {
+        "TextEntryId": "SingleUseId207",
+        "IsResource": false
+      },
+      {
+        "TextEntryId": "SingleUseId208",
+        "IsResource": false
+      },
+      {
+        "TextEntryId": "SingleUseId209",
+        "IsResource": false
+      },
+      {
+        "TextEntryId": "SingleUseId214",
+        "IsResource": false
+      },
+      {
+        "TextEntryId": "SingleUseId215",
+        "IsResource": false
+      },
+      {
+        "TextEntryId": "SingleUseId216",
+        "IsResource": false
+      },
+      {
+        "TextEntryId": "SingleUseId217",
+        "IsResource": false
+      },
+      {
+        "TextEntryId": "SingleUseId218",
+        "IsResource": false
+      },
+      {
+        "TextEntryId": "SingleUseId219",
         "IsResource": false
       }
     ],

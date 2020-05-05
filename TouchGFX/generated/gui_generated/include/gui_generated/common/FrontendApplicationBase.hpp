@@ -30,6 +30,9 @@ public:
     // DebugSdCardScreen
     void gotoDebugSdCardScreenScreenNoTransition();
 
+    // DebugEnvSensorsScreen
+    void gotoDebugEnvSensorsScreenScreenNoTransition();
+
     // DebugDrawScreen
     void gotoDebugDrawScreenScreenNoTransition();
 
@@ -52,6 +55,9 @@ protected:
 
     // DebugSdCardScreen
     void gotoDebugSdCardScreenScreenNoTransitionImpl();
+
+    // DebugEnvSensorsScreen
+    void gotoDebugEnvSensorsScreenScreenNoTransitionImpl();
 
     // DebugDrawScreen
     void gotoDebugDrawScreenScreenNoTransitionImpl();

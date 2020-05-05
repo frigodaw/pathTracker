@@ -34,6 +34,8 @@
 #include "filesystem.h"
 #include "l3gd20.h"
 #include "stm32f429i_discovery_gyroscope.h"
+#include "bmp280.h"
+#include "envSensors.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -79,7 +81,8 @@ osThreadId gpsTaskHandle;
 TimerTypeT tim = {0u};
 CounterTypeT cnt = {0u};
 static FMC_SDRAM_CommandTypeDef Command;
-static float gyro_xyz[3];
+BMP280_HandleTypedef bmp280;
+//static float gyro_xyz[3];
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -103,6 +106,7 @@ void GpsTask(void const * argument);
 
 /* USER CODE BEGIN PFP */
 void Main_Init(void);
+void Main_SensorsInit(void);
 void Main_WriteReg(uint8_t);
 void Main_WriteData(uint8_t);
 /* USER CODE END PFP */
@@ -169,6 +173,7 @@ int main(void)
   /* USER CODE BEGIN 2 */
   Gps_Init();
   Main_Init();
+  Main_SensorsInit();
   BSP_GYRO_Init();
   FS_Init();
   /* USER CODE END 2 */
@@ -191,7 +196,7 @@ int main(void)
 
   /* Create the thread(s) */
   /* definition and creation of defaultTask */
-  osThreadDef(defaultTask, DefaultTask, osPriorityBelowNormal, 0, 512);
+  osThreadDef(defaultTask, DefaultTask, osPriorityHigh, 0, 512);
   defaultTaskHandle = osThreadCreate(osThread(defaultTask), NULL);
 
   /* definition and creation of ltdcTask */
@@ -997,6 +1002,19 @@ void Main_Init(void)
 }
 
 
+void Main_SensorsInit(void)
+{
+  bmp280_init_default_params(&bmp280.params);
+  bmp280.addr = BMP280_I2C_ADDRESS_0;
+  bmp280.i2c = &hi2c3;
+
+  while (!bmp280_init(&bmp280, &bmp280.params)) 
+  {
+    HAL_Delay(SENSORS_INIT_TIME_INTERVAL_MS);
+  }
+}
+
+
 void Main_WriteReg(uint8_t reg)
 {
   HAL_GPIO_WritePin(WRX_DCX_GPIO_Port, WRX_DCX_Pin, GPIO_PIN_RESET);
@@ -1031,7 +1049,8 @@ void DefaultTask(void const * argument)
   for(;;)
   {
     FS_Main();
-    BSP_GYRO_GetXYZ(gyro_xyz);
+    EnvSensors_Main();
+    //BSP_GYRO_GetXYZ(gyro_xyz);
     DC_inc_main_cnt_c_defaultTask();
     osDelay(1000);
   }

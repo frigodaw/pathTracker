@@ -244,6 +244,18 @@
     <Filter Include="Header Files\generated\gui_generated\appactivityscreen_screen">
       <UniqueIdentifier>AFA8CBD5-EDA4-366D-10CA-48252B0E641F</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\gui\debugenvsensorsscreen_screen">
+      <UniqueIdentifier>632D60E6-8C6E-EA66-089F-7CD82D6D65F7</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\gui\debugenvsensorsscreen_screen">
+      <UniqueIdentifier>3FE2A3B7-7467-58FA-2C47-FA16F8E405EF</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\generated\gui_generated\debugenvsensorsscreen_screen">
+      <UniqueIdentifier>4775B083-7E4C-1A7E-B035-DF41028E147B</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\generated\gui_generated\debugenvsensorsscreen_screen">
+      <UniqueIdentifier>2663E68C-6B6E-9A6A-6B13-4ACDDB89B6B3</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="$(TouchGFXReleasePath)\framework\source\platform\driver\touch\SDL2TouchController.cpp">
@@ -361,6 +373,21 @@
       <Filter>Source Files\gui\containers</Filter>
     </ClCompile>
     <ClCompile Include="..\..\generated\gui_generated\src\containers\ActivityDataContainter_AltiBase.cpp">
+      <Filter>Source Files\generated\gui_generated\containers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\gui\src\debugenvsensorsscreen_screen\DebugEnvSensorsScreenPresenter.cpp">
+      <Filter>Source Files\gui\debugenvsensorsscreen_screen</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\gui\src\debugenvsensorsscreen_screen\DebugEnvSensorsScreenView.cpp">
+      <Filter>Source Files\gui\debugenvsensorsscreen_screen</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\generated\gui_generated\src\debugenvsensorsscreen_screen\DebugEnvSensorsScreenViewBase.cpp">
+      <Filter>Source Files\generated\gui_generated\debugenvsensorsscreen_screen</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\gui\src\containers\EnvSensorsContainter.cpp">
+      <Filter>Source Files\gui\containers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\generated\gui_generated\src\containers\EnvSensorsContainterBase.cpp">
       <Filter>Source Files\generated\gui_generated\containers</Filter>
     </ClCompile>
   </ItemGroup>
@@ -884,6 +911,21 @@
       <Filter>Header Files\gui\containers</Filter>
     </ClInclude>
     <ClInclude Include="..\..\generated\gui_generated\include\gui_generated\containers\ActivityDataContainter_AltiBase.hpp">
+      <Filter>Header Files\generated\gui_generated\containers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\gui\include\gui\debugenvsensorsscreen_screen\DebugEnvSensorsScreenPresenter.hpp">
+      <Filter>Header Files\gui\debugenvsensorsscreen_screen</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\gui\include\gui\debugenvsensorsscreen_screen\DebugEnvSensorsScreenView.hpp">
+      <Filter>Header Files\gui\debugenvsensorsscreen_screen</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\generated\gui_generated\include\gui_generated\debugenvsensorsscreen_screen\DebugEnvSensorsScreenViewBase.hpp">
+      <Filter>Header Files\generated\gui_generated\debugenvsensorsscreen_screen</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\gui\include\gui\containers\EnvSensorsContainter.hpp">
+      <Filter>Header Files\gui\containers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\generated\gui_generated\include\gui_generated\containers\EnvSensorsContainterBase.hpp">
       <Filter>Header Files\generated\gui_generated\containers</Filter>
     </ClInclude>
   </ItemGroup>

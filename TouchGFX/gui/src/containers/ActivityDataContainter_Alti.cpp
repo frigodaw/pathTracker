@@ -10,9 +10,9 @@ void ActivityDataContainter_Alti::initialize()
     ActivityDataContainter_AltiBase::initialize();
 }
 
-void ActivityDataContainter_Alti::NotifySignalChanged_activityData_altitude(int32_t newAltitude)
+void ActivityDataContainter_Alti::NotifySignalChanged_activityData_altitude(float newAltitude)
 {
-    Unicode::snprintf(AltitudeTextBoxBuffer, ALTITUDETEXTBOX_SIZE, "%d", newAltitude);
+    Unicode::snprintfFloats(AltitudeTextBoxBuffer, ALTITUDETEXTBOX_SIZE, "%#.1f", &newAltitude);
     AltitudeTextBox.invalidate();
 }
 
@@ -44,4 +44,10 @@ void ActivityDataContainter_Alti::NotifySignalChanged_activityData_slopeMax(floa
 {
     Unicode::snprintfFloats(SlopeMaxTextBoxBuffer, SLOPEMAXTEXTBOX_SIZE, "%#.1f", &newSlopeMax);
     SlopeMaxTextBox.invalidate();
+}
+
+void ActivityDataContainter_Alti::NotifySignalChanged_sensorData_altitude(float newAltitude)
+{
+    Unicode::snprintfFloats(AltitudeTextBoxBuffer, ALTITUDETEXTBOX_SIZE, "%#.1f", &newAltitude);
+    AltitudeTextBox.invalidate();
 }

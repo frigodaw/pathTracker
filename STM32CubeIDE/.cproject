@@ -70,6 +70,7 @@
                   <listOptionValue builtIn="false" value="../../Drivers/Components/Common"/>
                   <listOptionValue builtIn="false" value="../../Drivers/Components/l3gd20"/>
                   <listOptionValue builtIn="false" value="../../Drivers/Components/stmpe811"/>
+                  <listOptionValue builtIn="false" value="../../Drivers/Components/bmp280"/>
                   <listOptionValue builtIn="false" value="../../FATFS/App"/>
                   <listOptionValue builtIn="false" value="../../FATFS/Target"/>
                   <listOptionValue builtIn="false" value="../../Middlewares/Third_Party/FatFs/src"/>
@@ -112,6 +113,7 @@
                   <listOptionValue builtIn="false" value="../../Drivers/Components/Common"/>
                   <listOptionValue builtIn="false" value="../../Drivers/Components/l3gd20"/>
                   <listOptionValue builtIn="false" value="../../Drivers/Components/stmpe811"/>
+                  <listOptionValue builtIn="false" value="../../Drivers/Components/bmp280"/>
                   <listOptionValue builtIn="false" value="../../FATFS/App"/>
                   <listOptionValue builtIn="false" value="../../FATFS/Target"/>
                   <listOptionValue builtIn="false" value="../../Middlewares/Third_Party/FatFs/src"/>

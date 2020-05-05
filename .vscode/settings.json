@@ -21,6 +21,7 @@
         "xmemory": "cpp",
         "stm32f4xx_hal_conf.h": "c",
         "cstdio": "cpp",
-        "stdio.h": "c"
+        "stdio.h": "c",
+        "*.rh": "c"
     }
 }

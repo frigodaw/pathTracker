@@ -19,6 +19,8 @@
 #include <gui/debuggpsdatascreen_screen/DebugGpsDataScreenPresenter.hpp>
 #include <gui/debugsdcardscreen_screen/DebugSdCardScreenView.hpp>
 #include <gui/debugsdcardscreen_screen/DebugSdCardScreenPresenter.hpp>
+#include <gui/debugenvsensorsscreen_screen/DebugEnvSensorsScreenView.hpp>
+#include <gui/debugenvsensorsscreen_screen/DebugEnvSensorsScreenPresenter.hpp>
 #include <gui/debugdrawscreen_screen/DebugDrawScreenView.hpp>
 #include <gui/debugdrawscreen_screen/DebugDrawScreenPresenter.hpp>
 
@@ -102,6 +104,19 @@ void FrontendApplicationBase::gotoDebugSdCardScreenScreenNoTransition()
 void FrontendApplicationBase::gotoDebugSdCardScreenScreenNoTransitionImpl()
 {
     touchgfx::makeTransition<DebugSdCardScreenView, DebugSdCardScreenPresenter, touchgfx::NoTransition, Model >(&currentScreen, &currentPresenter, frontendHeap, &currentTransition, &model);
+}
+
+// DebugEnvSensorsScreen
+
+void FrontendApplicationBase::gotoDebugEnvSensorsScreenScreenNoTransition()
+{
+    transitionCallback = touchgfx::Callback<FrontendApplicationBase>(this, &FrontendApplication::gotoDebugEnvSensorsScreenScreenNoTransitionImpl);
+    pendingScreenTransitionCallback = &transitionCallback;
+}
+
+void FrontendApplicationBase::gotoDebugEnvSensorsScreenScreenNoTransitionImpl()
+{
+    touchgfx::makeTransition<DebugEnvSensorsScreenView, DebugEnvSensorsScreenPresenter, touchgfx::NoTransition, Model >(&currentScreen, &currentPresenter, frontendHeap, &currentTransition, &model);
 }
 
 // DebugDrawScreen

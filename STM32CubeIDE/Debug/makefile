@@ -16,6 +16,7 @@ RM := rm -rf
 -include Drivers/CMSIS/subdir.mk
 -include Components/stmpe811/subdir.mk
 -include Components/l3gd20/subdir.mk
+-include Components/bmp280/subdir.mk
 -include Application/User/gui/subdir.mk
 -include Application/User/generated/subdir.mk
 -include Application/User/USB_DEVICE/Target/subdir.mk

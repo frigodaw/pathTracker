@@ -270,6 +270,7 @@ void Error_Handler(void);
 #define SDRAM_MODEREG_OPERATING_MODE_STANDARD    ((uint16_t)0x0000)
 #define SDRAM_MODEREG_WRITEBURST_MODE_PROGRAMMED ((uint16_t)0x0000)
 #define SDRAM_MODEREG_WRITEBURST_MODE_SINGLE     ((uint16_t)0x0200)
+#define SENSORS_INIT_TIME_INTERVAL_MS            100u
 /* USER CODE END Private defines */
 
 #ifdef __cplusplus

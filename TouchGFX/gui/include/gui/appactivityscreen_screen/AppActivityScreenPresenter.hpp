@@ -31,6 +31,7 @@ using namespace touchgfx;
 #define APP_DISTANCE_COEFF_KMTOM        1000.f
 #define APP_DISTANCE_COEFF_PI           3.14159f
 #define APP_DISTANCE_MAXVALUE_PERSEC    0.03f
+#define APP_SLOPE_MAXVALUE_PERSEC       60.f
 #define APP_DISTNACE_COEFF_POWER_TWO    2.f
 #define APP_SPEED_COEFF_PERIOD          1.f
 
@@ -46,6 +47,7 @@ using namespace touchgfx;
 /* START OF THE ENUM AREA */
 typedef enum
 {
+    APP_STATE_INIT,
     APP_STATE_READY,
     APP_STATE_RUNNING,
     APP_STATE_PAUSED,
@@ -93,6 +95,13 @@ typedef struct
 
 typedef struct
 {
+    float altitude;
+    float pressure;
+    float temperature;
+}AppActivity_sensorData_T;
+
+typedef struct
+{
     char name[APP_FILENAMEMAXLEN];
     uint16_t lines;
     AppActivity_fileStatus_T fileStatus;
@@ -111,7 +120,7 @@ typedef struct
 
     float slope;
     float slopeMax;
-    int32_t altitude;
+    float altitude;
     int32_t altiUp;
     int32_t altiDown;
     int32_t altiMax;
@@ -120,6 +129,7 @@ typedef struct
 typedef struct
 {
     float    maxDistancePerSecond;
+    float    maxSlopePerSecond;
     uint32_t lastTime;
     uint16_t mainTimePeriod;
     uint8_t  callCounter;
@@ -160,6 +170,7 @@ public:
     void CalculateAltitude(void);
     void IncrementTimer(void);
     void UpdateTime(void);
+    void UpdateAltitude(void);
     template <typename T> T MedianFromArray(T* array, const uint8_t size);
 
 
@@ -172,12 +183,16 @@ public:
     void NotifySignalChanged_gpsData_satellitesNum(uint8_t newSatellitesNum);
     void NotifySignalChanged_gpsData_lonDir(char newLonDir);
     void NotifySignalChanged_gpsData_latDir(char newLatDir);
+    void NotifySignalChanged_sensorData_altitude(float newAltitude);
+    void NotifySignalChanged_sensorData_pressure(float newPressure);
+    void NotifySignalChanged_sensorData_temperature(float newTemperature);
 
 private:
     AppActivityScreenPresenter();
     AppActivityScreenView& view;
 
     AppActivity_gpsSignals_T        gpsSignals;
+    AppActivity_sensorData_T        sensorData;
     AppActivity_fileInfo_T          fileInfo;
     AppActivity_activityData_T      activityData;
     AppActivity_appInternalData_T   appInternalData;

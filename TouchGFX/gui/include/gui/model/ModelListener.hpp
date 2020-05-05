@@ -36,6 +36,10 @@ public:
     virtual void NotifySignalChanged_sdCardInfo_state(uint8_t newState){}
     virtual void NotifySignalChanged_dirInfo_in_filesNum(uint8_t newInFilesNum){}
     virtual void NotifySignalChanged_dirInfo_out_filesNum(uint8_t newOutFilesNum){}
+    /* envSensors */
+    virtual void NotifySignalChanged_sensorData_altitude(float newAltitude){}
+    virtual void NotifySignalChanged_sensorData_pressure(float newPressure){}
+    virtual void NotifySignalChanged_sensorData_temperature(float newTemperature){}
 protected:
     Model* model;
 };

@@ -16,11 +16,12 @@ AppActivityScreenPresenter::AppActivityScreenPresenter(AppActivityScreenView& v)
     memset(&fileInfo, 0u, sizeof(fileInfo));
     memset(&gpsSignals, 0u, sizeof(gpsSignals));
 
+    appInternalData.state = APP_STATE_INIT;
+    appInternalData.screen = APP_SCREEN_MAIN;
     appInternalData.maxDistancePerSecond = APP_DISTANCE_MAXVALUE_PERSEC;
+    appInternalData.maxSlopePerSecond = APP_SLOPE_MAXVALUE_PERSEC;
     appInternalData.mainTimePeriod = APP_MAINPERIOD_MS;
     appInternalData.callCounter = APP_MAX_CALL_COUNTER;
-    appInternalData.screen = APP_SCREEN_MAIN;
-    appInternalData.state = APP_STATE_READY;
 
     fileInfo.fileStatus = APP_FILE_NOFILE;
     SetBitmapButton(BITMAP_BLUE_ICONS_PLAY_32_ID);
@@ -30,8 +31,7 @@ void AppActivityScreenPresenter::activate()
 {
     model->SignalRequestFromPresenter();
     model->MainPeriodFromPresenter(appInternalData.mainTimePeriod);
-
-    UpdateTime();
+    appInternalData.state = APP_STATE_READY;
 }
 
 void AppActivityScreenPresenter::deactivate()
@@ -139,8 +139,6 @@ void AppActivityScreenPresenter::FinishActivity(void)
 /* Main method, triggered periodically by model. */
 void AppActivityScreenPresenter::Main(void)
 {
-    UpdateTime();
-
     if(APP_FILE_CREATED == fileInfo.fileStatus)
     {
         if(APP_STATE_RUNNING == appInternalData.state)
@@ -202,7 +200,7 @@ void AppActivityScreenPresenter::InsertDataIntoFile(void)
 
     ConvertFloatToInt(gpsSignals.latitude,  lat, APP_LATLON_PRECISION);
     ConvertFloatToInt(gpsSignals.longitude, lon, APP_LATLON_PRECISION);
-    ConvertFloatToInt(gpsSignals.altitude,  alt, APP_ALTI_PRECISION);
+    ConvertFloatToInt(sensorData.altitude,  alt, APP_ALTI_PRECISION);
 
     snprintf((char*)buffer, APP_MAXFILEBUFFERSIZE,
         "\t\t\t<trkpt lat=\"%d.%.*lu\" lon=\"%d.%.*lu\">\n"
@@ -315,21 +313,29 @@ void AppActivityScreenPresenter::CalculateSpeedAndDistance(void)
 /* Method called to calculate all parameters related to altitude. */
 void AppActivityScreenPresenter::CalculateAltitude(void)
 {
-    static uint8_t  idx = 0u;
-    static float    lastDist[APP_ALTI_INTERVAL] = {0u};
-    static int32_t  lastAlti[APP_ALTI_INTERVAL] = {0u};
-    static float    lastDistMedian = activityData.distance;
-    static int32_t  lastAltiMedian = (uint16_t)gpsSignals.altitude;
+    static uint8_t idx = APP_ALTI_INTERVAL;
+    static float   lastDist[APP_ALTI_INTERVAL] = {0u};
+    static float   lastAlti[APP_ALTI_INTERVAL] = {0u};
+    static float   lastDistMedian = activityData.distance;
+    static float   lastAltiMedian = sensorData.altitude;
+
+    if(APP_ALTI_INTERVAL == idx)
+    {
+        /* Local init */
+        memset(&lastDist, 0u, sizeof(activityData.distance));
+        memset(&lastAlti, 0u, sizeof(activityData.altitude));
+        idx = 0u;
+    }
 
     /* Add new data to cyclic buffer */
     lastDist[idx] = activityData.distance;
-    lastAlti[idx] = (uint16_t)gpsSignals.altitude;
+    lastAlti[idx] = (uint16_t)sensorData.altitude;
 
     float distMedian = MedianFromArray<float>(lastDist, APP_ALTI_INTERVAL);
-    int32_t altiMedian = MedianFromArray<int32_t>(lastAlti, APP_ALTI_INTERVAL);
+    float altiMedian = MedianFromArray<float>(lastAlti, APP_ALTI_INTERVAL);
 
     float distDiff = distMedian - lastDistMedian;
-    int32_t altiDiff = altiMedian - lastAltiMedian;
+    float altiDiff = altiMedian - lastAltiMedian;
 
     if(altiDiff >= 0)
     {
@@ -343,7 +349,11 @@ void AppActivityScreenPresenter::CalculateAltitude(void)
 
     if(distDiff > 0.f)
     {
-        activityData.slope = ((float)altiDiff / APP_SLOPE_MTOKM) / distDiff * APP_SLOPE_100PERCENT;
+        float slope = ((float)altiDiff / APP_SLOPE_MTOKM) / distDiff * APP_SLOPE_100PERCENT;
+        if(appInternalData.maxSlopePerSecond > slope)
+        {
+            activityData.slope = slope;
+        }
     }
 
     activityData.altitude = altiMedian;
@@ -436,6 +446,19 @@ void AppActivityScreenPresenter::UpdateTime(void)
 }
 
 
+/* Method called to update altitude when activity is not running. */
+void AppActivityScreenPresenter::UpdateAltitude(void)
+{
+    if(APP_STATE_RUNNING != appInternalData.state)
+    {
+        if((APP_SCREEN_ALTI == appInternalData.screen) || (APP_STATE_INIT == appInternalData.state))
+        {
+            view.NotifySignalChanged_sensorData_altitude(sensorData.altitude);
+        }
+    }
+}
+
+
 /* Method called to collect signals from Model:
     - latitude
     - longitude
@@ -463,6 +486,7 @@ void AppActivityScreenPresenter::NotifySignalChanged_gpsData_time(uint32_t newTi
     gpsSignals.timeSec  = newTime % APP_TIME_COEFF1;
     gpsSignals.timeMin = (newTime / APP_TIME_COEFF1) % APP_TIME_COEFF1;
     gpsSignals.timeHr = ((newTime / APP_TIME_COEFF2) % APP_TIME_COEFF1);
+    UpdateTime();
 }
 void AppActivityScreenPresenter::NotifySignalChanged_gpsData_date(uint32_t newDate)
 {
@@ -486,4 +510,17 @@ void AppActivityScreenPresenter::NotifySignalChanged_gpsData_lonDir(char newLonD
 void AppActivityScreenPresenter::NotifySignalChanged_gpsData_latDir(char newLatDir)
 {
     gpsSignals.latDir = newLatDir;
+}
+void AppActivityScreenPresenter::NotifySignalChanged_sensorData_altitude(float newAltitude)
+{
+    sensorData.altitude = newAltitude;
+    UpdateAltitude();
+}
+void AppActivityScreenPresenter::NotifySignalChanged_sensorData_pressure(float newPressure)
+{
+    sensorData.pressure = newPressure;
+}
+void AppActivityScreenPresenter::NotifySignalChanged_sensorData_temperature(float newTemperature)
+{
+    sensorData.temperature = newTemperature;
 }

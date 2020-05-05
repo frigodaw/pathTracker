@@ -35,6 +35,9 @@ typedef struct
     uint8_t sdCardInfo_state;
     uint8_t dirInfo_in_filesNum;
     uint8_t dirInfo_out_filesNum;
+    uint8_t sensorData_altitude;
+    uint8_t sensorData_pressure;
+    uint8_t sensorData_temperature;
 } Model_dataNotifier_T;
 /* END OF THE TYPEDEF AREA */
 
@@ -79,6 +82,10 @@ private:
     uint8_t  sdCardInfo_state;
     uint8_t  dirInfo_in_filesNum;
     uint8_t  dirInfo_out_filesNum;
+    /* envSensors */
+    float    sensorData_altitude;
+    float    sensorData_pressure;
+    float    sensorData_temperature;
     /* internal data */
     Model_dataNotifier_T dataNotifier;
     uint16_t mainTimePeriod;

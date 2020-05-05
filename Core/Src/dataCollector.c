@@ -9,6 +9,8 @@
 #include "types.h"
 #include "main.h"
 #include "neoGps.h"
+#include "fileSystem.h"
+#include "envSensors.h"
 
 /* -------------------- main -------------------- */
 /*  File: main.c
@@ -314,3 +316,36 @@ uint8_t DC_get_fileSystem_dirInfo_out_filesNum(void)
     return dirInfo.out.filesNum;
 }
 /* -------------------- fileSystem -------------------- */
+
+
+
+/* -------------------- envSensors -------------------- */
+/*  File: envSensors.c
+    Type: getter
+    Variable: sensorData.altitude
+*/
+float ES_get_sensorData_altitude(void)
+{
+    return sensorData.altitude;
+}
+
+
+/*  File: envSensors.c
+    Type: getter
+    Variable: sensorData.pressure
+*/
+float ES_get_sensorData_pressure(void)
+{
+    return sensorData.pressure;
+}
+
+
+/*  File: envSensors.c
+    Type: getter
+    Variable: sensorData.temperature
+*/
+float ES_get_sensorData_temperature(void)
+{
+    return sensorData.temperature;
+}
+/* -------------------- envSensors -------------------- */

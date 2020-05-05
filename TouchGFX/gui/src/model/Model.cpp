@@ -56,6 +56,11 @@ void Model::ReadInputSignals(void)
     UpdateElement<uint8_t>(DC_get_fileSystem_sdCardInfo_state, sdCardInfo_state, dataNotifier.sdCardInfo_state);
     UpdateElement<uint8_t>(DC_get_fileSystem_dirInfo_in_filesNum, dirInfo_in_filesNum, dataNotifier.dirInfo_in_filesNum);
     UpdateElement<uint8_t>(DC_get_fileSystem_dirInfo_out_filesNum, dirInfo_out_filesNum, dataNotifier.dirInfo_out_filesNum);
+
+    /* envSensors */
+    UpdateElement<float>(ES_get_sensorData_altitude, sensorData_altitude, dataNotifier.sensorData_altitude);
+    UpdateElement<float>(ES_get_sensorData_pressure, sensorData_pressure, dataNotifier.sensorData_pressure);
+    UpdateElement<float>(ES_get_sensorData_temperature, sensorData_temperature, dataNotifier.sensorData_temperature);
 }
 
 
@@ -107,6 +112,11 @@ void Model::NotifyScreens(void)
         NotifyElement<uint8_t>(&ModelListener::NotifySignalChanged_sdCardInfo_state, sdCardInfo_state, dataNotifier.sdCardInfo_state);
         NotifyElement<uint8_t>(&ModelListener::NotifySignalChanged_dirInfo_in_filesNum, dirInfo_in_filesNum, dataNotifier.dirInfo_in_filesNum);
         NotifyElement<uint8_t>(&ModelListener::NotifySignalChanged_dirInfo_out_filesNum, dirInfo_out_filesNum, dataNotifier.dirInfo_out_filesNum);
+
+        /* envSensors */
+        NotifyElement<float>(&ModelListener::NotifySignalChanged_sensorData_altitude, sensorData_altitude, dataNotifier.sensorData_altitude);
+        NotifyElement<float>(&ModelListener::NotifySignalChanged_sensorData_pressure, sensorData_pressure, dataNotifier.sensorData_pressure);
+        NotifyElement<float>(&ModelListener::NotifySignalChanged_sensorData_temperature, sensorData_temperature, dataNotifier.sensorData_temperature);
     }
 }
 

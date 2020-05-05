@@ -98,7 +98,7 @@ void AppActivityScreenView::NotifySignalChanged_activityData_maxSpeed(float newM
 {
     ActivityDataCC_Main.NotifySignalChanged_activityData_maxSpeed(newMaxSpeed);
 }
-void AppActivityScreenView::NotifySignalChanged_activityData_altitude(int32_t newAltitude)
+void AppActivityScreenView::NotifySignalChanged_activityData_altitude(float newAltitude)
 {
     ActivityDataCC_Alti.NotifySignalChanged_activityData_altitude(newAltitude);
 }
@@ -121,4 +121,8 @@ void AppActivityScreenView::NotifySignalChanged_activityData_altiMax(int32_t new
 void AppActivityScreenView::NotifySignalChanged_activityData_slopeMax(float newSlopeMax)
 {
     ActivityDataCC_Alti.NotifySignalChanged_activityData_slopeMax(newSlopeMax);
+}
+void AppActivityScreenView::NotifySignalChanged_sensorData_altitude(float newAltitude)
+{
+    ActivityDataCC_Alti.NotifySignalChanged_sensorData_altitude(newAltitude);
 }

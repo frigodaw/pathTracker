@@ -16,8 +16,6 @@ extern "C" {
 
 /* START OF THE INCLUDE AREA */
 #include "stm32f4xx_hal.h"
-#include "neoGps.h"
-#include "fileSystem.h"
 /* END OF THE DEFINE AREA */
 
 
@@ -73,6 +71,11 @@ uint32_t DC_get_fileSystem_sdCardInfo_freeSpace(void);
 uint8_t  DC_get_fileSystem_sdCardInfo_state(void);
 uint8_t  DC_get_fileSystem_dirInfo_in_filesNum(void);
 uint8_t  DC_get_fileSystem_dirInfo_out_filesNum(void);
+
+/* ---------- envSensors ---------- */
+float    ES_get_sensorData_altitude(void);
+float    ES_get_sensorData_pressure(void);
+float    ES_get_sensorData_temperature(void);
 /* END OF THE FUNCTIONS PROTOTYPES AREA */
 
 # ifdef __cplusplus
