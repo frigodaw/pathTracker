@@ -172,6 +172,7 @@ public:
     void UpdateTime(void);
     void UpdateAltitude(void);
     template <typename T> T MedianFromArray(T* array, const uint8_t size);
+    float MeanFromArray(float* array, const uint8_t size);
 
 
     void NotifySignalChanged_gpsData_latitude(float newLatitude);

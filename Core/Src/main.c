@@ -1113,6 +1113,11 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
     HAL_IncTick();
   }
   /* USER CODE BEGIN Callback 1 */
+  if (htim->Instance == TIM6)
+  {
+    HAL_SYSTICK_IRQHandler();
+  }
+
   if (htim->Instance == TIM10)
   {
     DC_inc_main_tim_t_100ms();

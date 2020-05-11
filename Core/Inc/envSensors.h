@@ -27,6 +27,12 @@ extern "C" {
 #define ES_G_STANDARDGRAVITY                9.80665f
 #define ES_CELSIUS_TO_KELVIN(celc)          ((celc) + 273.15f)
 #define ES_RUG_COEFF                        ((ES_R_UNIVERSALGASCONSTANT)/((ES_U_AIRMOLARMASS)*(ES_G_STANDARDGRAVITY)))
+
+#define ES_ALTIKALMAN_STDDEV                0.1f
+#define ES_ALTIKALMAN_TIMEINTERVAL          0.2f
+#define ES_ALTIKALMAN_REG                   0.01f
+#define ES_ALTIKALMAN_V                     ((ES_ALTIKALMAN_REG)*(ES_ALTIKALMAN_STDDEV)*(ES_ALTIKALMAN_TIMEINTERVAL))
+#define ES_ALTIKALMAN_W                     ((ES_ALTIKALMAN_STDDEV)*(ES_ALTIKALMAN_STDDEV))
 /* END OF THE DEFINE AREA */
 
 
@@ -52,7 +58,8 @@ extern ES_SensorData_T sensorData;
 
 /* START OF THE FUNCTIONS PROTOTYPES AREA */
 void EnvSensors_Main(void);
-void EnvSensors_CalculateAltitude(float temperature, float pressure);
+float EnvSensors_CalculateAltitude(float temperature, float pressure);
+float EnvSensors_FilterAltitude(float calcAltitude);
 /* END OF THE FUNCTIONS PROTOTYPES AREA */
 
 

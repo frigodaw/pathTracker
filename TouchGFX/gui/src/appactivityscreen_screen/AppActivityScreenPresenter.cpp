@@ -316,14 +316,17 @@ void AppActivityScreenPresenter::CalculateAltitude(void)
     static uint8_t idx = APP_ALTI_INTERVAL;
     static float   lastDist[APP_ALTI_INTERVAL] = {0u};
     static float   lastAlti[APP_ALTI_INTERVAL] = {0u};
-    static float   lastDistMedian = activityData.distance;
-    static float   lastAltiMedian = sensorData.altitude;
+    static float   lastDistance = activityData.distance;
+    static float   lastAltitude = sensorData.altitude;
 
     if(APP_ALTI_INTERVAL == idx)
     {
         /* Local init */
-        memset(&lastDist, 0u, sizeof(activityData.distance));
-        memset(&lastAlti, 0u, sizeof(activityData.altitude));
+        for(uint8_t i=0u; i < APP_ALTI_INTERVAL; i++)
+        {
+            lastDist[i] = 0.f;
+            lastAlti[i] = sensorData.altitude;
+        }
         idx = 0u;
     }
 
@@ -331,11 +334,14 @@ void AppActivityScreenPresenter::CalculateAltitude(void)
     lastDist[idx] = activityData.distance;
     lastAlti[idx] = (uint16_t)sensorData.altitude;
 
-    float distMedian = MedianFromArray<float>(lastDist, APP_ALTI_INTERVAL);
-    float altiMedian = MedianFromArray<float>(lastAlti, APP_ALTI_INTERVAL);
+    //float currDistance = MedianFromArray<float>(lastDist, APP_ALTI_INTERVAL);
+    //float currAltitude = MedianFromArray<float>(lastAlti, APP_ALTI_INTERVAL);
 
-    float distDiff = distMedian - lastDistMedian;
-    float altiDiff = altiMedian - lastAltiMedian;
+    float currDistance = MeanFromArray(lastDist, APP_ALTI_INTERVAL);
+    float currAltitude = MeanFromArray(lastAlti, APP_ALTI_INTERVAL);
+
+    float distDiff = currDistance - lastDistance;
+    float altiDiff = currAltitude - lastAltitude;
 
     if(altiDiff >= 0)
     {
@@ -356,7 +362,7 @@ void AppActivityScreenPresenter::CalculateAltitude(void)
         }
     }
 
-    activityData.altitude = altiMedian;
+    activityData.altitude = currAltitude;
     activityData.altiMax = (activityData.altitude > activityData.altiMax) ? activityData.altitude : activityData.altiMax;
     activityData.slopeMax = (activityData.slope > activityData.slopeMax) ? activityData.slope : activityData.slopeMax;
 
@@ -370,8 +376,8 @@ void AppActivityScreenPresenter::CalculateAltitude(void)
         view.NotifySignalChanged_activityData_slopeMax(activityData.slopeMax);
     }
 
-    lastDistMedian = distMedian;
-    lastAltiMedian = altiMedian;
+    lastDistance = currDistance;
+    lastAltitude = currAltitude;
     idx = (idx >= (APP_ALTI_INTERVAL - 1u)) ? 0u : (idx + 1u);
 }
 
@@ -415,6 +421,20 @@ T AppActivityScreenPresenter::MedianFromArray(T* array, const uint8_t size)
     }
 
     return median;
+}
+
+/* Method called to sort array and return median value. */
+float AppActivityScreenPresenter::MeanFromArray(float* array, const uint8_t size)
+{
+    float mean = 0.f;
+
+    for(uint8_t i=0u; i < size; i++)
+    {
+        mean += array[i];
+    }
+    mean /= size;
+
+    return mean;
 }
 
 
