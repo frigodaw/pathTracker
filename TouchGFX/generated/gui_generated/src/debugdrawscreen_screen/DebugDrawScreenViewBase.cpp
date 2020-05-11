@@ -10,6 +10,8 @@ DebugDrawScreenViewBase::DebugDrawScreenViewBase() :
     buttonCallback(this, &DebugDrawScreenViewBase::buttonCallbackHandler)
 {
 
+    touchgfx::CanvasWidgetRenderer::setupBuffer(canvasBuffer, CANVAS_BUFFER_SIZE);
+
     BackgroundCC.setXY(0, 0);
 
     NextButton.setXY(180, 260);
@@ -25,10 +27,19 @@ DebugDrawScreenViewBase::DebugDrawScreenViewBase() :
     NameLabel.setLinespacing(0);
     NameLabel.setTypedText(touchgfx::TypedText(T_SINGLEUSEID63));
 
+    TestLine.setPosition(10, 55, 220, 185);
+    TestLinePainter.setColor(touchgfx::Color::getColorFrom24BitRGB(0, 0, 0));
+    TestLine.setPainter(TestLinePainter);
+    TestLine.setStart(0, 0);
+    TestLine.setEnd(50, 50);
+    TestLine.setLineWidth(2);
+    TestLine.setLineEndingStyle(touchgfx::Line::ROUND_CAP_ENDING);
+
     add(BackgroundCC);
     add(NextButton);
     add(DrawBox);
     add(NameLabel);
+    add(TestLine);
 }
 
 void DebugDrawScreenViewBase::setupScreen()

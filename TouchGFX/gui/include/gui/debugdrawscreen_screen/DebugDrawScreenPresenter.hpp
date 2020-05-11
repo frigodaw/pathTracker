@@ -6,6 +6,8 @@
 
 using namespace touchgfx;
 
+#define DEBUGDRAWSCREEN_MAIN_INTERVAL   500u
+
 class DebugDrawScreenView;
 
 class DebugDrawScreenPresenter : public touchgfx::Presenter, public ModelListener
@@ -15,6 +17,8 @@ public:
     ~DebugDrawScreenPresenter() {};
     void activate();
     void deactivate();
+
+    void Main(void);
 
 private:
     DebugDrawScreenPresenter();

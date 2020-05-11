@@ -18,7 +18,7 @@ using namespace touchgfx;
 #define APP_LATLON_PRECISION        6u
 #define APP_ALTI_PRECISION          1u
 #define APP_ALTI_FIRSTCALL          255u
-#define APP_ALTI_INTERVAL           7u
+#define APP_ALTI_INTERVAL           10u
 #define APP_ALTI_EVEN               2u
 #define APP_SLOPE_100PERCENT        100.f
 #define APP_SLOPE_MTOKM             1000.f
@@ -68,7 +68,7 @@ typedef enum
     APP_SCREEN_MAIN,
     APP_SCREEN_ALTI,
     //APP_SCREEN_ALTICHART,
-    //APP_SCREEN_MAP,
+    APP_SCREEN_MAP,
     //APP_SCREEN_SETTINGS
     APP_MAX_SCREENS
 }AppActivity_activeScreen_T;

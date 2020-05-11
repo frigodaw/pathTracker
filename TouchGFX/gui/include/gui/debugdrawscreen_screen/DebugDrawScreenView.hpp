@@ -11,6 +11,8 @@ public:
     ~DebugDrawScreenView() {}
     void setupScreen();
     void tearDownScreen();
+
+    void ResizeLine(void);
 protected:
 };
 

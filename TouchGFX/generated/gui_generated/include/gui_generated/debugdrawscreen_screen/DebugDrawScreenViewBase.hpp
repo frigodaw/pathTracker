@@ -11,6 +11,8 @@
 #include <touchgfx/widgets/ButtonWithIcon.hpp>
 #include <touchgfx/widgets/Box.hpp>
 #include <touchgfx/widgets/TextArea.hpp>
+#include <touchgfx/widgets/canvas/Line.hpp>
+#include <touchgfx/widgets/canvas/PainterRGB565.hpp>
 
 class DebugDrawScreenViewBase : public touchgfx::View<DebugDrawScreenPresenter>
 {
@@ -31,6 +33,8 @@ protected:
     touchgfx::ButtonWithIcon NextButton;
     touchgfx::Box DrawBox;
     touchgfx::TextArea NameLabel;
+    touchgfx::Line TestLine;
+    touchgfx::PainterRGB565 TestLinePainter;
 
 private:
 
@@ -44,6 +48,11 @@ private:
      */
     void buttonCallbackHandler(const touchgfx::AbstractButton& src);
 
+    /*
+     * Canvas Buffer Size
+     */
+    static const uint16_t CANVAS_BUFFER_SIZE = 3600;
+    uint8_t canvasBuffer[CANVAS_BUFFER_SIZE];
 };
 
 #endif // DEBUGDRAWSCREENVIEWBASE_HPP

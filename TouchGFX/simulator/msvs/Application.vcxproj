@@ -41,8 +41,6 @@
     <ClCompile Include="..\..\generated\gui_generated\src\containers\ScreenBackgroundContainerBase.cpp"/>
     <ClCompile Include="..\..\gui\src\containers\SDCardContainter.cpp"/>
     <ClCompile Include="..\..\generated\gui_generated\src\containers\SDCardContainterBase.cpp"/>
-    <ClCompile Include="..\..\gui\src\containers\ActivityDataContainter.cpp"/>
-    <ClCompile Include="..\..\generated\gui_generated\src\containers\ActivityDataContainterBase.cpp"/>
     <ClCompile Include="..\..\gui\src\appactivityscreen_screen\AppActivityScreenPresenter.cpp"/>
     <ClCompile Include="..\..\gui\src\appactivityscreen_screen\AppActivityScreenView.cpp"/>
     <ClCompile Include="..\..\generated\gui_generated\src\appactivityscreen_screen\AppActivityScreenViewBase.cpp"/>
@@ -55,6 +53,8 @@
     <ClCompile Include="..\..\generated\gui_generated\src\debugenvsensorsscreen_screen\DebugEnvSensorsScreenViewBase.cpp"/>
     <ClCompile Include="..\..\gui\src\containers\EnvSensorsContainter.cpp"/>
     <ClCompile Include="..\..\generated\gui_generated\src\containers\EnvSensorsContainterBase.cpp"/>
+    <ClCompile Include="..\..\gui\src\containers\ActivityDataContainter_Map.cpp"/>
+    <ClCompile Include="..\..\generated\gui_generated\src\containers\ActivityDataContainter_MapBase.cpp"/>
   </ItemGroup>
   <ItemGroup>
     <None Include="$(ApplicationRoot)\assets\texts\texts.xlsx"/>
@@ -223,8 +223,6 @@
     <ClInclude Include="..\..\generated\gui_generated\include\gui_generated\containers\ScreenBackgroundContainerBase.hpp"/>
     <ClInclude Include="..\..\gui\include\gui\containers\SDCardContainter.hpp"/>
     <ClInclude Include="..\..\generated\gui_generated\include\gui_generated\containers\SDCardContainterBase.hpp"/>
-    <ClInclude Include="..\..\gui\include\gui\containers\ActivityDataContainter.hpp"/>
-    <ClInclude Include="..\..\generated\gui_generated\include\gui_generated\containers\ActivityDataContainterBase.hpp"/>
     <ClInclude Include="..\..\gui\include\gui\appactivityscreen_screen\AppActivityScreenPresenter.hpp"/>
     <ClInclude Include="..\..\gui\include\gui\appactivityscreen_screen\AppActivityScreenView.hpp"/>
     <ClInclude Include="..\..\generated\gui_generated\include\gui_generated\appactivityscreen_screen\AppActivityScreenViewBase.hpp"/>
@@ -237,6 +235,8 @@
     <ClInclude Include="..\..\generated\gui_generated\include\gui_generated\debugenvsensorsscreen_screen\DebugEnvSensorsScreenViewBase.hpp"/>
     <ClInclude Include="..\..\gui\include\gui\containers\EnvSensorsContainter.hpp"/>
     <ClInclude Include="..\..\generated\gui_generated\include\gui_generated\containers\EnvSensorsContainterBase.hpp"/>
+    <ClInclude Include="..\..\gui\include\gui\containers\ActivityDataContainter_Map.hpp"/>
+    <ClInclude Include="..\..\generated\gui_generated\include\gui_generated\containers\ActivityDataContainter_MapBase.hpp"/>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="$(ApplicationRoot)\generated\simulator\touchgfx.rc"/>

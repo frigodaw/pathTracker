@@ -9,10 +9,15 @@ DebugDrawScreenPresenter::DebugDrawScreenPresenter(DebugDrawScreenView& v)
 
 void DebugDrawScreenPresenter::activate()
 {
-
+    model->MainPeriodFromPresenter(DEBUGDRAWSCREEN_MAIN_INTERVAL);
 }
 
 void DebugDrawScreenPresenter::deactivate()
 {
 
+}
+
+void DebugDrawScreenPresenter::Main(void)
+{
+    view.ResizeLine();
 }

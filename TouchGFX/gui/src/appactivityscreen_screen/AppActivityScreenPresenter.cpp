@@ -332,7 +332,7 @@ void AppActivityScreenPresenter::CalculateAltitude(void)
 
     /* Add new data to cyclic buffer */
     lastDist[idx] = activityData.distance;
-    lastAlti[idx] = (uint16_t)sensorData.altitude;
+    lastAlti[idx] = sensorData.altitude;
 
     //float currDistance = MedianFromArray<float>(lastDist, APP_ALTI_INTERVAL);
     //float currAltitude = MedianFromArray<float>(lastAlti, APP_ALTI_INTERVAL);

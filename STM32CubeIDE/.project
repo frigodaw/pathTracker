@@ -339,11 +339,6 @@
 			<locationURI>$%7BPARENT-1-PROJECT_LOC%7D/Middlewares/ST/STM32_USB_Device_Library/Core/Src/usbd_ioreq.c</locationURI>
 		</link>
 		<link>
-			<name>Application/User/generated/ActivityDataContainterBase.cpp</name>
-			<type>1</type>
-			<locationURI>$%7BPARENT-1-PROJECT_LOC%7D/TouchGFX/generated/gui_generated/src/containers/ActivityDataContainterBase.cpp</locationURI>
-		</link>
-		<link>
 			<name>Application/User/generated/ActivityDataContainter_AltiBase.cpp</name>
 			<type>1</type>
 			<locationURI>$%7BPARENT-1-PROJECT_LOC%7D/TouchGFX/generated/gui_generated/src/containers/ActivityDataContainter_AltiBase.cpp</locationURI>
@@ -352,6 +347,11 @@
 			<name>Application/User/generated/ActivityDataContainter_MainBase.cpp</name>
 			<type>1</type>
 			<locationURI>$%7BPARENT-1-PROJECT_LOC%7D/TouchGFX/generated/gui_generated/src/containers/ActivityDataContainter_MainBase.cpp</locationURI>
+		</link>
+		<link>
+			<name>Application/User/generated/ActivityDataContainter_MapBase.cpp</name>
+			<type>1</type>
+			<locationURI>$%7BPARENT-1-PROJECT_LOC%7D/TouchGFX/generated/gui_generated/src/containers/ActivityDataContainter_MapBase.cpp</locationURI>
 		</link>
 		<link>
 			<name>Application/User/generated/AppActivityScreenViewBase.cpp</name>
@@ -439,6 +439,11 @@
 			<locationURI>$%7BPARENT-1-PROJECT_LOC%7D/TouchGFX/generated/gui_generated/src/debugdrawscreen_screen/DebugDrawScreenViewBase.cpp</locationURI>
 		</link>
 		<link>
+			<name>Application/User/generated/DebugEnvSensorsScreenViewBase.cpp</name>
+			<type>1</type>
+			<locationURI>$%7BPARENT-1-PROJECT_LOC%7D/TouchGFX/generated/gui_generated/src/debugenvsensorsscreen_screen/DebugEnvSensorsScreenViewBase.cpp</locationURI>
+		</link>
+		<link>
 			<name>Application/User/generated/DebugGpsDataScreenViewBase.cpp</name>
 			<type>1</type>
 			<locationURI>$%7BPARENT-1-PROJECT_LOC%7D/TouchGFX/generated/gui_generated/src/debuggpsdatascreen_screen/DebugGpsDataScreenViewBase.cpp</locationURI>
@@ -447,6 +452,11 @@
 			<name>Application/User/generated/DebugSdCardScreenViewBase.cpp</name>
 			<type>1</type>
 			<locationURI>$%7BPARENT-1-PROJECT_LOC%7D/TouchGFX/generated/gui_generated/src/debugsdcardscreen_screen/DebugSdCardScreenViewBase.cpp</locationURI>
+		</link>
+		<link>
+			<name>Application/User/generated/EnvSensorsContainterBase.cpp</name>
+			<type>1</type>
+			<locationURI>$%7BPARENT-1-PROJECT_LOC%7D/TouchGFX/generated/gui_generated/src/containers/EnvSensorsContainterBase.cpp</locationURI>
 		</link>
 		<link>
 			<name>Application/User/generated/FontCache.cpp</name>
@@ -564,11 +574,6 @@
 			<locationURI>$%7BPARENT-1-PROJECT_LOC%7D/TouchGFX/generated/images/src/gps.cpp</locationURI>
 		</link>
 		<link>
-			<name>Application/User/gui/ActivityDataContainter.cpp</name>
-			<type>1</type>
-			<locationURI>$%7BPARENT-1-PROJECT_LOC%7D/TouchGFX/gui/src/containers/ActivityDataContainter.cpp</locationURI>
-		</link>
-		<link>
 			<name>Application/User/gui/ActivityDataContainter_Alti.cpp</name>
 			<type>1</type>
 			<locationURI>$%7BPARENT-1-PROJECT_LOC%7D/TouchGFX/gui/src/containers/ActivityDataContainter_Alti.cpp</locationURI>
@@ -577,6 +582,11 @@
 			<name>Application/User/gui/ActivityDataContainter_Main.cpp</name>
 			<type>1</type>
 			<locationURI>$%7BPARENT-1-PROJECT_LOC%7D/TouchGFX/gui/src/containers/ActivityDataContainter_Main.cpp</locationURI>
+		</link>
+		<link>
+			<name>Application/User/gui/ActivityDataContainter_Map.cpp</name>
+			<type>1</type>
+			<locationURI>$%7BPARENT-1-PROJECT_LOC%7D/TouchGFX/gui/src/containers/ActivityDataContainter_Map.cpp</locationURI>
 		</link>
 		<link>
 			<name>Application/User/gui/AppActivityScreenPresenter.cpp</name>
@@ -609,6 +619,16 @@
 			<locationURI>$%7BPARENT-1-PROJECT_LOC%7D/TouchGFX/gui/src/debugdrawscreen_screen/DebugDrawScreenView.cpp</locationURI>
 		</link>
 		<link>
+			<name>Application/User/gui/DebugEnvSensorsScreenPresenter.cpp</name>
+			<type>1</type>
+			<locationURI>$%7BPARENT-1-PROJECT_LOC%7D/TouchGFX/gui/src/debugenvsensorsscreen_screen/DebugEnvSensorsScreenPresenter.cpp</locationURI>
+		</link>
+		<link>
+			<name>Application/User/gui/DebugEnvSensorsScreenView.cpp</name>
+			<type>1</type>
+			<locationURI>$%7BPARENT-1-PROJECT_LOC%7D/TouchGFX/gui/src/debugenvsensorsscreen_screen/DebugEnvSensorsScreenView.cpp</locationURI>
+		</link>
+		<link>
 			<name>Application/User/gui/DebugGpsDataScreenPresenter.cpp</name>
 			<type>1</type>
 			<locationURI>$%7BPARENT-1-PROJECT_LOC%7D/TouchGFX/gui/src/debuggpsdatascreen_screen/DebugGpsDataScreenPresenter.cpp</locationURI>
@@ -627,6 +647,11 @@
 			<name>Application/User/gui/DebugSdCardScreenView.cpp</name>
 			<type>1</type>
 			<locationURI>$%7BPARENT-1-PROJECT_LOC%7D/TouchGFX/gui/src/debugsdcardscreen_screen/DebugSdCardScreenView.cpp</locationURI>
+		</link>
+		<link>
+			<name>Application/User/gui/EnvSensorsContainter.cpp</name>
+			<type>1</type>
+			<locationURI>$%7BPARENT-1-PROJECT_LOC%7D/TouchGFX/gui/src/containers/EnvSensorsContainter.cpp</locationURI>
 		</link>
 		<link>
 			<name>Application/User/gui/FrontendApplication.cpp</name>
@@ -737,31 +762,6 @@
 			<name>Application/User/TouchGFX/target/generated/TouchGFXGeneratedHAL.cpp</name>
 			<type>1</type>
 			<locationURI>$%7BPARENT-1-PROJECT_LOC%7D/TouchGFX/target/generated/TouchGFXGeneratedHAL.cpp</locationURI>
-		</link>
-		<link>
-			<name>Application/User/gui/EnvSensorsContainter.cpp</name>
-			<type>1</type>
-			<locationURI>$%7BPARENT-1-PROJECT_LOC%7D/TouchGFX/gui/src/containers/EnvSensorsContainter.cpp</locationURI>
-		</link>
-		<link>
-			<name>Application/User/gui/DebugEnvSensorsScreenPresenter.cpp</name>
-			<type>1</type>
-			<locationURI>$%7BPARENT-1-PROJECT_LOC%7D/TouchGFX/gui/src/debugenvsensorsscreen_screen/DebugEnvSensorsScreenPresenter.cpp</locationURI>
-		</link>
-		<link>
-			<name>Application/User/gui/DebugEnvSensorsScreenView.cpp</name>
-			<type>1</type>
-			<locationURI>$%7BPARENT-1-PROJECT_LOC%7D/TouchGFX/gui/src/debugenvsensorsscreen_screen/DebugEnvSensorsScreenView.cpp</locationURI>
-		</link>
-		<link>
-			<name>Application/User/generated/EnvSensorsContainterBase.cpp</name>
-			<type>1</type>
-			<locationURI>$%7BPARENT-1-PROJECT_LOC%7D/TouchGFX/generated/gui_generated/src/containers/EnvSensorsContainterBase.cpp</locationURI>
-		</link>
-		<link>
-			<name>Application/User/generated/DebugEnvSensorsScreenViewBase.cpp</name>
-			<type>1</type>
-			<locationURI>$%7BPARENT-1-PROJECT_LOC%7D/TouchGFX/generated/gui_generated/src/debugenvsensorsscreen_screen/DebugEnvSensorsScreenViewBase.cpp</locationURI>
 		</link>
 	</linkedResources>
 </projectDescription>

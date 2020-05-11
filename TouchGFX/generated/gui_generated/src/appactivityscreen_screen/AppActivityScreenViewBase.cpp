@@ -14,6 +14,9 @@ AppActivityScreenViewBase::AppActivityScreenViewBase() :
 
     BackgroundCC.setXY(0, 0);
 
+    ActivityDataCC_Map.setXY(0, 35);
+    ActivityDataCC_Map.setVisible(false);
+
     ActivityDataCC_Alti.setXY(0, 35);
     ActivityDataCC_Alti.setVisible(false);
 
@@ -48,6 +51,7 @@ AppActivityScreenViewBase::AppActivityScreenViewBase() :
     FixImage.setScalingAlgorithm(touchgfx::ScalableImage::NEAREST_NEIGHBOR);
 
     add(BackgroundCC);
+    add(ActivityDataCC_Map);
     add(ActivityDataCC_Alti);
     add(ActivityDataCC_Main);
     add(NameLabel);
@@ -61,6 +65,7 @@ AppActivityScreenViewBase::AppActivityScreenViewBase() :
 void AppActivityScreenViewBase::setupScreen()
 {
     BackgroundCC.initialize();
+    ActivityDataCC_Map.initialize();
     ActivityDataCC_Alti.initialize();
     ActivityDataCC_Main.initialize();
 }

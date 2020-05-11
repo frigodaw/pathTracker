@@ -37,6 +37,7 @@ void AppActivityScreenView::SetActivityDataScreen(AppActivity_activeScreen_T scr
 {
     ActivityDataCC_Main.setVisible(false);
     ActivityDataCC_Alti.setVisible(false);
+    ActivityDataCC_Map.setVisible(false);
 
     switch (screen)
     {
@@ -46,6 +47,9 @@ void AppActivityScreenView::SetActivityDataScreen(AppActivity_activeScreen_T scr
         case APP_SCREEN_ALTI:
             ActivityDataCC_Alti.setVisible(true);
             break;
+        case APP_SCREEN_MAP:
+            ActivityDataCC_Map.setVisible(true);
+            break;
         default:
             ActivityDataCC_Main.setVisible(true);
             break;
@@ -53,6 +57,7 @@ void AppActivityScreenView::SetActivityDataScreen(AppActivity_activeScreen_T scr
 
     ActivityDataCC_Main.invalidate();
     ActivityDataCC_Alti.invalidate();
+    ActivityDataCC_Map.invalidate();
 }
 
 void AppActivityScreenView::SetBitmapButton(const uint16_t bitmapId)

@@ -8,6 +8,7 @@
 #include <mvp/View.hpp>
 #include <gui/appactivityscreen_screen/AppActivityScreenPresenter.hpp>
 #include <gui/containers/ScreenBackgroundContainer.hpp>
+#include <gui/containers/ActivityDataContainter_Map.hpp>
 #include <gui/containers/ActivityDataContainter_Alti.hpp>
 #include <gui/containers/ActivityDataContainter_Main.hpp>
 #include <touchgfx/widgets/TextArea.hpp>
@@ -48,6 +49,7 @@ protected:
      * Member Declarations
      */
     ScreenBackgroundContainer BackgroundCC;
+    ActivityDataContainter_Map ActivityDataCC_Map;
     ActivityDataContainter_Alti ActivityDataCC_Alti;
     ActivityDataContainter_Main ActivityDataCC_Main;
     touchgfx::TextArea NameLabel;
