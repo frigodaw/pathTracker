@@ -22,6 +22,7 @@
         "stm32f4xx_hal_conf.h": "c",
         "cstdio": "cpp",
         "stdio.h": "c",
-        "*.rh": "c"
+        "*.rh": "c",
+        "cstdlib": "cpp"
     }
 }

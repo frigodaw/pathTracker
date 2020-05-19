@@ -9,6 +9,8 @@
 using namespace touchgfx;
 
 /* START OF THE DEFINE AREA */
+#define POW2(x)         ((x)*(x))
+
 #define APP_FILENAMEMAXLEN          32u
 #define APP_TIME_COEFF1             100u
 #define APP_TIME_COEFF2             10000u
@@ -30,17 +32,43 @@ using namespace touchgfx;
 #define APP_DISTANCE_COEFF_ANGLEHALF    180.f
 #define APP_DISTANCE_COEFF_KMTOM        1000.f
 #define APP_DISTANCE_COEFF_PI           3.14159f
+#define APP_DISTANCE_COEFF_TORAD        ((APP_DISTANCE_COEFF_PI)/(APP_DISTANCE_COEFF_ANGLEHALF))
+#define APP_DISTANCE_COEFF_TONUM        ((APP_DISTANCE_COEFF_PERIMETER)/(APP_DISTANCE_COEFF_ANGLEFULL))
 #define APP_DISTANCE_MAXVALUE_PERSEC    0.03f
 #define APP_SLOPE_MAXVALUE_PERSEC       60.f
 #define APP_DISTNACE_COEFF_POWER_TWO    2.f
 #define APP_SPEED_COEFF_PERIOD          1.f
-
 
 #define APP_MAINPERIOD_MS           100u
 #define APP_MS_IN_SEC               1000u
 #define APP_SEC_IN_HR               3600.f
 #define APP_MAX_CALL_COUNTER        ((APP_MS_IN_SEC)/(APP_MAINPERIOD_MS))
 #define APP_TIMER_COEFF_TOSEC       APP_MAX_CALL_COUNTER
+
+#define APP_TRACK_WINDOW_WIDTH_PX       230u
+#define APP_TRACK_WINDOW_HEIGHT_PX      225u
+#define APP_TRACK_WINDOW_MID_X          114u
+#define APP_TRACK_WINDOW_MID_Y          112u
+#define APP_TRACK_WINDOW_UPLEFT_X       0u
+#define APP_TRACK_WINDOW_UPLEFT_Y       0u
+#define APP_TRACK_WINDOW_UPRIGHT_X      (APP_TRACK_WINDOW_WIDTH_PX-1u)
+#define APP_TRACK_WINDOW_UPRIGHT_Y      0u
+#define APP_TRACK_WINDOW_BOTTOMLEFT_X   0u
+#define APP_TRACK_WINDOW_BOTTOMLEFT_Y   (APP_TRACK_WINDOW_HEIGHT_PX-1u)
+#define APP_TRACK_WINDOW_BOTTOMRIGHT_X  (APP_TRACK_WINDOW_WIDTH_PX-1u)
+#define APP_TRACK_WINDOW_BOTTOMRIGHT_Y  (APP_TRACK_WINDOW_HEIGHT_PX-1u)
+#define APP_TRACK_SCALE_WIDTH_PX        100u
+#define APP_TRACK_SCALE_COEFF_MINKM     1000u
+#define APP_TRACK_SCALE_50              50u
+#define APP_TRACK_SCALE_100             100u
+#define APP_TRACK_SCALE_500             500u
+#define APP_TRACK_SCALE_1000            1000u
+#define APP_TRACK_SCALE_ERROR           0u
+#define APP_TRACK_FILEOFFSET            183u
+#define APP_TRACK_FLOATBUFF_SIZE        32u
+#define APP_TRACK_FLOATBUFF_HALF        ((APP_TRACK_FLOATBUFF_SIZE)/(2u))
+
+
 /* END OF THE DEFINE AREA */
 
 
@@ -72,6 +100,23 @@ typedef enum
     //APP_SCREEN_SETTINGS
     APP_MAX_SCREENS
 }AppActivity_activeScreen_T;
+
+typedef enum
+{
+    APP_TRACK_SCALE50,
+    APP_TRACK_SCALE100,
+    APP_TRACK_SCALE500,
+    APP_TRACK_SCALE1000
+}AppActivity_trackScale_T;
+
+typedef enum
+{
+    APP_TRACK_LATSTART,
+    APP_TRACK_LATEND,
+    APP_TRACK_LONSTART,
+    APP_TRACK_LONEND,
+    APP_TRACK_FOUNDALL
+}AppActivity_trackCoordsFromBuffer_T;
 /* END OF THE ENUM AREA */
 
 
@@ -103,7 +148,7 @@ typedef struct
 typedef struct
 {
     char name[APP_FILENAMEMAXLEN];
-    uint16_t lines;
+    uint16_t points;
     AppActivity_fileStatus_T fileStatus;
     uint8_t errorStatus;
     void* filePtr;
@@ -142,6 +187,43 @@ typedef struct
     uint32_t frac;
     int16_t  sint;
 }AppActivity_floatToInt_T;
+
+typedef struct
+{
+    float lat;
+    float lon;
+}AppActivity_coordinatesGPS_T;
+
+typedef struct
+{
+    uint8_t X;
+    uint8_t Y;
+}AppActivity_coordinatesXY_T;
+
+typedef struct
+{
+    AppActivity_coordinatesGPS_T center;
+    AppActivity_coordinatesGPS_T upLeft;
+    AppActivity_coordinatesGPS_T upRight;
+    AppActivity_coordinatesGPS_T bottomLeft;
+    AppActivity_coordinatesGPS_T bottomRight;
+}AppActivity_mapCoordsGPS_T;
+
+typedef struct
+{
+    AppActivity_coordinatesXY_T center;
+    AppActivity_coordinatesXY_T upLeft;
+    AppActivity_coordinatesXY_T upRight;
+    AppActivity_coordinatesXY_T bottomLeft;
+    AppActivity_coordinatesXY_T bottomRight;
+}AppActivity_mapCoordsXY_T;
+
+typedef struct
+{
+    AppActivity_mapCoordsGPS_T mapCoordsGPS;
+    AppActivity_mapCoordsXY_T *mapCoordsXY;
+    AppActivity_trackScale_T scale;
+}AppActivity_trackData_T;
 /* END OF THE STRUCT AREA */
 
 
@@ -173,6 +255,14 @@ public:
     void UpdateAltitude(void);
     template <typename T> T MedianFromArray(T* array, const uint8_t size);
     float MeanFromArray(float* array, const uint8_t size);
+    void DrawTrack(void);
+    void MapCoordinates(void);
+    float MapScaleToDistance(AppActivity_trackScale_T scaleEnum);
+    AppActivity_coordinatesGPS_T MapXYCoordsToGPS(AppActivity_coordinatesXY_T coords, float scaleCoeff);
+    AppActivity_coordinatesGPS_T GetCoordsGPSFromBuffer(uint8_t* buffer, uint8_t size);
+    bool CoordsInView(AppActivity_coordinatesGPS_T coords);
+    AppActivity_coordinatesXY_T MapGPSCoordsToXY(AppActivity_coordinatesGPS_T coords);
+    float MapPointToLinearFunction(float x1, float y1, float x2, float y2, float X);
 
 
     void NotifySignalChanged_gpsData_latitude(float newLatitude);
@@ -197,6 +287,7 @@ private:
     AppActivity_fileInfo_T          fileInfo;
     AppActivity_activityData_T      activityData;
     AppActivity_appInternalData_T   appInternalData;
+    AppActivity_trackData_T         trackData;
 };
 
 #endif // APPACTIVITYSCREENPRESENTER_HPP

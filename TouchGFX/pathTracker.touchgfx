@@ -2592,7 +2592,7 @@
               "Green": 0,
               "Blue": 0
             },
-            "BorderSize": 2,
+            "BorderSize": 1,
             "Alpha": 255,
             "Name": "background",
             "X": 5,

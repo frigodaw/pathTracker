@@ -4,7 +4,15 @@
 
 AppActivityScreenView::AppActivityScreenView()
 {
+    Map.setXY(0, 35);
+    Map.setVisible(false);
+    Map.setWidth(240);
+    Map.setHeight(225);
+    Map.setColor(touchgfx::Color::getColorFrom24BitRGB(255, 255, 255));
+    Map.setBorderColor(touchgfx::Color::getColorFrom24BitRGB(0, 0, 0));
+    Map.setBorderSize(2);
 
+    add(Map);
 }
 
 void AppActivityScreenView::setupScreen()
@@ -38,6 +46,7 @@ void AppActivityScreenView::SetActivityDataScreen(AppActivity_activeScreen_T scr
     ActivityDataCC_Main.setVisible(false);
     ActivityDataCC_Alti.setVisible(false);
     ActivityDataCC_Map.setVisible(false);
+    Map.setVisible(false);
 
     switch (screen)
     {
@@ -48,7 +57,8 @@ void AppActivityScreenView::SetActivityDataScreen(AppActivity_activeScreen_T scr
             ActivityDataCC_Alti.setVisible(true);
             break;
         case APP_SCREEN_MAP:
-            ActivityDataCC_Map.setVisible(true);
+            //ActivityDataCC_Map.setVisible(true);
+            Map.setVisible(true);
             break;
         default:
             ActivityDataCC_Main.setVisible(true);
@@ -58,6 +68,7 @@ void AppActivityScreenView::SetActivityDataScreen(AppActivity_activeScreen_T scr
     ActivityDataCC_Main.invalidate();
     ActivityDataCC_Alti.invalidate();
     ActivityDataCC_Map.invalidate();
+    Map.invalidate();
 }
 
 void AppActivityScreenView::SetBitmapButton(const uint16_t bitmapId)
@@ -78,6 +89,14 @@ void AppActivityScreenView::ShowFixImage(bool isFix)
     }
     FixImage.invalidate();
 }
+
+
+void AppActivityScreenView::DrawLine(AppActivity_coordinatesXY_T coordsXY)
+{
+    Map.drawPixel(coordsXY.X, coordsXY.Y);
+    Map.invalidate();
+}
+
 
 void AppActivityScreenView::NotifySignalChanged_activityData_timer(uint32_t newTimer)
 {

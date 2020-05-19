@@ -173,7 +173,7 @@ int main(void)
   /* USER CODE BEGIN 2 */
   Gps_Init();
   Main_Init();
-  Main_SensorsInit();
+  //Main_SensorsInit();
   BSP_GYRO_Init();
   FS_Init();
   /* USER CODE END 2 */
@@ -1049,7 +1049,7 @@ void DefaultTask(void const * argument)
   for(;;)
   {
     FS_Main();
-    EnvSensors_Main();
+    //EnvSensors_Main();
     //BSP_GYRO_GetXYZ(gyro_xyz);
     DC_inc_main_cnt_c_defaultTask();
     osDelay(1000);

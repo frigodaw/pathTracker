@@ -5,7 +5,6 @@
 ******************************************************************************/
 
 #include "filesystem.h"
-#include "types.h"
 #include <string.h>
 #include <stdio.h>
 
@@ -118,7 +117,7 @@ uint8_t FS_OpenFile(FS_File_T** file, FS_FullPathType path, FS_fileMode mode)
             *file = &(files.in);
             break;
         case FS_MODEWRITE:
-            fileMode = FA_WRITE | FA_CREATE_ALWAYS;
+            fileMode = FA_READ | FA_WRITE | FA_CREATE_ALWAYS;
             *file = &(files.out);
             break;
         
@@ -230,15 +229,41 @@ uint8_t FS_RenameFile(FS_File_T** file, FS_FullPathType newPath)
 }
 
 
+/* Function called to move file pointer. */
+uint8_t FS_Lseek(FS_File_T** file, uint32_t offset)
+{
+    uint8_t retVal = RET_OK;
+    FRESULT fresult = FR_OK;
+
+    fresult |= f_lseek((FIL*)&(*file)->object, (FSIZE_t)offset);
+
+    if(FR_OK != fresult)
+    {
+        retVal = RET_NOK;
+    }
+
+    return retVal;
+}
+
+
 /* Function called to get one line from the file.
    It checks also whether there is more data to read. */
-uint8_t FS_ReadFile(FS_File_T* file, uint8_t *buff, uint16_t len)
+uint8_t FS_ReadFile(FS_File_T* file, uint8_t *buff, uint16_t len, boolean *isMoreLines)
 {
     memset(buff, 0u, len);
-    TCHAR* bytesRead = f_gets((TCHAR*)buff, len, &file->object);
-
-    file->isMoreLines = (bytesRead != NULL) ? TRUE : FALSE;
+    TCHAR* bytesRead = f_gets((TCHAR*)buff, (int)len, &file->object);
     file->lastLineNumber++;
+
+    if(bytesRead != NULL)
+    {
+        file->isMoreLines = TRUE;
+        *isMoreLines = TRUE;
+    }
+    else
+    {
+        file->isMoreLines = FALSE;
+        *isMoreLines = FALSE;
+    }
 
     return RET_OK;
 }

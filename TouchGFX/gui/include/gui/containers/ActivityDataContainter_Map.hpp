@@ -7,9 +7,10 @@ class ActivityDataContainter_Map : public ActivityDataContainter_MapBase
 {
 public:
     ActivityDataContainter_Map();
-    virtual ~ActivityDataContainter_Map() {}
+    ~ActivityDataContainter_Map() {}
+    void initialize();
 
-    virtual void initialize();
+    void DrawLine(float coordsX, float coordsY);
 protected:
 };
 

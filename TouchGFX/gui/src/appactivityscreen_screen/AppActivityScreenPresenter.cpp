@@ -8,6 +8,13 @@
 #include "dataCollector.h"
 
 
+
+static const AppActivity_mapCoordsXY_T mapCoordsXY = {{APP_TRACK_WINDOW_MID_X, APP_TRACK_WINDOW_MID_Y},
+                                                      {APP_TRACK_WINDOW_UPLEFT_X, APP_TRACK_WINDOW_UPLEFT_Y},
+                                                      {APP_TRACK_WINDOW_UPRIGHT_X, APP_TRACK_WINDOW_UPRIGHT_Y},
+                                                      {APP_TRACK_WINDOW_BOTTOMLEFT_X, APP_TRACK_WINDOW_BOTTOMLEFT_Y},
+                                                      {APP_TRACK_WINDOW_BOTTOMRIGHT_X, APP_TRACK_WINDOW_BOTTOMRIGHT_Y}};
+
 AppActivityScreenPresenter::AppActivityScreenPresenter(AppActivityScreenView& v)
     : view(v)
 {
@@ -15,6 +22,7 @@ AppActivityScreenPresenter::AppActivityScreenPresenter(AppActivityScreenView& v)
     memset(&appInternalData, 0u, sizeof(appInternalData));
     memset(&fileInfo, 0u, sizeof(fileInfo));
     memset(&gpsSignals, 0u, sizeof(gpsSignals));
+    memset(&trackData, 0u, sizeof(trackData));
 
     appInternalData.state = APP_STATE_INIT;
     appInternalData.screen = APP_SCREEN_MAIN;
@@ -24,6 +32,8 @@ AppActivityScreenPresenter::AppActivityScreenPresenter(AppActivityScreenView& v)
     appInternalData.callCounter = APP_MAX_CALL_COUNTER;
 
     fileInfo.fileStatus = APP_FILE_NOFILE;
+    trackData.scale = APP_TRACK_SCALE100;
+    trackData.mapCoordsXY = (AppActivity_mapCoordsXY_T*)&mapCoordsXY;
     SetBitmapButton(BITMAP_BLUE_ICONS_PLAY_32_ID);
 }
 
@@ -160,6 +170,8 @@ void AppActivityScreenPresenter::Main(void)
                     CalculateSpeedAndDistance();
 
                     CalculateAltitude();
+
+                    DrawTrack();
                 }
             }
         }
@@ -203,6 +215,13 @@ void AppActivityScreenPresenter::InsertDataIntoFile(void)
     ConvertFloatToInt(sensorData.altitude,  alt, APP_ALTI_PRECISION);
 
     snprintf((char*)buffer, APP_MAXFILEBUFFERSIZE,
+        "\t\t\t<trkpt lat=\"%d.%.*lu\" lon=\"%d.%.*lu\"><ele>%d.%.*lu</ele><time>20%.2d-%.2d-%.2dT%.2d:%.2d:%.2d.000Z</time></trkpt>\n",
+        lat.sint, APP_LATLON_PRECISION, lat.frac, lon.sint, APP_LATLON_PRECISION, lon.frac, alt.sint, APP_ALTI_PRECISION, alt.frac,
+        gpsSignals.dateYear, gpsSignals.dateMon, gpsSignals.dateDay, gpsSignals.timeHr, gpsSignals.timeMin, gpsSignals.timeSec);
+    fileInfo.errorStatus = FS_WriteFile((FS_File_T*)fileInfo.filePtr, (uint8_t*)buffer);
+
+#if 0   /* Default saving mode */
+    snprintf((char*)buffer, APP_MAXFILEBUFFERSIZE,
         "\t\t\t<trkpt lat=\"%d.%.*lu\" lon=\"%d.%.*lu\">\n"
         "\t\t\t\t<ele>%d.%.*lu</ele>\n",
         lat.sint, APP_LATLON_PRECISION, lat.frac, lon.sint, APP_LATLON_PRECISION, lon.frac, alt.sint, APP_ALTI_PRECISION, alt.frac);
@@ -213,7 +232,10 @@ void AppActivityScreenPresenter::InsertDataIntoFile(void)
         "\t\t\t\t<time>20%.2d-%.2d-%.2dT%.2d:%.2d:%.2d.000Z</time>\n"
         "\t\t\t</trkpt>\n",
         gpsSignals.dateYear, gpsSignals.dateMon, gpsSignals.dateDay, gpsSignals.timeHr, gpsSignals.timeMin, gpsSignals.timeSec);
-    fileInfo.errorStatus = FS_WriteFile((FS_File_T*)fileInfo.filePtr, buffer);
+    fileInfo.errorStatus = FS_WriteFile((FS_File_T*)fileInfo.filePtr, (uint8_t*)buffer);
+#endif
+
+    fileInfo.points++;
 }
 
 
@@ -283,9 +305,9 @@ void AppActivityScreenPresenter::CalculateSpeedAndDistance(void)
     }
     else
     {
-        float distance = sqrtf( powf( (gpsSignals.latitude - lastLat), APP_DISTNACE_COEFF_POWER_TWO ) + 
-                                powf( (cos(lastLat * APP_DISTANCE_COEFF_PI / APP_DISTANCE_COEFF_ANGLEHALF) * (gpsSignals.longitude - lastLon) ), APP_DISTNACE_COEFF_POWER_TWO ) ) *
-                            APP_DISTANCE_COEFF_PERIMETER/APP_DISTANCE_COEFF_ANGLEFULL;
+        float distance = sqrtf( POW2( (gpsSignals.latitude - lastLat) ) + 
+                                POW2( (cosf(lastLat * APP_DISTANCE_COEFF_TORAD) * (gpsSignals.longitude - lastLon) ) ) ) *
+                            APP_DISTANCE_COEFF_TONUM;
 
         /* To prevent calculation and data acquisition mistakes */
         if(appInternalData.maxDistancePerSecond > distance)
@@ -423,6 +445,7 @@ T AppActivityScreenPresenter::MedianFromArray(T* array, const uint8_t size)
     return median;
 }
 
+
 /* Method called to sort array and return median value. */
 float AppActivityScreenPresenter::MeanFromArray(float* array, const uint8_t size)
 {
@@ -476,6 +499,207 @@ void AppActivityScreenPresenter::UpdateAltitude(void)
             view.NotifySignalChanged_sensorData_altitude(sensorData.altitude);
         }
     }
+}
+
+
+/* Method called to draw track from points recorded and
+   saved in gpx file. */
+void AppActivityScreenPresenter::DrawTrack(void)
+{
+    MapCoordinates();
+
+    if(APP_SCREEN_MAP == appInternalData.screen)
+    {
+        uint8_t buffer[APP_MAXFILEBUFFERSIZE] = {0u};
+        AppActivity_coordinatesGPS_T coordsGPS = {0.f};
+        boolean isMoreLines = true;
+        bool coordsInView = false;
+        const uint8_t offset = APP_TRACK_FILEOFFSET;
+
+        uint8_t retVal = FS_Lseek((FS_File_T**)&fileInfo.filePtr, (uint32_t)offset);
+
+        if(RET_OK == retVal)
+        {
+            while(true == isMoreLines)
+            {
+                fileInfo.errorStatus = FS_ReadFile((FS_File_T*)fileInfo.filePtr, (uint8_t*)buffer, APP_MAXFILEBUFFERSIZE, &isMoreLines);
+                coordsGPS = GetCoordsGPSFromBuffer(buffer, APP_MAXFILEBUFFERSIZE);
+
+                coordsInView = CoordsInView(coordsGPS);
+
+                if(true == coordsInView)
+                {
+                    AppActivity_coordinatesXY_T coordsXY = MapGPSCoordsToXY(coordsGPS);
+                    view.DrawLine(coordsXY);
+                }
+            }
+        }
+    }
+}
+
+
+/* Function called to find gps coordinates
+   from file buffer. */
+AppActivity_coordinatesGPS_T AppActivityScreenPresenter::GetCoordsGPSFromBuffer(uint8_t* buffer, uint8_t size)
+{
+    AppActivity_coordinatesGPS_T coords = {0.f};
+    const char* wantedChar = "\"";
+
+    uint8_t latStart = 0u;
+    uint8_t latEnd   = 0u;
+    uint8_t lonStart = 0u;
+    uint8_t lonEnd   = 0u;
+    AppActivity_trackCoordsFromBuffer_T cnt = APP_TRACK_LATSTART;
+
+    for(uint8_t i=0u; i < size; i++)
+    {
+        if(buffer[i] == *wantedChar)
+        {
+            switch (cnt)
+            {
+                case APP_TRACK_LATSTART:
+                    latStart = i+1u;
+                    break;
+                case APP_TRACK_LATEND:
+                    latEnd = i-1u;
+                    break;
+                case APP_TRACK_LONSTART:
+                    lonStart = i+1u;
+                    break;
+                case APP_TRACK_LONEND:
+                    lonEnd = i-1u;
+                    break;
+                default:
+                    break;
+            }
+            cnt = (AppActivity_trackCoordsFromBuffer_T)(cnt + 1u);
+        }
+        if(APP_TRACK_FOUNDALL == cnt)
+        {
+            break;
+        }
+    }
+
+    if(APP_TRACK_FOUNDALL == cnt)
+    {
+        uint8_t floatBuff[APP_TRACK_FLOATBUFF_SIZE] = {0u};
+        memcpy (floatBuff, &buffer[latStart], latEnd-latStart+1u);
+        memcpy (&floatBuff[APP_TRACK_FLOATBUFF_HALF], &buffer[lonStart], lonEnd-lonStart+1u);
+        coords.lat = strtof((const char*)floatBuff, NULL);
+        coords.lon = strtof((const char*)&floatBuff[APP_TRACK_FLOATBUFF_HALF], NULL);
+    }
+
+    return coords;
+}
+
+
+/* Method called to check whether coordinates are in the visible
+   area on a display. */
+bool AppActivityScreenPresenter::CoordsInView(AppActivity_coordinatesGPS_T coords)
+{
+    bool isInView = false;
+
+    if((coords.lat < trackData.mapCoordsGPS.upLeft.lat)      && (coords.lon > trackData.mapCoordsGPS.upLeft.lon) &&
+       (coords.lat < trackData.mapCoordsGPS.upRight.lat)     && (coords.lon < trackData.mapCoordsGPS.upRight.lon) &&
+       (coords.lat > trackData.mapCoordsGPS.bottomLeft.lat)  && (coords.lon > trackData.mapCoordsGPS.bottomLeft.lon) &&
+       (coords.lat > trackData.mapCoordsGPS.bottomRight.lat) && (coords.lon < trackData.mapCoordsGPS.bottomRight.lon))
+    {
+        isInView = true;
+    }
+
+    return isInView;
+}
+
+
+/* Method called to find latitude and longitue to correspoinding
+   cornes of a display. */
+void AppActivityScreenPresenter::MapCoordinates(void)
+{
+    float scaleDistCoeff = MapScaleToDistance(trackData.scale);
+
+    trackData.mapCoordsGPS.center.lat = gpsSignals.latitude;
+    trackData.mapCoordsGPS.center.lon = gpsSignals.longitude;
+
+    trackData.mapCoordsGPS.upLeft = MapXYCoordsToGPS(trackData.mapCoordsXY->upLeft, scaleDistCoeff);
+    trackData.mapCoordsGPS.upRight = MapXYCoordsToGPS(trackData.mapCoordsXY->upRight, scaleDistCoeff);
+    trackData.mapCoordsGPS.bottomLeft = MapXYCoordsToGPS(trackData.mapCoordsXY->bottomLeft, scaleDistCoeff);
+    trackData.mapCoordsGPS.bottomRight = MapXYCoordsToGPS(trackData.mapCoordsXY->bottomRight, scaleDistCoeff);
+}
+
+
+/* Method called to map enum scale to corresponding value
+   in kilometers. */
+float AppActivityScreenPresenter::MapScaleToDistance(AppActivity_trackScale_T scaleEnum)
+{
+    float scaleDist = 0.f;
+
+    switch (scaleEnum)
+    {
+        case APP_TRACK_SCALE50:
+            scaleDist = APP_TRACK_SCALE_50;
+            break;
+        case APP_TRACK_SCALE100:
+            scaleDist = APP_TRACK_SCALE_100;
+            break;
+        case APP_TRACK_SCALE500:
+            scaleDist = APP_TRACK_SCALE_500;
+            break;
+        case APP_TRACK_SCALE1000:
+            scaleDist = APP_TRACK_SCALE_1000;
+            break;
+        default:
+            scaleDist = APP_TRACK_SCALE_ERROR;
+            break;
+    }
+
+    /* Scale to 1px per x km */
+    scaleDist /= (float)(APP_TRACK_SCALE_WIDTH_PX * APP_TRACK_SCALE_COEFF_MINKM);
+
+    return scaleDist;
+}
+
+
+/* Function called to map given XY coordinates to GPS ones. */
+AppActivity_coordinatesGPS_T AppActivityScreenPresenter::MapXYCoordsToGPS(AppActivity_coordinatesXY_T coords, float scaleCoeff)
+{
+    AppActivity_coordinatesGPS_T coordsGPS = {0.f};
+
+    float distX = ((trackData.mapCoordsXY->center.X - coords.X) * scaleCoeff) / (APP_DISTANCE_COEFF_TONUM * cosf(trackData.mapCoordsGPS.center.lat * APP_DISTANCE_COEFF_TORAD));
+    float distY = ((trackData.mapCoordsXY->center.Y - coords.Y) * scaleCoeff) / (APP_DISTANCE_COEFF_TONUM);
+
+    coordsGPS.lat = trackData.mapCoordsGPS.center.lat + distY;
+    coordsGPS.lon = trackData.mapCoordsGPS.center.lon - distX;
+
+    return coordsGPS;
+}
+
+
+/* Function called to map given GPS coordinates to XY ones. */
+AppActivity_coordinatesXY_T AppActivityScreenPresenter::MapGPSCoordsToXY(AppActivity_coordinatesGPS_T coords)
+{
+    AppActivity_coordinatesXY_T coordsXY = {0u};
+
+    coordsXY.X = MapPointToLinearFunction(trackData.mapCoordsGPS.upLeft.lon,  trackData.mapCoordsXY->upLeft.X,
+                                          trackData.mapCoordsGPS.upRight.lon, trackData.mapCoordsXY->upRight.X,
+                                          coords.lon);
+
+    coordsXY.Y = MapPointToLinearFunction(trackData.mapCoordsGPS.upLeft.lat,     trackData.mapCoordsXY->upLeft.Y,
+                                          trackData.mapCoordsGPS.bottomLeft.lat, trackData.mapCoordsXY->bottomLeft.Y,
+                                          coords.lat);
+
+    return coordsXY;
+}
+
+
+/* Method called to map point to linear function. 
+   To given X corresponding Y will be returned. */
+float AppActivityScreenPresenter::MapPointToLinearFunction(float x1, float y1, float x2, float y2, float X)
+{
+    float a = (y2-y1)/(x2-x1);
+    float b = (y1*x2 - x1*y2)/(x2-x1);
+    float Y = a*X + b;
+
+    return Y;
 }
 
 
