@@ -45,10 +45,10 @@ using namespace touchgfx;
 #define APP_MAX_CALL_COUNTER        ((APP_MS_IN_SEC)/(APP_MAINPERIOD_MS))
 #define APP_TIMER_COEFF_TOSEC       APP_MAX_CALL_COUNTER
 
-#define APP_TRACK_WINDOW_WIDTH_PX       230u
+#define APP_TRACK_WINDOW_WIDTH_PX       240u
 #define APP_TRACK_WINDOW_HEIGHT_PX      225u
-#define APP_TRACK_WINDOW_MID_X          114u
-#define APP_TRACK_WINDOW_MID_Y          112u
+#define APP_TRACK_WINDOW_MID_X          ((uint8_t)((APP_TRACK_WINDOW_WIDTH_PX)/(2u)))
+#define APP_TRACK_WINDOW_MID_Y          ((uint8_t)((APP_TRACK_WINDOW_HEIGHT_PX)/(2u)))
 #define APP_TRACK_WINDOW_UPLEFT_X       0u
 #define APP_TRACK_WINDOW_UPLEFT_Y       0u
 #define APP_TRACK_WINDOW_UPRIGHT_X      (APP_TRACK_WINDOW_WIDTH_PX-1u)

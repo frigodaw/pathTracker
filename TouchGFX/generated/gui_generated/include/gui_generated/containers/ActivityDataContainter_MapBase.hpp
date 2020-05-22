@@ -6,7 +6,6 @@
 
 #include <gui/common/FrontendApplication.hpp>
 #include <touchgfx/containers/Container.hpp>
-#include <touchgfx/widgets/BoxWithBorder.hpp>
 
 class ActivityDataContainter_MapBase : public touchgfx::Container
 {
@@ -19,11 +18,6 @@ protected:
     FrontendApplication& application() {
         return *static_cast<FrontendApplication*>(touchgfx::Application::getInstance());
     }
-
-    /*
-     * Member Declarations
-     */
-    touchgfx::BoxWithBorder background;
 
 private:
 

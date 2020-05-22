@@ -3,7 +3,6 @@
 
 #include <gui_generated/appactivityscreen_screen/AppActivityScreenViewBase.hpp>
 #include <gui/appactivityscreen_screen/AppActivityScreenPresenter.hpp>
-#include <touchgfx/widgets/Map.hpp>
 
 #define APP_ALPHA_FULLVISIBLE           255u
 #define APP_ALPHA_INVISIBLE             0u
@@ -22,7 +21,10 @@ public:
     void SetActivityDataScreen(AppActivity_activeScreen_T screen);
     void SetBitmapButton(const uint16_t bitmapId);
     void ShowFixImage(bool isFix);
-    void DrawLine(AppActivity_coordinatesXY_T coordsXY);
+
+    void FlushTrackList(void);
+    void AddCoordsToTrackList(AppActivity_coordinatesXY_T coordsXY);
+    void TrackRedraw(void);
 
     void NotifySignalChanged_gpsData_fixQuality(uint8_t newFixQuality);
     void NotifySignalChanged_activityData_timer(uint32_t newTimer);
@@ -39,7 +41,6 @@ public:
     void NotifySignalChanged_activityData_slopeMax(float newSlopeMax);
     void NotifySignalChanged_sensorData_altitude(float newAltitude);
 protected:
-    touchgfx::Map Map;
 };
 
 #endif // APPACTIVITYSCREENVIEW_HPP

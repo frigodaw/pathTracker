@@ -280,7 +280,7 @@ bool AppActivityScreenPresenter::IsFix(void)
         retVal = false;
     }
 
-    return retVal;
+    return true;
 }
 
 
@@ -520,6 +520,8 @@ void AppActivityScreenPresenter::DrawTrack(void)
 
         if(RET_OK == retVal)
         {
+            view.FlushTrackList();
+
             while(true == isMoreLines)
             {
                 fileInfo.errorStatus = FS_ReadFile((FS_File_T*)fileInfo.filePtr, (uint8_t*)buffer, APP_MAXFILEBUFFERSIZE, &isMoreLines);
@@ -530,9 +532,11 @@ void AppActivityScreenPresenter::DrawTrack(void)
                 if(true == coordsInView)
                 {
                     AppActivity_coordinatesXY_T coordsXY = MapGPSCoordsToXY(coordsGPS);
-                    view.DrawLine(coordsXY);
+                    view.AddCoordsToTrackList(coordsXY);
                 }
             }
+
+            view.TrackRedraw();
         }
     }
 }
