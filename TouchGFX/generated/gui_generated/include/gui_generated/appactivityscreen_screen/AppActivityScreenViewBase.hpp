@@ -40,6 +40,16 @@ public:
         // Override and implement this function in AppActivityScreen
     }
 
+    virtual void ZoomIn()
+    {
+        // Override and implement this function in AppActivityScreen
+    }
+
+    virtual void ZoomOut()
+    {
+        // Override and implement this function in AppActivityScreen
+    }
+
 protected:
     FrontendApplication& application() {
         return *static_cast<FrontendApplication*>(touchgfx::Application::getInstance());
@@ -55,7 +65,9 @@ protected:
     touchgfx::TextArea NameLabel;
     touchgfx::ButtonWithIcon ButtonForLabel;
     touchgfx::ButtonWithIcon NextButton;
+    touchgfx::ButtonWithIcon ZoomOutButton;
     touchgfx::ButtonWithIcon StartStopButton;
+    touchgfx::ButtonWithIcon ZoomInButton;
     touchgfx::ButtonWithIcon FinishButton;
     touchgfx::ScalableImage FixImage;
 

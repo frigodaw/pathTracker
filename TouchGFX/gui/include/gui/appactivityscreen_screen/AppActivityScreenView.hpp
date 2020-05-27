@@ -17,12 +17,15 @@ public:
 
     void StartStopActivity(void);
     void FinishActivity(void);
+    void ZoomIn(void);
+    void ZoomOut(void);
     void ChangeActivityDataCC(void);
     void SetActivityDataScreen(AppActivity_activeScreen_T screen);
     void SetBitmapButton(const uint16_t bitmapId);
     void ShowFixImage(bool isFix);
 
     void FlushTrackList(void);
+    void SetTrackScale(uint16_t scaleVal);
     void AddCoordsToTrackList(AppActivity_coordinatesXY_T coordsXY);
     void TrackRedraw(void);
 

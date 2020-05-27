@@ -27,6 +27,16 @@ void AppActivityScreenView::FinishActivity(void)
     presenter->FinishActivity();
 }
 
+void AppActivityScreenView::ZoomIn(void)
+{
+    presenter->ZoomIn();
+}
+
+void AppActivityScreenView::ZoomOut(void)
+{
+    presenter->ZoomOut();
+}
+
 void AppActivityScreenView::ChangeActivityDataCC(void)
 {
     presenter->ChangeActivityDataCC();
@@ -37,26 +47,42 @@ void AppActivityScreenView::SetActivityDataScreen(AppActivity_activeScreen_T scr
     ActivityDataCC_Main.setVisible(false);
     ActivityDataCC_Alti.setVisible(false);
     ActivityDataCC_Map.setVisible(false);
+    StartStopButton.setVisible(false);
+    FinishButton.setVisible(false);
+    ZoomInButton.setVisible(false);
+    ZoomOutButton.setVisible(false);
 
     switch (screen)
     {
         case APP_SCREEN_MAIN:
             ActivityDataCC_Main.setVisible(true);
+            StartStopButton.setVisible(true);
+            FinishButton.setVisible(true);
             break;
         case APP_SCREEN_ALTI:
             ActivityDataCC_Alti.setVisible(true);
+            StartStopButton.setVisible(true);
+            FinishButton.setVisible(true);
             break;
         case APP_SCREEN_MAP:
             ActivityDataCC_Map.setVisible(true);
+            ZoomInButton.setVisible(true);
+            ZoomOutButton.setVisible(true);
             break;
         default:
             ActivityDataCC_Main.setVisible(true);
+            StartStopButton.setVisible(true);
+            FinishButton.setVisible(true);
             break;
     }
 
     ActivityDataCC_Main.invalidate();
     ActivityDataCC_Alti.invalidate();
     ActivityDataCC_Map.invalidate();
+    StartStopButton.invalidate();
+    FinishButton.invalidate();
+    ZoomInButton.invalidate();
+    ZoomOutButton.invalidate();
 }
 
 void AppActivityScreenView::SetBitmapButton(const uint16_t bitmapId)
@@ -82,6 +108,12 @@ void AppActivityScreenView::ShowFixImage(bool isFix)
 void AppActivityScreenView::FlushTrackList(void)
 {
     ActivityDataCC_Map.FlushTrackList();
+}
+
+
+void AppActivityScreenView::SetTrackScale(uint16_t scaleVal)
+{
+    ActivityDataCC_Map.SetTrackScale(scaleVal);
 }
 
 

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <projectDescription>
 	<name>pathTracker</name>
-	<comment/>
+	<comment></comment>
 	<projects>
 	</projects>
 	<buildSpec>
@@ -459,6 +459,11 @@
 			<locationURI>$%7BPARENT-1-PROJECT_LOC%7D/TouchGFX/generated/gui_generated/src/containers/EnvSensorsContainterBase.cpp</locationURI>
 		</link>
 		<link>
+			<name>Application/User/generated/FixIcon.cpp</name>
+			<type>1</type>
+			<locationURI>$%7BPARENT-1-PROJECT_LOC%7D/TouchGFX/generated/images/src/FixIcon.cpp</locationURI>
+		</link>
+		<link>
 			<name>Application/User/generated/FontCache.cpp</name>
 			<type>1</type>
 			<locationURI>$%7BPARENT-1-PROJECT_LOC%7D/TouchGFX/generated/fonts/src/FontCache.cpp</locationURI>
@@ -574,9 +579,14 @@
 			<locationURI>$%7BPARENT-1-PROJECT_LOC%7D/TouchGFX/generated/texts/src/TypedTextDatabase.cpp</locationURI>
 		</link>
 		<link>
-			<name>Application/User/generated/gps.cpp</name>
+			<name>Application/User/generated/ZoomIn.cpp</name>
 			<type>1</type>
-			<locationURI>$%7BPARENT-1-PROJECT_LOC%7D/TouchGFX/generated/images/src/gps.cpp</locationURI>
+			<locationURI>$%7BPARENT-1-PROJECT_LOC%7D/TouchGFX/generated/images/src/ZoomIn.cpp</locationURI>
+		</link>
+		<link>
+			<name>Application/User/generated/ZoomOut.cpp</name>
+			<type>1</type>
+			<locationURI>$%7BPARENT-1-PROJECT_LOC%7D/TouchGFX/generated/images/src/ZoomOut.cpp</locationURI>
 		</link>
 		<link>
 			<name>Application/User/gui/ActivityDataContainter_Alti.cpp</name>

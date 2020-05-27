@@ -36,17 +36,27 @@ AppActivityScreenViewBase::AppActivityScreenViewBase() :
     NextButton.setIconXY(22, 15);
     NextButton.setAction(buttonCallback);
 
+    ZoomOutButton.setXY(90, 260);
+    ZoomOutButton.setBitmaps(touchgfx::Bitmap(BITMAP_BLUE_BUTTONS_ROUND_EDGE_ICON_BUTTON_ID), touchgfx::Bitmap(BITMAP_BLUE_BUTTONS_ROUND_EDGE_ICON_BUTTON_PRESSED_ID), touchgfx::Bitmap(BITMAP_ZOOMOUT_ID), touchgfx::Bitmap(BITMAP_ZOOMOUT_ID));
+    ZoomOutButton.setIconXY(16, 16);
+    ZoomOutButton.setAction(buttonCallback);
+
     StartStopButton.setXY(90, 260);
     StartStopButton.setBitmaps(touchgfx::Bitmap(BITMAP_BLUE_BUTTONS_ROUND_EDGE_ICON_BUTTON_ID), touchgfx::Bitmap(BITMAP_BLUE_BUTTONS_ROUND_EDGE_ICON_BUTTON_PRESSED_ID), touchgfx::Bitmap(BITMAP_BLUE_ICONS_PAUSE_32_ID), touchgfx::Bitmap(BITMAP_BLUE_ICONS_PAUSE_32_ID));
     StartStopButton.setIconXY(18, 15);
     StartStopButton.setAction(buttonCallback);
+
+    ZoomInButton.setXY(0, 260);
+    ZoomInButton.setBitmaps(touchgfx::Bitmap(BITMAP_BLUE_BUTTONS_ROUND_EDGE_ICON_BUTTON_ID), touchgfx::Bitmap(BITMAP_BLUE_BUTTONS_ROUND_EDGE_ICON_BUTTON_PRESSED_ID), touchgfx::Bitmap(BITMAP_ZOOMIN_ID), touchgfx::Bitmap(BITMAP_ZOOMIN_ID));
+    ZoomInButton.setIconXY(16, 16);
+    ZoomInButton.setAction(buttonCallback);
 
     FinishButton.setXY(0, 260);
     FinishButton.setBitmaps(touchgfx::Bitmap(BITMAP_BLUE_BUTTONS_ROUND_EDGE_ICON_BUTTON_ID), touchgfx::Bitmap(BITMAP_BLUE_BUTTONS_ROUND_EDGE_ICON_BUTTON_PRESSED_ID), touchgfx::Bitmap(BITMAP_BLUE_ICONS_STOP_32_ID), touchgfx::Bitmap(BITMAP_BLUE_ICONS_STOP_32_ID));
     FinishButton.setIconXY(15, 15);
     FinishButton.setAction(buttonCallback);
 
-    FixImage.setBitmap(touchgfx::Bitmap(BITMAP_GPS_ID));
+    FixImage.setBitmap(touchgfx::Bitmap(BITMAP_FIXICON_ID));
     FixImage.setPosition(210, 5, 25, 25);
     FixImage.setScalingAlgorithm(touchgfx::ScalableImage::NEAREST_NEIGHBOR);
 
@@ -57,7 +67,9 @@ AppActivityScreenViewBase::AppActivityScreenViewBase() :
     add(NameLabel);
     add(ButtonForLabel);
     add(NextButton);
+    add(ZoomOutButton);
     add(StartStopButton);
+    add(ZoomInButton);
     add(FinishButton);
     add(FixImage);
 }
@@ -79,12 +91,26 @@ void AppActivityScreenViewBase::buttonCallbackHandler(const touchgfx::AbstractBu
         //Call ChangeActivityDataCC
         ChangeActivityDataCC();
     }
+    else if (&src == &ZoomOutButton)
+    {
+        //ZoomOutMap
+        //When ZoomOutButton clicked call virtual function
+        //Call ZoomOut
+        ZoomOut();
+    }
     else if (&src == &StartStopButton)
     {
         //StartStopActivity
         //When StartStopButton clicked call virtual function
         //Call StartStopActivity
         StartStopActivity();
+    }
+    else if (&src == &ZoomInButton)
+    {
+        //ZoomInMap
+        //When ZoomInButton clicked call virtual function
+        //Call ZoomIn
+        ZoomIn();
     }
     else if (&src == &FinishButton)
     {

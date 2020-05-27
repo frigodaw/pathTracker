@@ -10,15 +10,15 @@ ScreenBackgroundContainerBase::ScreenBackgroundContainerBase() :
 {
     setWidth(240);
     setHeight(320);
-    background.setPosition(0, 0, 240, 320);
-    background.setColor(touchgfx::Color::getColorFrom24BitRGB(211, 236, 252));
+    Background.setPosition(0, 0, 240, 320);
+    Background.setColor(touchgfx::Color::getColorFrom24BitRGB(211, 236, 252));
 
     ExitButton.setXY(0, 260);
     ExitButton.setBitmaps(touchgfx::Bitmap(BITMAP_BLUE_BUTTONS_ROUND_EDGE_ICON_BUTTON_ID), touchgfx::Bitmap(BITMAP_BLUE_BUTTONS_ROUND_EDGE_ICON_BUTTON_PRESSED_ID), touchgfx::Bitmap(BITMAP_BLUE_ICONS_HOME_32_ID), touchgfx::Bitmap(BITMAP_BLUE_ICONS_HOME_32_ID));
     ExitButton.setIconXY(15, 16);
     ExitButton.setAction(buttonCallback);
 
-    add(background);
+    add(Background);
     add(ExitButton);
 }
 

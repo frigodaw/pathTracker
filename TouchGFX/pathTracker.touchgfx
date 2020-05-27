@@ -450,6 +450,29 @@
             "Pressed": "__designer\\Blue_Buttons_Round_Edge_icon_button_pressed.png",
             "Released": "__designer\\Blue_Buttons_Round_Edge_icon_button.png",
             "Alpha": 255,
+            "IconPressed": "ZoomOut.png",
+            "IconReleased": "ZoomOut.png",
+            "IconX": 16,
+            "IconY": 16,
+            "IconHeight": 29,
+            "IconWidth": 29,
+            "ButtonStyle": "Style1",
+            "Name": "ZoomOutButton",
+            "X": 90,
+            "Y": 260,
+            "Width": 60,
+            "Height": 60,
+            "Type": "ButtonWithIcon",
+            "Visible": true,
+            "Draggable": false,
+            "Clickable": false,
+            "Fadeable": false,
+            "Moveable": false
+          },
+          {
+            "Pressed": "__designer\\Blue_Buttons_Round_Edge_icon_button_pressed.png",
+            "Released": "__designer\\Blue_Buttons_Round_Edge_icon_button.png",
+            "Alpha": 255,
             "IconPressed": "__designer\\Blue_Icons_Pause_32.png",
             "IconReleased": "__designer\\Blue_Icons_Pause_32.png",
             "IconX": 18,
@@ -460,6 +483,29 @@
             "IconStyle": "Icon43",
             "Name": "StartStopButton",
             "X": 90,
+            "Y": 260,
+            "Width": 60,
+            "Height": 60,
+            "Type": "ButtonWithIcon",
+            "Visible": true,
+            "Draggable": false,
+            "Clickable": false,
+            "Fadeable": false,
+            "Moveable": false
+          },
+          {
+            "Pressed": "__designer\\Blue_Buttons_Round_Edge_icon_button_pressed.png",
+            "Released": "__designer\\Blue_Buttons_Round_Edge_icon_button.png",
+            "Alpha": 255,
+            "IconPressed": "ZoomIn.png",
+            "IconReleased": "ZoomIn.png",
+            "IconX": 16,
+            "IconY": 16,
+            "IconHeight": 29,
+            "IconWidth": 29,
+            "ButtonStyle": "Style1",
+            "Name": "ZoomInButton",
+            "X": 0,
             "Y": 260,
             "Width": 60,
             "Height": 60,
@@ -495,7 +541,7 @@
             "Moveable": false
           },
           {
-            "Filename": "gps.png",
+            "Filename": "FixIcon.png",
             "Alpha": 255,
             "ScalingAlgorithm": "Nearest-neighbor",
             "Name": "FixImage",
@@ -558,6 +604,30 @@
             },
             "Action": {
               "FunctionName": "ChangeActivityDataCC",
+              "Type": "ActionCustom"
+            }
+          },
+          {
+            "InteractionName": "ZoomInMap",
+            "HasCompletedTrigger": false,
+            "Trigger": {
+              "TriggerComponent": "ZoomInButton",
+              "Type": "TriggerClicked"
+            },
+            "Action": {
+              "FunctionName": "ZoomIn",
+              "Type": "ActionCustom"
+            }
+          },
+          {
+            "InteractionName": "ZoomOutMap",
+            "HasCompletedTrigger": false,
+            "Trigger": {
+              "TriggerComponent": "ZoomOutButton",
+              "Type": "TriggerClicked"
+            },
+            "Action": {
+              "FunctionName": "ZoomOut",
               "Type": "ActionCustom"
             }
           }
@@ -995,7 +1065,7 @@
               "Blue": 252
             },
             "Alpha": 255,
-            "Name": "background",
+            "Name": "Background",
             "X": 0,
             "Y": 0,
             "Width": 240,
@@ -2580,7 +2650,41 @@
         "Height": 225
       },
       {
-        "Components": [],
+        "Components": [
+          {
+            "TextId": "SingleUseId220",
+            "TextRotation": "0",
+            "Color": {
+              "Red": 0,
+              "Green": 0,
+              "Blue": 0
+            },
+            "Alpha": 255,
+            "AutoSize": false,
+            "LineSpacing": 0,
+            "Wildcard1": {
+              "TextId": "SingleUseId222",
+              "UseBuffer": true,
+              "BufferSize": 8
+            },
+            "Wildcard2": {
+              "TextId": "SingleUseId221",
+              "UseBuffer": true,
+              "BufferSize": 4
+            },
+            "Name": "ScaleTextBox",
+            "X": 0,
+            "Y": 195,
+            "Width": 240,
+            "Height": 20,
+            "Type": "TextArea",
+            "Visible": true,
+            "Draggable": false,
+            "Clickable": false,
+            "Fadeable": false,
+            "Moveable": false
+          }
+        ],
         "Interactions": [],
         "Name": "ActivityDataContainter_Map",
         "X": 0,
@@ -3216,6 +3320,18 @@
       },
       {
         "TextEntryId": "SingleUseId219",
+        "IsResource": false
+      },
+      {
+        "TextEntryId": "SingleUseId220",
+        "IsResource": false
+      },
+      {
+        "TextEntryId": "SingleUseId221",
+        "IsResource": false
+      },
+      {
+        "TextEntryId": "SingleUseId222",
         "IsResource": false
       }
     ],

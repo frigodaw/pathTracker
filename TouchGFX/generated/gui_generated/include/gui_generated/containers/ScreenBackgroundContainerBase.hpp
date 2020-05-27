@@ -24,7 +24,7 @@ protected:
     /*
      * Member Declarations
      */
-    touchgfx::Box background;
+    touchgfx::Box Background;
     touchgfx::ButtonWithIcon ExitButton;
 
 private:

@@ -7,7 +7,8 @@
 #include "filesystem.h"
 #include "dataCollector.h"
 
-
+uint32_t timeDiff = 0u;
+uint32_t timeMaxDiff = 0u;
 
 static const AppActivity_mapCoordsXY_T mapCoordsXY = {{APP_TRACK_WINDOW_MID_X, APP_TRACK_WINDOW_MID_Y},
                                                       {APP_TRACK_WINDOW_UPLEFT_X, APP_TRACK_WINDOW_UPLEFT_Y},
@@ -39,8 +40,12 @@ AppActivityScreenPresenter::AppActivityScreenPresenter(AppActivityScreenView& v)
 
 void AppActivityScreenPresenter::activate()
 {
+    uint16_t scaleVal = GetScaleValue(trackData.scale);
+    view.SetTrackScale(scaleVal);
+
     model->SignalRequestFromPresenter();
     model->MainPeriodFromPresenter(appInternalData.mainTimePeriod);
+
     appInternalData.state = APP_STATE_READY;
 }
 
@@ -155,24 +160,24 @@ void AppActivityScreenPresenter::Main(void)
         {
             IncrementTimer();
 
-            /* Insert data to file only if fix is present */
-            if(true == IsFix())
+            appInternalData.callCounter++;
+
+            /* This parts of code executes every 1 second */
+            if(appInternalData.callCounter >= APP_MAX_CALL_COUNTER)
             {
-                appInternalData.callCounter++;
+                appInternalData.callCounter = 0u;
 
-                /* This parts of code executes every 1 second */
-                if(appInternalData.callCounter >= APP_MAX_CALL_COUNTER)
+                 /* Gps related method can execute only if signal is fixed */
+                if(true == IsFix())
                 {
-                    appInternalData.callCounter = 0u;
-
                     InsertDataIntoFile();
 
                     CalculateSpeedAndDistance();
-
-                    CalculateAltitude();
-
-                    DrawTrack();
                 }
+
+                CalculateAltitude();
+
+                DrawTrack();
             }
         }
     }
@@ -214,13 +219,14 @@ void AppActivityScreenPresenter::InsertDataIntoFile(void)
     ConvertFloatToInt(gpsSignals.longitude, lon, APP_LATLON_PRECISION);
     ConvertFloatToInt(sensorData.altitude,  alt, APP_ALTI_PRECISION);
 
+#ifdef APP_GPXFILE_SHORTMODE
     snprintf((char*)buffer, APP_MAXFILEBUFFERSIZE,
         "\t\t\t<trkpt lat=\"%d.%.*lu\" lon=\"%d.%.*lu\"><ele>%d.%.*lu</ele><time>20%.2d-%.2d-%.2dT%.2d:%.2d:%.2d.000Z</time></trkpt>\n",
         lat.sint, APP_LATLON_PRECISION, lat.frac, lon.sint, APP_LATLON_PRECISION, lon.frac, alt.sint, APP_ALTI_PRECISION, alt.frac,
         gpsSignals.dateYear, gpsSignals.dateMon, gpsSignals.dateDay, gpsSignals.timeHr, gpsSignals.timeMin, gpsSignals.timeSec);
     fileInfo.errorStatus = FS_WriteFile((FS_File_T*)fileInfo.filePtr, (uint8_t*)buffer);
 
-#if 0   /* Default saving mode */
+#else   /* Default saving mode */
     snprintf((char*)buffer, APP_MAXFILEBUFFERSIZE,
         "\t\t\t<trkpt lat=\"%d.%.*lu\" lon=\"%d.%.*lu\">\n"
         "\t\t\t\t<ele>%d.%.*lu</ele>\n",
@@ -280,7 +286,7 @@ bool AppActivityScreenPresenter::IsFix(void)
         retVal = false;
     }
 
-    return true;
+    return retVal;
 }
 
 
@@ -467,6 +473,11 @@ void AppActivityScreenPresenter::IncrementTimer(void)
 {
     uint32_t newTime = DC_get_main_tim_t_100ms();
 
+    uint32_t diff = newTime - appInternalData.lastTime;
+
+    timeDiff = diff;
+    timeMaxDiff = (diff > timeMaxDiff) ? diff : timeMaxDiff;
+
     activityData.timer += newTime - appInternalData.lastTime;
     appInternalData.lastTime = newTime;
 
@@ -512,21 +523,28 @@ void AppActivityScreenPresenter::DrawTrack(void)
     {
         uint8_t buffer[APP_MAXFILEBUFFERSIZE] = {0u};
         AppActivity_coordinatesGPS_T coordsGPS = {0.f};
+        uint32_t offset = 0u;
+        uint16_t scaleVal = 0u;
+        uint8_t readLines = 0u;
+        uint8_t retVal = RET_OK;
         boolean isMoreLines = true;
         bool coordsInView = false;
-        const uint8_t offset = APP_TRACK_FILEOFFSET;
 
-        uint8_t retVal = FS_Lseek((FS_File_T**)&fileInfo.filePtr, (uint32_t)offset);
+        offset = CalculateFileOffset(fileInfo.points);
+        scaleVal = GetScaleValue(trackData.scale);
+        retVal = FS_Lseek((FS_File_T**)&fileInfo.filePtr, offset);
 
         if(RET_OK == retVal)
         {
             view.FlushTrackList();
+            view.SetTrackScale(scaleVal);
 
-            while(true == isMoreLines)
+            while((true == isMoreLines) && (APP_TRACK_FILE_READLINES > readLines))
             {
                 fileInfo.errorStatus = FS_ReadFile((FS_File_T*)fileInfo.filePtr, (uint8_t*)buffer, APP_MAXFILEBUFFERSIZE, &isMoreLines);
-                coordsGPS = GetCoordsGPSFromBuffer(buffer, APP_MAXFILEBUFFERSIZE);
+                readLines++;
 
+                coordsGPS = GetCoordsGPSFromBuffer(buffer, APP_MAXFILEBUFFERSIZE);
                 coordsInView = CoordsInView(coordsGPS);
 
                 if(true == coordsInView)
@@ -538,6 +556,8 @@ void AppActivityScreenPresenter::DrawTrack(void)
 
             view.TrackRedraw();
         }
+
+        retVal = FS_LseekEnd((FS_File_T**)&fileInfo.filePtr);
     }
 }
 
@@ -615,8 +635,8 @@ bool AppActivityScreenPresenter::CoordsInView(AppActivity_coordinatesGPS_T coord
 }
 
 
-/* Method called to find latitude and longitue to correspoinding
-   cornes of a display. */
+/* Method called to find latitude and longitude to corresponding
+   corners of a display. */
 void AppActivityScreenPresenter::MapCoordinates(void)
 {
     float scaleDistCoeff = MapScaleToDistance(trackData.scale);
@@ -631,30 +651,39 @@ void AppActivityScreenPresenter::MapCoordinates(void)
 }
 
 
-/* Method called to map enum scale to corresponding value
-   in kilometers. */
-float AppActivityScreenPresenter::MapScaleToDistance(AppActivity_trackScale_T scaleEnum)
+/* Function called to get scale value from enum indicator. */
+uint16_t AppActivityScreenPresenter::GetScaleValue(AppActivity_trackScale_T scaleEnum)
 {
-    float scaleDist = 0.f;
+    uint16_t scaleVal = 0u;
 
     switch (scaleEnum)
     {
         case APP_TRACK_SCALE50:
-            scaleDist = APP_TRACK_SCALE_50;
+            scaleVal = APP_TRACK_SCALE_50;
             break;
         case APP_TRACK_SCALE100:
-            scaleDist = APP_TRACK_SCALE_100;
+            scaleVal = APP_TRACK_SCALE_100;
             break;
         case APP_TRACK_SCALE500:
-            scaleDist = APP_TRACK_SCALE_500;
+            scaleVal = APP_TRACK_SCALE_500;
             break;
         case APP_TRACK_SCALE1000:
-            scaleDist = APP_TRACK_SCALE_1000;
+            scaleVal = APP_TRACK_SCALE_1000;
             break;
         default:
-            scaleDist = APP_TRACK_SCALE_ERROR;
+            scaleVal = APP_TRACK_SCALE_ERROR;
             break;
     }
+
+    return scaleVal;
+}
+
+
+/* Method called to map enum scale to corresponding value
+   in kilometers. */
+float AppActivityScreenPresenter::MapScaleToDistance(AppActivity_trackScale_T scaleEnum)
+{
+    float scaleDist = (float)GetScaleValue(scaleEnum);
 
     /* Scale to 1px per x km */
     scaleDist /= (float)(APP_TRACK_SCALE_WIDTH_PX * APP_TRACK_SCALE_COEFF_MINKM);
@@ -706,6 +735,33 @@ float AppActivityScreenPresenter::MapPointToLinearFunction(float x1, float y1, f
     return Y;
 }
 
+
+/* Method called to change scale on map to zoom in. */
+void AppActivityScreenPresenter::ZoomIn(void)
+{
+    trackData.scale = (trackData.scale > APP_TRACK_SCALE50) ? (AppActivity_trackScale_T)(trackData.scale - 1u) : APP_TRACK_SCALE50;
+}
+
+
+/* Method called to change scale on map to zoom out. */
+void AppActivityScreenPresenter::ZoomOut(void)
+{
+    trackData.scale = ((trackData.scale + 1u) < APP_TRACK_MAX_SCALE) ? (AppActivity_trackScale_T)(trackData.scale + 1u) : (AppActivity_trackScale_T)(APP_TRACK_MAX_SCALE - 1u);
+}
+
+
+/* Method called to calculate a number of bytes to move track file pointer. */
+uint32_t AppActivityScreenPresenter::CalculateFileOffset(uint16_t points)
+{
+    uint32_t offset = APP_TRACK_FILE_HEADEROFFSET;
+
+    if(points > APP_TRACK_FILE_READLINES)
+    {
+        offset += (points - APP_TRACK_FILE_READLINES) * APP_TRACK_FILE_DATAOFFSET;
+    }
+
+    return offset;
+}
 
 /* Method called to collect signals from Model:
     - latitude

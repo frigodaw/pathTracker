@@ -11,6 +11,8 @@ using namespace touchgfx;
 /* START OF THE DEFINE AREA */
 #define POW2(x)         ((x)*(x))
 
+#define APP_GPXFILE_SHORTMODE
+
 #define APP_FILENAMEMAXLEN          32u
 #define APP_TIME_COEFF1             100u
 #define APP_TIME_COEFF2             10000u
@@ -64,11 +66,12 @@ using namespace touchgfx;
 #define APP_TRACK_SCALE_500             500u
 #define APP_TRACK_SCALE_1000            1000u
 #define APP_TRACK_SCALE_ERROR           0u
-#define APP_TRACK_FILEOFFSET            183u
 #define APP_TRACK_FLOATBUFF_SIZE        32u
 #define APP_TRACK_FLOATBUFF_HALF        ((APP_TRACK_FLOATBUFF_SIZE)/(2u))
 
-
+#define APP_TRACK_FILE_HEADEROFFSET     180u
+#define APP_TRACK_FILE_DATAOFFSET       101u
+#define APP_TRACK_FILE_READLINES        32u
 /* END OF THE DEFINE AREA */
 
 
@@ -106,7 +109,9 @@ typedef enum
     APP_TRACK_SCALE50,
     APP_TRACK_SCALE100,
     APP_TRACK_SCALE500,
-    APP_TRACK_SCALE1000
+    APP_TRACK_SCALE1000,
+    //APP_TRACK_SCALEFULL,
+    APP_TRACK_MAX_SCALE
 }AppActivity_trackScale_T;
 
 typedef enum
@@ -149,8 +154,8 @@ typedef struct
 {
     char name[APP_FILENAMEMAXLEN];
     uint16_t points;
-    AppActivity_fileStatus_T fileStatus;
     uint8_t errorStatus;
+    AppActivity_fileStatus_T fileStatus;
     void* filePtr;
 }AppActivity_fileInfo_T;
 
@@ -240,6 +245,8 @@ public:
     void Main(void);
     void StartStopActivity(void);
     void FinishActivity(void);
+    void ZoomIn(void);
+    void ZoomOut(void);
     void ChangeActivityDataCC(void);
     void SetBitmapButton(const uint16_t bitmapId);
     void InitActivity(void);
@@ -257,12 +264,14 @@ public:
     float MeanFromArray(float* array, const uint8_t size);
     void DrawTrack(void);
     void MapCoordinates(void);
+    uint16_t GetScaleValue(AppActivity_trackScale_T scaleEnum);
     float MapScaleToDistance(AppActivity_trackScale_T scaleEnum);
     AppActivity_coordinatesGPS_T MapXYCoordsToGPS(AppActivity_coordinatesXY_T coords, float scaleCoeff);
     AppActivity_coordinatesGPS_T GetCoordsGPSFromBuffer(uint8_t* buffer, uint8_t size);
     bool CoordsInView(AppActivity_coordinatesGPS_T coords);
     AppActivity_coordinatesXY_T MapGPSCoordsToXY(AppActivity_coordinatesGPS_T coords);
     float MapPointToLinearFunction(float x1, float y1, float x2, float y2, float X);
+    uint32_t CalculateFileOffset(uint16_t points);
 
 
     void NotifySignalChanged_gpsData_latitude(float newLatitude);

@@ -235,7 +235,31 @@ uint8_t FS_Lseek(FS_File_T** file, uint32_t offset)
     uint8_t retVal = RET_OK;
     FRESULT fresult = FR_OK;
 
-    fresult |= f_lseek((FIL*)&(*file)->object, (FSIZE_t)offset);
+    if(offset > 0)
+    {
+        fresult |= f_lseek((FIL*)&(*file)->object, (FSIZE_t)offset);
+    }
+
+    if(FR_OK != fresult)
+    {
+        retVal = RET_NOK;
+    }
+
+    return retVal;
+}
+
+
+/* Function called to move file pointer to the very end of file. */
+uint8_t FS_LseekEnd(FS_File_T** file)
+{
+    uint8_t retVal = RET_OK;
+    FRESULT fresult = FR_OK;
+    FSIZE_t offset = (*file)->object.obj.objsize;
+
+    if(offset > 0)
+    {
+        fresult |= f_lseek((FIL*)&(*file)->object, (FSIZE_t)offset);
+    }
 
     if(FR_OK != fresult)
     {
