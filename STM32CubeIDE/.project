@@ -419,24 +419,9 @@
 			<locationURI>$%7BPARENT-1-PROJECT_LOC%7D/TouchGFX/generated/images/src/__designer/Blue_Icons_Stop_32.cpp</locationURI>
 		</link>
 		<link>
-			<name>Application/User/generated/Blue_PageIndicator_dot_indicator_small_highlight.cpp</name>
-			<type>1</type>
-			<locationURI>$%7BPARENT-1-PROJECT_LOC%7D/TouchGFX/generated/images/src/__designer/Blue_PageIndicator_dot_indicator_small_highlight.cpp</locationURI>
-		</link>
-		<link>
-			<name>Application/User/generated/Blue_PageIndicator_dot_indicator_small_normal.cpp</name>
-			<type>1</type>
-			<locationURI>$%7BPARENT-1-PROJECT_LOC%7D/TouchGFX/generated/images/src/__designer/Blue_PageIndicator_dot_indicator_small_normal.cpp</locationURI>
-		</link>
-		<link>
 			<name>Application/User/generated/CachedFont.cpp</name>
 			<type>1</type>
 			<locationURI>$%7BPARENT-1-PROJECT_LOC%7D/TouchGFX/generated/fonts/src/CachedFont.cpp</locationURI>
-		</link>
-		<link>
-			<name>Application/User/generated/DebugDrawScreenViewBase.cpp</name>
-			<type>1</type>
-			<locationURI>$%7BPARENT-1-PROJECT_LOC%7D/TouchGFX/generated/gui_generated/src/debugdrawscreen_screen/DebugDrawScreenViewBase.cpp</locationURI>
 		</link>
 		<link>
 			<name>Application/User/generated/DebugEnvSensorsScreenViewBase.cpp</name>
@@ -544,6 +529,11 @@
 			<locationURI>$%7BPARENT-1-PROJECT_LOC%7D/TouchGFX/generated/gui_generated/src/containers/ScreenBackgroundContainerBase.cpp</locationURI>
 		</link>
 		<link>
+			<name>Application/User/generated/SdCardIcon.cpp</name>
+			<type>1</type>
+			<locationURI>$%7BPARENT-1-PROJECT_LOC%7D/TouchGFX/generated/images/src/SdCardIcon.cpp</locationURI>
+		</link>
+		<link>
 			<name>Application/User/generated/StartScreenViewBase.cpp</name>
 			<type>1</type>
 			<locationURI>$%7BPARENT-1-PROJECT_LOC%7D/TouchGFX/generated/gui_generated/src/startscreen_screen/StartScreenViewBase.cpp</locationURI>
@@ -622,16 +612,6 @@
 			<name>Application/User/gui/AppMenuScreenView.cpp</name>
 			<type>1</type>
 			<locationURI>$%7BPARENT-1-PROJECT_LOC%7D/TouchGFX/gui/src/appmenuscreen_screen/AppMenuScreenView.cpp</locationURI>
-		</link>
-		<link>
-			<name>Application/User/gui/DebugDrawScreenPresenter.cpp</name>
-			<type>1</type>
-			<locationURI>$%7BPARENT-1-PROJECT_LOC%7D/TouchGFX/gui/src/debugdrawscreen_screen/DebugDrawScreenPresenter.cpp</locationURI>
-		</link>
-		<link>
-			<name>Application/User/gui/DebugDrawScreenView.cpp</name>
-			<type>1</type>
-			<locationURI>$%7BPARENT-1-PROJECT_LOC%7D/TouchGFX/gui/src/debugdrawscreen_screen/DebugDrawScreenView.cpp</locationURI>
 		</link>
 		<link>
 			<name>Application/User/gui/DebugEnvSensorsScreenPresenter.cpp</name>

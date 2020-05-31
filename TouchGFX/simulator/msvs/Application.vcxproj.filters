@@ -196,12 +196,6 @@
     <Filter Include="Source Files\gui\debugdrawscreen_screen">
       <UniqueIdentifier>B9B0B757-7304-C5CC-8B93-8E2CD03ACA9C</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\generated\gui_generated\debugdrawscreen_screen">
-      <UniqueIdentifier>3079704A-B922-2395-2C96-EC08B638F7EF</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\generated\gui_generated\debugdrawscreen_screen">
-      <UniqueIdentifier>14828775-7BE9-F6FC-8668-DD6DB3B0752F</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source Files\generated\gui_generated\debuggpsdatascreen_screen">
       <UniqueIdentifier>4183A9D7-8047-889F-5F6F-450E8718157F</UniqueIdentifier>
     </Filter>
@@ -308,9 +302,6 @@
     </ClCompile>
     <ClCompile Include="..\..\gui\src\debugdrawscreen_screen\DebugDrawScreenView.cpp">
       <Filter>Source Files\gui\debugdrawscreen_screen</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\generated\gui_generated\src\debugdrawscreen_screen\DebugDrawScreenViewBase.cpp">
-      <Filter>Source Files\generated\gui_generated\debugdrawscreen_screen</Filter>
     </ClCompile>
     <ClCompile Include="..\..\gui\src\debuggpsdatascreen_screen\DebugGpsDataScreenPresenter.cpp">
       <Filter>Source Files\gui\debuggpsdatascreen_screen</Filter>
@@ -846,9 +837,6 @@
     </ClInclude>
     <ClInclude Include="..\..\gui\include\gui\debugdrawscreen_screen\DebugDrawScreenView.hpp">
       <Filter>Header Files\gui\debugdrawscreen_screen</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\generated\gui_generated\include\gui_generated\debugdrawscreen_screen\DebugDrawScreenViewBase.hpp">
-      <Filter>Header Files\generated\gui_generated\debugdrawscreen_screen</Filter>
     </ClInclude>
     <ClInclude Include="..\..\gui\include\gui\debuggpsdatascreen_screen\DebugGpsDataScreenPresenter.hpp">
       <Filter>Header Files\gui\debuggpsdatascreen_screen</Filter>

@@ -11,7 +11,7 @@
 #define MAP_ELEMENT_SIZE_COMMON             3u
 #define MAP_ELEMENT_SIZE_X                  MAP_ELEMENT_SIZE_COMMON
 #define MAP_ELEMENT_SIZE_Y                  MAP_ELEMENT_SIZE_COMMON
-#define MAP_TRACK_DRAWABLE_ELEMENTS         64u
+#define MAP_TRACK_DRAWABLE_ELEMENTS         128u
 #define MAP_EMPTYSLOT_VALUE                 255u
 #define MAP_TRACK_A_COEFF_LIMIT             1.f
 
@@ -37,8 +37,8 @@ typedef enum
 /* START OF THE STRUCT AREA */
 typedef struct
 {
-    uint16_t X;
-    uint16_t Y;
+    uint8_t X;
+    uint8_t Y;
 }Map_CoordinatesXY_T;
 
 typedef struct

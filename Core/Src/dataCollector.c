@@ -324,7 +324,7 @@ uint8_t DC_get_fileSystem_dirInfo_out_filesNum(void)
     Type: getter
     Variable: sensorData.altitude
 */
-float ES_get_sensorData_altitude(void)
+float DC_get_sensorData_altitude(void)
 {
     return sensorData.altitude;
 }
@@ -334,7 +334,7 @@ float ES_get_sensorData_altitude(void)
     Type: getter
     Variable: sensorData.pressure
 */
-float ES_get_sensorData_pressure(void)
+float DC_get_sensorData_pressure(void)
 {
     return sensorData.pressure;
 }
@@ -344,7 +344,7 @@ float ES_get_sensorData_pressure(void)
     Type: getter
     Variable: sensorData.temperature
 */
-float ES_get_sensorData_temperature(void)
+float DC_get_sensorData_temperature(void)
 {
     return sensorData.temperature;
 }

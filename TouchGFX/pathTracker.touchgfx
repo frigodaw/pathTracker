@@ -153,132 +153,124 @@
             "Moveable": false
           },
           {
-            "Components": [
-              {
-                "Components": [
-                  {
-                    "TextId": "SingleUseId94",
-                    "TextRotation": "0",
-                    "Color": {
-                      "Red": 0,
-                      "Green": 0,
-                      "Blue": 0
-                    },
-                    "Alpha": 255,
-                    "AutoSize": true,
-                    "LineSpacing": 0,
-                    "Name": "SettingsNameLabel",
-                    "X": 79,
-                    "Y": 15,
-                    "Width": 82,
-                    "Height": 25,
-                    "Type": "TextArea",
-                    "Visible": true,
-                    "Draggable": false,
-                    "Clickable": false,
-                    "Fadeable": false,
-                    "Moveable": false
-                  }
-                ],
-                "IsCacheableContainer": false,
-                "Name": "Settings",
-                "X": 0,
-                "Y": 0,
-                "Width": 240,
-                "Height": 260,
-                "Type": "Container",
-                "Visible": true,
-                "Draggable": false,
-                "Clickable": false,
-                "Fadeable": false,
-                "Moveable": false
-              },
-              {
-                "Components": [
-                  {
-                    "Pressed": "__designer\\Blue_Buttons_Round_Edge_small_pressed.png",
-                    "Released": "__designer\\Blue_Buttons_Round_Edge_small.png",
-                    "Alpha": 255,
-                    "TextId": "SingleUseId96",
-                    "ReleasedColor": {
-                      "Red": 255,
-                      "Green": 255,
-                      "Blue": 255
-                    },
-                    "PressedColor": {
-                      "Red": 255,
-                      "Green": 255,
-                      "Blue": 255
-                    },
-                    "TextRotation": "0",
-                    "Style": "Style4",
-                    "Name": "StartActivityButton",
-                    "X": 35,
-                    "Y": 130,
-                    "Width": 170,
-                    "Height": 60,
-                    "Type": "ButtonWithLabel",
-                    "Visible": true,
-                    "Draggable": false,
-                    "Clickable": false,
-                    "Fadeable": false,
-                    "Moveable": false
-                  },
-                  {
-                    "TextId": "SingleUseId95",
-                    "TextRotation": "0",
-                    "Color": {
-                      "Red": 0,
-                      "Green": 0,
-                      "Blue": 0
-                    },
-                    "Alpha": 255,
-                    "AutoSize": true,
-                    "LineSpacing": 0,
-                    "Name": "ActivityNameLabel",
-                    "X": 83,
-                    "Y": 15,
-                    "Width": 74,
-                    "Height": 25,
-                    "Type": "TextArea",
-                    "Visible": true,
-                    "Draggable": false,
-                    "Clickable": false,
-                    "Fadeable": false,
-                    "Moveable": false
-                  }
-                ],
-                "IsCacheableContainer": false,
-                "Name": "Activity",
-                "X": 0,
-                "Y": 0,
-                "Width": 240,
-                "Height": 260,
-                "Type": "Container",
-                "Visible": true,
-                "Draggable": false,
-                "Clickable": false,
-                "Fadeable": false,
-                "Moveable": false
-              }
-            ],
-            "SwipeCutoff": 50,
-            "ShowPageIndicator": false,
-            "PageIndicatorX": 0,
-            "PageIndicatorY": 0,
-            "CenteredX": false,
-            "IndicatorImageNormal": "__designer\\Blue_PageIndicator_dot_indicator_small_normal.png",
-            "IndicatorImageHighlight": "__designer\\Blue_PageIndicator_dot_indicator_small_highlight.png",
-            "EndSwipeElasticWidth": 50,
-            "SelectedPage": "Activity",
-            "Style": "Style1",
+            "Components": [],
             "IsCacheableContainer": false,
-            "Name": "AppMenuSwipeContainer",
+            "Name": "Activity",
             "X": 0,
             "Y": 0,
             "Width": 240,
             "Height": 260,
-            "Type": "SwipeContainer",
+            "Type": "Container",
+            "Visible": true,
+            "Draggable": false,
+            "Clickable": false,
+            "Fadeable": false,
+            "Moveable": false
+          },
+          {
+            "TextId": "SingleUseId95",
+            "TextRotation": "0",
+            "Color": {
+              "Red": 0,
+              "Green": 0,
+              "Blue": 0
+            },
+            "Alpha": 255,
+            "AutoSize": true,
+            "LineSpacing": 0,
+            "Name": "ActivityNameLabel",
+            "X": 58,
+            "Y": 15,
+            "Width": 124,
+            "Height": 25,
+            "Type": "TextArea",
+            "Visible": true,
+            "Draggable": false,
+            "Clickable": false,
+            "Fadeable": false,
+            "Moveable": false
+          },
+          {
+            "Pressed": "__designer\\Blue_Buttons_Round_Edge_small_pressed.png",
+            "Released": "__designer\\Blue_Buttons_Round_Edge_small.png",
+            "Alpha": 255,
+            "TextId": "SingleUseId224",
+            "ReleasedColor": {
+              "Red": 255,
+              "Green": 255,
+              "Blue": 255
+            },
+            "PressedColor": {
+              "Red": 255,
+              "Green": 255,
+              "Blue": 255
+            },
+            "TextRotation": "0",
+            "Style": "Style4",
+            "Name": "LogsButton",
+            "X": 35,
+            "Y": 195,
+            "Width": 170,
+            "Height": 60,
+            "Type": "ButtonWithLabel",
+            "Visible": true,
+            "Draggable": false,
+            "Clickable": false,
+            "Fadeable": false,
+            "Moveable": false
+          },
+          {
+            "Pressed": "__designer\\Blue_Buttons_Round_Edge_small_pressed.png",
+            "Released": "__designer\\Blue_Buttons_Round_Edge_small.png",
+            "Alpha": 255,
+            "TextId": "SingleUseId223",
+            "ReleasedColor": {
+              "Red": 255,
+              "Green": 255,
+              "Blue": 255
+            },
+            "PressedColor": {
+              "Red": 255,
+              "Green": 255,
+              "Blue": 255
+            },
+            "TextRotation": "0",
+            "Style": "Style4",
+            "Name": "SettingsButton",
+            "X": 35,
+            "Y": 125,
+            "Width": 170,
+            "Height": 60,
+            "Type": "ButtonWithLabel",
+            "Visible": true,
+            "Draggable": false,
+            "Clickable": false,
+            "Fadeable": false,
+            "Moveable": false
+          },
+          {
+            "Pressed": "__designer\\Blue_Buttons_Round_Edge_small_pressed.png",
+            "Released": "__designer\\Blue_Buttons_Round_Edge_small.png",
+            "Alpha": 255,
+            "TextId": "SingleUseId96",
+            "ReleasedColor": {
+              "Red": 255,
+              "Green": 255,
+              "Blue": 255
+            },
+            "PressedColor": {
+              "Red": 255,
+              "Green": 255,
+              "Blue": 255
+            },
+            "TextRotation": "0",
+            "Style": "Style4",
+            "Name": "StartActivityButton",
+            "X": 35,
+            "Y": 55,
+            "Width": 170,
+            "Height": 60,
+            "Type": "ButtonWithLabel",
             "Visible": true,
             "Draggable": false,
             "Clickable": false,
@@ -548,6 +540,22 @@
             "X": 210,
             "Y": 5,
             "Width": 25,
+            "Height": 25,
+            "Type": "ScalableImage",
+            "Visible": true,
+            "Draggable": false,
+            "Clickable": false,
+            "Fadeable": false,
+            "Moveable": false
+          },
+          {
+            "Filename": "SdCardIcon.png",
+            "Alpha": 255,
+            "ScalingAlgorithm": "Nearest-neighbor",
+            "Name": "SdCardImage",
+            "X": 5,
+            "Y": 5,
+            "Width": 19,
             "Height": 25,
             "Type": "ScalableImage",
             "Visible": true,
@@ -910,133 +918,6 @@
         ],
         "Interactions": [
           {
-            "InteractionName": "GoToDebugDrawScreen",
-            "HasCompletedTrigger": false,
-            "Trigger": {
-              "TriggerComponent": "NextButton",
-              "Type": "TriggerClicked"
-            },
-            "Action": {
-              "ScreenTransitionType": "ScreenTransitionNone",
-              "ActionComponent": "DebugDrawScreen",
-              "Type": "ActionGotoScreen"
-            }
-          }
-        ],
-        "Name": "DebugEnvSensorsScreen",
-        "OverrideDefaultBufferSize": false,
-        "CanvasBufferSize": 0
-      },
-      {
-        "Components": [
-          {
-            "CustomContainerDefinitionName": "ScreenBackgroundContainer",
-            "Name": "BackgroundCC",
-            "X": 0,
-            "Y": 0,
-            "Width": 240,
-            "Height": 320,
-            "Type": "CustomContainerInstance",
-            "Visible": true,
-            "Draggable": false,
-            "Clickable": false,
-            "Fadeable": false,
-            "Moveable": false
-          },
-          {
-            "Pressed": "__designer\\Blue_Buttons_Round_Edge_icon_button_pressed.png",
-            "Released": "__designer\\Blue_Buttons_Round_Edge_icon_button.png",
-            "Alpha": 255,
-            "IconPressed": "__designer\\Blue_Icons_Next_arrow_32.png",
-            "IconReleased": "__designer\\Blue_Icons_Next_arrow_32.png",
-            "IconX": 22,
-            "IconY": 15,
-            "IconHeight": 30,
-            "IconWidth": 17,
-            "ButtonStyle": "Style1",
-            "IconStyle": "Icon39",
-            "Name": "NextButton",
-            "X": 180,
-            "Y": 260,
-            "Width": 60,
-            "Height": 60,
-            "Type": "ButtonWithIcon",
-            "Visible": true,
-            "Draggable": false,
-            "Clickable": false,
-            "Fadeable": false,
-            "Moveable": false
-          },
-          {
-            "Color": {
-              "Red": 255,
-              "Green": 255,
-              "Blue": 255
-            },
-            "Alpha": 255,
-            "Name": "DrawBox",
-            "X": 10,
-            "Y": 55,
-            "Width": 220,
-            "Height": 185,
-            "Type": "Box",
-            "Visible": true,
-            "Draggable": false,
-            "Clickable": false,
-            "Fadeable": false,
-            "Moveable": false
-          },
-          {
-            "TextId": "SingleUseId63",
-            "TextRotation": "0",
-            "Color": {
-              "Red": 0,
-              "Green": 0,
-              "Blue": 0
-            },
-            "Alpha": 255,
-            "AutoSize": true,
-            "LineSpacing": 0,
-            "Name": "NameLabel",
-            "X": 58,
-            "Y": 15,
-            "Width": 124,
-            "Height": 25,
-            "Type": "TextArea",
-            "Visible": true,
-            "Draggable": false,
-            "Clickable": false,
-            "Fadeable": false,
-            "Moveable": false
-          },
-          {
-            "Color": {
-              "Red": 0,
-              "Green": 0,
-              "Blue": 0
-            },
-            "Alpha": 255,
-            "StartX": 0,
-            "StartY": 0,
-            "EndX": 50,
-            "EndY": 50,
-            "LineWidth": 2,
-            "LineEndingStyle": "Round",
-            "Name": "TestLine",
-            "X": 10,
-            "Y": 55,
-            "Width": 220,
-            "Height": 185,
-            "Type": "Line",
-            "Visible": true,
-            "Draggable": false,
-            "Clickable": false,
-            "Fadeable": false,
-            "Moveable": false
-          }
-        ],
-        "Interactions": [
-          {
             "InteractionName": "GoToDebugGpsDataScreen",
             "HasCompletedTrigger": false,
             "Trigger": {
@@ -1050,9 +931,9 @@
             }
           }
         ],
-        "Name": "DebugDrawScreen",
+        "Name": "DebugEnvSensorsScreen",
         "OverrideDefaultBufferSize": false,
-        "CanvasBufferSize": 3600
+        "CanvasBufferSize": 0
       }
     ],
     "CustomContainerDefinitions": [
@@ -2823,10 +2704,6 @@
         "IsResource": false
       },
       {
-        "TextEntryId": "SingleUseId63",
-        "IsResource": false
-      },
-      {
         "TextEntryId": "SingleUseId69",
         "IsResource": false
       },
@@ -2868,10 +2745,6 @@
       },
       {
         "TextEntryId": "SingleUseId79",
-        "IsResource": false
-      },
-      {
-        "TextEntryId": "SingleUseId94",
         "IsResource": false
       },
       {
@@ -3332,6 +3205,14 @@
       },
       {
         "TextEntryId": "SingleUseId222",
+        "IsResource": false
+      },
+      {
+        "TextEntryId": "SingleUseId223",
+        "IsResource": false
+      },
+      {
+        "TextEntryId": "SingleUseId224",
         "IsResource": false
       }
     ],

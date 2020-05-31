@@ -190,6 +190,17 @@ SECTIONS
     . = ALIGN(8);
   } >RAM
 
+  .ccm :
+  {
+    . = ALIGN(4);
+    _sccm = .;
+    __ccm_start__ = _sccm;
+    *(.ccm)
+    . = ALIGN(4);
+    _eccm = .;
+    __ccm_end__ = _eccm;
+  } >CCMRAM
+
   /* Remove information from the compiler libraries */
   /DISCARD/ :
   {

@@ -40,9 +40,9 @@ void DebugEnvSensorsScreenViewBase::buttonCallbackHandler(const touchgfx::Abstra
 {
     if (&src == &NextButton)
     {
-        //GoToDebugDrawScreen
-        //When NextButton clicked change screen to DebugDrawScreen
-        //Go to DebugDrawScreen with no screen transition
-        application().gotoDebugDrawScreenScreenNoTransition();
+        //GoToDebugGpsDataScreen
+        //When NextButton clicked change screen to DebugGpsDataScreen
+        //Go to DebugGpsDataScreen with no screen transition
+        application().gotoDebugGpsDataScreenScreenNoTransition();
     }
 }

@@ -10,6 +10,11 @@
 uint32_t timeDiff = 0u;
 uint32_t timeMaxDiff = 0u;
 
+/* Common array to store lat and lon coordinates recorded during activity 
+   and from preloaded .gpx file. First part is for tracked coords, second one 
+   for points to navigate. */
+AppActivity_coordinatesGPS_T trackPoints[APP_TRACK_COMMONARRAY_LENGTH] __attribute__ ((section (".ccm"))) = {0.f};
+
 static const AppActivity_mapCoordsXY_T mapCoordsXY = {{APP_TRACK_WINDOW_MID_X, APP_TRACK_WINDOW_MID_Y},
                                                       {APP_TRACK_WINDOW_UPLEFT_X, APP_TRACK_WINDOW_UPLEFT_Y},
                                                       {APP_TRACK_WINDOW_UPRIGHT_X, APP_TRACK_WINDOW_UPRIGHT_Y},
@@ -23,6 +28,7 @@ AppActivityScreenPresenter::AppActivityScreenPresenter(AppActivityScreenView& v)
     memset(&appInternalData, 0u, sizeof(appInternalData));
     memset(&fileInfo, 0u, sizeof(fileInfo));
     memset(&gpsSignals, 0u, sizeof(gpsSignals));
+    memset(&sensorData, 0u, sizeof(sensorData));
     memset(&trackData, 0u, sizeof(trackData));
 
     appInternalData.state = APP_STATE_INIT;
@@ -33,8 +39,14 @@ AppActivityScreenPresenter::AppActivityScreenPresenter(AppActivityScreenView& v)
     appInternalData.callCounter = APP_MAX_CALL_COUNTER;
 
     fileInfo.fileStatus = APP_FILE_NOFILE;
+
     trackData.scale = APP_TRACK_SCALE100;
     trackData.mapCoordsXY = (AppActivity_mapCoordsXY_T*)&mapCoordsXY;
+
+    trackPointsData.coords = trackPoints;
+    trackPointsData.idxTrack = APP_TRACK_TRACK_FIRST_ELEMENT;
+    trackPointsData.idxMap = APP_TRACK_MAP_FIRST_ELEMENT;
+
     SetBitmapButton(BITMAP_BLUE_ICONS_PLAY_32_ID);
 }
 
@@ -113,7 +125,6 @@ void AppActivityScreenPresenter::InitActivity(void)
         {
             /* File can not be created */
             fileInfo.fileStatus = APP_FILE_ERROR;
-            fileInfo.errorStatus = 0xFFu;
         }
     }
     else
@@ -215,6 +226,8 @@ void AppActivityScreenPresenter::InsertDataIntoFile(void)
     AppActivity_floatToInt_T lon = {0u};
     AppActivity_floatToInt_T alt = {0u};
 
+    AddCoordsToTrackList(gpsSignals.latitude, gpsSignals.longitude);
+
     ConvertFloatToInt(gpsSignals.latitude,  lat, APP_LATLON_PRECISION);
     ConvertFloatToInt(gpsSignals.longitude, lon, APP_LATLON_PRECISION);
     ConvertFloatToInt(sensorData.altitude,  alt, APP_ALTI_PRECISION);
@@ -241,6 +254,7 @@ void AppActivityScreenPresenter::InsertDataIntoFile(void)
     fileInfo.errorStatus = FS_WriteFile((FS_File_T*)fileInfo.filePtr, (uint8_t*)buffer);
 #endif
 
+    UpdateSignalSdCard();
     fileInfo.points++;
 }
 
@@ -296,6 +310,34 @@ void AppActivityScreenPresenter::UpdateSignalFixStatus(void)
     bool isFix = IsFix();
 
     view.ShowFixImage(isFix);
+}
+
+
+/* Method called to tell check whether sd card is
+   inserted correctly or not. */
+bool AppActivityScreenPresenter::IsSdCard(void)
+{
+    bool retVal = false;
+
+    if((APP_SDCARD_INITIALIZED == sdCardData.state) && (APP_FILE_ERROR != fileInfo.fileStatus) && (0u == fileInfo.errorStatus))
+    {
+        retVal = true;
+    }
+    else
+    {
+        retVal = false;
+    }
+
+    return retVal;
+}
+
+
+/* Method called to update sd card icon on the screen. */
+void AppActivityScreenPresenter::UpdateSignalSdCard(void)
+{
+    bool isSdCard = IsSdCard();
+
+    view.ShowSdCard(isSdCard);
 }
 
 
@@ -521,10 +563,27 @@ void AppActivityScreenPresenter::DrawTrack(void)
 
     if(APP_SCREEN_MAP == appInternalData.screen)
     {
+        uint16_t scaleVal = GetScaleValue(trackData.scale);
+        view.FlushTrackList();
+        view.SetTrackScale(scaleVal);
+
+        for (uint16_t idx = 0u; idx < trackPointsData.idxTrack; idx++)
+        {
+            bool coordsInView = CoordsInView(trackPointsData.coords[idx]);
+
+            if(true == coordsInView)
+            {
+                AppActivity_coordinatesXY_T coordsXY = MapGPSCoordsToXY(trackPointsData.coords[idx]);
+                view.AddCoordsToTrackList(coordsXY);
+            }
+        }
+
+        view.TrackRedraw();
+
+#if 0
         uint8_t buffer[APP_MAXFILEBUFFERSIZE] = {0u};
         AppActivity_coordinatesGPS_T coordsGPS = {0.f};
         uint32_t offset = 0u;
-        uint16_t scaleVal = 0u;
         uint8_t readLines = 0u;
         uint8_t retVal = RET_OK;
         boolean isMoreLines = true;
@@ -558,6 +617,7 @@ void AppActivityScreenPresenter::DrawTrack(void)
         }
 
         retVal = FS_LseekEnd((FS_File_T**)&fileInfo.filePtr);
+#endif
     }
 }
 
@@ -670,6 +730,12 @@ uint16_t AppActivityScreenPresenter::GetScaleValue(AppActivity_trackScale_T scal
         case APP_TRACK_SCALE1000:
             scaleVal = APP_TRACK_SCALE_1000;
             break;
+        case APP_TRACK_SCALE5000:
+            scaleVal = APP_TRACK_SCALE_5000;
+            break;
+        case APP_TRACK_SCALEFULL:
+            scaleVal = 0u;
+            break;
         default:
             scaleVal = APP_TRACK_SCALE_ERROR;
             break;
@@ -739,14 +805,30 @@ float AppActivityScreenPresenter::MapPointToLinearFunction(float x1, float y1, f
 /* Method called to change scale on map to zoom in. */
 void AppActivityScreenPresenter::ZoomIn(void)
 {
-    trackData.scale = (trackData.scale > APP_TRACK_SCALE50) ? (AppActivity_trackScale_T)(trackData.scale - 1u) : APP_TRACK_SCALE50;
+    if(trackData.scale > APP_TRACK_SCALE50)
+    {
+        trackData.scale = (AppActivity_trackScale_T)(trackData.scale - 1u);
+        DrawTrack();
+    }
+    else
+    {
+        trackData.scale = APP_TRACK_SCALE50;
+    }
 }
 
 
 /* Method called to change scale on map to zoom out. */
 void AppActivityScreenPresenter::ZoomOut(void)
 {
-    trackData.scale = ((trackData.scale + 1u) < APP_TRACK_MAX_SCALE) ? (AppActivity_trackScale_T)(trackData.scale + 1u) : (AppActivity_trackScale_T)(APP_TRACK_MAX_SCALE - 1u);
+    if((trackData.scale + 1u) < APP_TRACK_MAX_SCALE)
+    {
+        trackData.scale = (AppActivity_trackScale_T)(trackData.scale + 1u);
+        DrawTrack();
+    }
+    else
+    {
+        trackData.scale = (AppActivity_trackScale_T)(APP_TRACK_MAX_SCALE - 1u);
+    }
 }
 
 
@@ -763,6 +845,32 @@ uint32_t AppActivityScreenPresenter::CalculateFileOffset(uint16_t points)
     return offset;
 }
 
+
+/* Method called to add new coords to track list safely. */
+void AppActivityScreenPresenter::AddCoordsToTrackList(float lat, float lon)
+{
+    if((trackPointsData.idxTrack + 1u) < trackPointsData.idxMap)
+    {
+        if((0u == trackPointsData.idxTrack) && (0.f == trackPointsData.coords[0u].lat) && (0.f == trackPointsData.coords[0u].lon))
+        {
+            trackPointsData.coords[0u].lat = lat;
+            trackPointsData.coords[0u].lon = lon;
+        }
+        else
+        {
+            trackPointsData.idxTrack++;
+            trackPointsData.coords[trackPointsData.idxTrack].lat = lat;
+            trackPointsData.coords[trackPointsData.idxTrack].lon = lon;
+        }
+    }
+    else
+    {
+        trackPointsData.idxTrack = 0u;
+        trackPointsData.coords[0u].lat = 0.f;
+        trackPointsData.coords[0u].lon = 0.f;
+    }
+}
+
 /* Method called to collect signals from Model:
     - latitude
     - longitude
@@ -772,7 +880,11 @@ uint32_t AppActivityScreenPresenter::CalculateFileOffset(uint16_t points)
     - fixQuality
     - satellitesNum
     - lonDir
-    - latDir */
+    - latDir
+    - altitude
+    - pressure
+    - temperature
+    - state of sd card */
 void AppActivityScreenPresenter::NotifySignalChanged_gpsData_latitude(float newLatitude)
 {
     ConvertLatLon(newLatitude, gpsSignals.latitude);
@@ -827,4 +939,9 @@ void AppActivityScreenPresenter::NotifySignalChanged_sensorData_pressure(float n
 void AppActivityScreenPresenter::NotifySignalChanged_sensorData_temperature(float newTemperature)
 {
     sensorData.temperature = newTemperature;
+}
+void AppActivityScreenPresenter::NotifySignalChanged_sdCardInfo_state(uint8_t state)
+{
+    sdCardData.state = state;
+    UpdateSignalSdCard();
 }

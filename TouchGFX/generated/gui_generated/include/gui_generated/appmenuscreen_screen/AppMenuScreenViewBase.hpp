@@ -8,7 +8,6 @@
 #include <mvp/View.hpp>
 #include <gui/appmenuscreen_screen/AppMenuScreenPresenter.hpp>
 #include <gui/containers/ScreenBackgroundContainer.hpp>
-#include <touchgfx/containers/SwipeContainer.hpp>
 #include <touchgfx/containers/Container.hpp>
 #include <touchgfx/widgets/TextArea.hpp>
 #include <touchgfx/widgets/ButtonWithLabel.hpp>
@@ -37,12 +36,11 @@ protected:
      * Member Declarations
      */
     ScreenBackgroundContainer BackgroundCC;
-    touchgfx::SwipeContainer AppMenuSwipeContainer;
-    touchgfx::Container Settings;
-    touchgfx::TextArea SettingsNameLabel;
     touchgfx::Container Activity;
-    touchgfx::ButtonWithLabel StartActivityButton;
     touchgfx::TextArea ActivityNameLabel;
+    touchgfx::ButtonWithLabel LogsButton;
+    touchgfx::ButtonWithLabel SettingsButton;
+    touchgfx::ButtonWithLabel StartActivityButton;
 
 private:
 

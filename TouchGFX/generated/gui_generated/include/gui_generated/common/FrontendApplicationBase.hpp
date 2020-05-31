@@ -33,9 +33,6 @@ public:
     // DebugEnvSensorsScreen
     void gotoDebugEnvSensorsScreenScreenNoTransition();
 
-    // DebugDrawScreen
-    void gotoDebugDrawScreenScreenNoTransition();
-
 protected:
     touchgfx::Callback<FrontendApplicationBase> transitionCallback;
     FrontendHeap& frontendHeap;
@@ -58,9 +55,6 @@ protected:
 
     // DebugEnvSensorsScreen
     void gotoDebugEnvSensorsScreenScreenNoTransitionImpl();
-
-    // DebugDrawScreen
-    void gotoDebugDrawScreenScreenNoTransitionImpl();
 };
 
 #endif // FRONTENDAPPLICATIONBASE_HPP

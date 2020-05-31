@@ -23,6 +23,7 @@ public:
     void SetActivityDataScreen(AppActivity_activeScreen_T screen);
     void SetBitmapButton(const uint16_t bitmapId);
     void ShowFixImage(bool isFix);
+    void ShowSdCard(bool isSdCard);
 
     void FlushTrackList(void);
     void SetTrackScale(uint16_t scaleVal);

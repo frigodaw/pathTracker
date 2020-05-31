@@ -70,6 +70,7 @@ protected:
     touchgfx::ButtonWithIcon ZoomInButton;
     touchgfx::ButtonWithIcon FinishButton;
     touchgfx::ScalableImage FixImage;
+    touchgfx::ScalableImage SdCardImage;
 
 private:
 

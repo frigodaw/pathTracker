@@ -21,8 +21,6 @@
 #include <gui/debugsdcardscreen_screen/DebugSdCardScreenPresenter.hpp>
 #include <gui/debugenvsensorsscreen_screen/DebugEnvSensorsScreenView.hpp>
 #include <gui/debugenvsensorsscreen_screen/DebugEnvSensorsScreenPresenter.hpp>
-#include <gui/debugdrawscreen_screen/DebugDrawScreenView.hpp>
-#include <gui/debugdrawscreen_screen/DebugDrawScreenPresenter.hpp>
 
 using namespace touchgfx;
 
@@ -117,17 +115,4 @@ void FrontendApplicationBase::gotoDebugEnvSensorsScreenScreenNoTransition()
 void FrontendApplicationBase::gotoDebugEnvSensorsScreenScreenNoTransitionImpl()
 {
     touchgfx::makeTransition<DebugEnvSensorsScreenView, DebugEnvSensorsScreenPresenter, touchgfx::NoTransition, Model >(&currentScreen, &currentPresenter, frontendHeap, &currentTransition, &model);
-}
-
-// DebugDrawScreen
-
-void FrontendApplicationBase::gotoDebugDrawScreenScreenNoTransition()
-{
-    transitionCallback = touchgfx::Callback<FrontendApplicationBase>(this, &FrontendApplication::gotoDebugDrawScreenScreenNoTransitionImpl);
-    pendingScreenTransitionCallback = &transitionCallback;
-}
-
-void FrontendApplicationBase::gotoDebugDrawScreenScreenNoTransitionImpl()
-{
-    touchgfx::makeTransition<DebugDrawScreenView, DebugDrawScreenPresenter, touchgfx::NoTransition, Model >(&currentScreen, &currentPresenter, frontendHeap, &currentTransition, &model);
 }

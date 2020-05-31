@@ -60,6 +60,10 @@ AppActivityScreenViewBase::AppActivityScreenViewBase() :
     FixImage.setPosition(210, 5, 25, 25);
     FixImage.setScalingAlgorithm(touchgfx::ScalableImage::NEAREST_NEIGHBOR);
 
+    SdCardImage.setBitmap(touchgfx::Bitmap(BITMAP_SDCARDICON_ID));
+    SdCardImage.setPosition(5, 5, 19, 25);
+    SdCardImage.setScalingAlgorithm(touchgfx::ScalableImage::NEAREST_NEIGHBOR);
+
     add(BackgroundCC);
     add(ActivityDataCC_Map);
     add(ActivityDataCC_Alti);
@@ -72,6 +76,7 @@ AppActivityScreenViewBase::AppActivityScreenViewBase() :
     add(ZoomInButton);
     add(FinishButton);
     add(FixImage);
+    add(SdCardImage);
 }
 
 void AppActivityScreenViewBase::setupScreen()

@@ -105,6 +105,20 @@ void AppActivityScreenView::ShowFixImage(bool isFix)
 }
 
 
+void AppActivityScreenView::ShowSdCard(bool isSdCard)
+{
+    if(true == isSdCard)
+    {
+        SdCardImage.setAlpha(APP_ALPHA_FULLVISIBLE);
+    }
+    else
+    {
+        SdCardImage.setAlpha(APP_ALPHA_INVISIBLE);
+    }
+    SdCardImage.invalidate();
+}
+
+
 void AppActivityScreenView::FlushTrackList(void)
 {
     ActivityDataCC_Map.FlushTrackList();

@@ -13,11 +13,12 @@ using namespace touchgfx;
 
 #define APP_GPXFILE_SHORTMODE
 
+#define APP_SDCARD_INITIALIZED      1u
 #define APP_FILENAMEMAXLEN          32u
 #define APP_TIME_COEFF1             100u
-#define APP_TIME_COEFF2             10000u
+#define APP_TIME_COEFF2             10000uL
 #define APP_DATE_COEFF1             100u
-#define APP_DATE_COEFF2             10000u
+#define APP_DATE_COEFF2             10000uL
 #define APP_MAXFILEBUFFERSIZE       127u
 #define APP_LATLON_PRECISION        6u
 #define APP_ALTI_PRECISION          1u
@@ -42,7 +43,7 @@ using namespace touchgfx;
 #define APP_SPEED_COEFF_PERIOD          1.f
 
 #define APP_MAINPERIOD_MS           100u
-#define APP_MS_IN_SEC               1000u
+#define APP_MS_IN_SEC               1000uL
 #define APP_SEC_IN_HR               3600.f
 #define APP_MAX_CALL_COUNTER        ((APP_MS_IN_SEC)/(APP_MAINPERIOD_MS))
 #define APP_TIMER_COEFF_TOSEC       APP_MAX_CALL_COUNTER
@@ -59,19 +60,26 @@ using namespace touchgfx;
 #define APP_TRACK_WINDOW_BOTTOMLEFT_Y   (APP_TRACK_WINDOW_HEIGHT_PX-1u)
 #define APP_TRACK_WINDOW_BOTTOMRIGHT_X  (APP_TRACK_WINDOW_WIDTH_PX-1u)
 #define APP_TRACK_WINDOW_BOTTOMRIGHT_Y  (APP_TRACK_WINDOW_HEIGHT_PX-1u)
+#define APP_TRACK_FLOATBUFF_SIZE        32u
+#define APP_TRACK_FLOATBUFF_HALF        ((APP_TRACK_FLOATBUFF_SIZE)/(2u))
 #define APP_TRACK_SCALE_WIDTH_PX        100u
-#define APP_TRACK_SCALE_COEFF_MINKM     1000u
+#define APP_TRACK_SCALE_COEFF_MINKM     1000uL
+
 #define APP_TRACK_SCALE_50              50u
 #define APP_TRACK_SCALE_100             100u
 #define APP_TRACK_SCALE_500             500u
-#define APP_TRACK_SCALE_1000            1000u
+#define APP_TRACK_SCALE_1000            1000uL
+#define APP_TRACK_SCALE_5000            5000uL
 #define APP_TRACK_SCALE_ERROR           0u
-#define APP_TRACK_FLOATBUFF_SIZE        32u
-#define APP_TRACK_FLOATBUFF_HALF        ((APP_TRACK_FLOATBUFF_SIZE)/(2u))
 
 #define APP_TRACK_FILE_HEADEROFFSET     180u
 #define APP_TRACK_FILE_DATAOFFSET       101u
 #define APP_TRACK_FILE_READLINES        32u
+
+#define APP_TRACK_COMMONARRAY_LENGTH    8192uL
+#define APP_TRACK_TRACK_FIRST_ELEMENT   0u
+#define APP_TRACK_MAP_FIRST_ELEMENT     (APP_TRACK_COMMONARRAY_LENGTH - 1uL)
+
 /* END OF THE DEFINE AREA */
 
 
@@ -110,7 +118,8 @@ typedef enum
     APP_TRACK_SCALE100,
     APP_TRACK_SCALE500,
     APP_TRACK_SCALE1000,
-    //APP_TRACK_SCALEFULL,
+    APP_TRACK_SCALE5000,
+    APP_TRACK_SCALEFULL,
     APP_TRACK_MAX_SCALE
 }AppActivity_trackScale_T;
 
@@ -150,6 +159,10 @@ typedef struct
     float temperature;
 }AppActivity_sensorData_T;
 
+typedef struct
+{
+    uint8_t state;
+}AppActivity_sdCardData_T;
 typedef struct
 {
     char name[APP_FILENAMEMAXLEN];
@@ -229,6 +242,13 @@ typedef struct
     AppActivity_mapCoordsXY_T *mapCoordsXY;
     AppActivity_trackScale_T scale;
 }AppActivity_trackData_T;
+
+typedef struct
+{
+    AppActivity_coordinatesGPS_T *coords;
+    uint16_t idxTrack;
+    uint16_t idxMap;
+}AppActivity_trackPointsData_T;
 /* END OF THE STRUCT AREA */
 
 
@@ -254,7 +274,9 @@ public:
     void ConvertFloatToInt(float data, AppActivity_floatToInt_T &intData, uint8_t precision);
     void ConvertLatLon(float data, float &newData);
     bool IsFix(void);
+    bool IsSdCard(void);
     void UpdateSignalFixStatus(void);
+    void UpdateSignalSdCard(void);
     void CalculateSpeedAndDistance(void);
     void CalculateAltitude(void);
     void IncrementTimer(void);
@@ -272,6 +294,7 @@ public:
     AppActivity_coordinatesXY_T MapGPSCoordsToXY(AppActivity_coordinatesGPS_T coords);
     float MapPointToLinearFunction(float x1, float y1, float x2, float y2, float X);
     uint32_t CalculateFileOffset(uint16_t points);
+    void AddCoordsToTrackList(float lat, float lon);
 
 
     void NotifySignalChanged_gpsData_latitude(float newLatitude);
@@ -286,6 +309,7 @@ public:
     void NotifySignalChanged_sensorData_altitude(float newAltitude);
     void NotifySignalChanged_sensorData_pressure(float newPressure);
     void NotifySignalChanged_sensorData_temperature(float newTemperature);
+    void NotifySignalChanged_sdCardInfo_state(uint8_t state);
 
 private:
     AppActivityScreenPresenter();
@@ -293,10 +317,12 @@ private:
 
     AppActivity_gpsSignals_T        gpsSignals;
     AppActivity_sensorData_T        sensorData;
+    AppActivity_sdCardData_T        sdCardData;
     AppActivity_fileInfo_T          fileInfo;
     AppActivity_activityData_T      activityData;
     AppActivity_appInternalData_T   appInternalData;
     AppActivity_trackData_T         trackData;
+    AppActivity_trackPointsData_T   trackPointsData;
 };
 
 #endif // APPACTIVITYSCREENPRESENTER_HPP

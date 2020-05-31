@@ -73,9 +73,9 @@ uint8_t  DC_get_fileSystem_dirInfo_in_filesNum(void);
 uint8_t  DC_get_fileSystem_dirInfo_out_filesNum(void);
 
 /* ---------- envSensors ---------- */
-float    ES_get_sensorData_altitude(void);
-float    ES_get_sensorData_pressure(void);
-float    ES_get_sensorData_temperature(void);
+float    DC_get_sensorData_altitude(void);
+float    DC_get_sensorData_pressure(void);
+float    DC_get_sensorData_temperature(void);
 /* END OF THE FUNCTIONS PROTOTYPES AREA */
 
 # ifdef __cplusplus

@@ -58,9 +58,9 @@ void Model::ReadInputSignals(void)
     UpdateElement<uint8_t>(DC_get_fileSystem_dirInfo_out_filesNum, dirInfo_out_filesNum, dataNotifier.dirInfo_out_filesNum);
 
     /* envSensors */
-    UpdateElement<float>(ES_get_sensorData_altitude, sensorData_altitude, dataNotifier.sensorData_altitude);
-    UpdateElement<float>(ES_get_sensorData_pressure, sensorData_pressure, dataNotifier.sensorData_pressure);
-    UpdateElement<float>(ES_get_sensorData_temperature, sensorData_temperature, dataNotifier.sensorData_temperature);
+    UpdateElement<float>(DC_get_sensorData_altitude, sensorData_altitude, dataNotifier.sensorData_altitude);
+    UpdateElement<float>(DC_get_sensorData_pressure, sensorData_pressure, dataNotifier.sensorData_pressure);
+    UpdateElement<float>(DC_get_sensorData_temperature, sensorData_temperature, dataNotifier.sensorData_temperature);
 }
 
 

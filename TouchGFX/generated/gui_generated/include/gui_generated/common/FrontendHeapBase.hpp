@@ -17,7 +17,6 @@
 
 
 
-
 #include <gui/common/FrontendApplication.hpp>
 #include <gui/model/Model.hpp>
 
@@ -33,8 +32,6 @@
 #include <gui/debugsdcardscreen_screen/DebugSdCardScreenPresenter.hpp>
 #include <gui/debugenvsensorsscreen_screen/DebugEnvSensorsScreenView.hpp>
 #include <gui/debugenvsensorsscreen_screen/DebugEnvSensorsScreenPresenter.hpp>
-#include <gui/debugdrawscreen_screen/DebugDrawScreenView.hpp>
-#include <gui/debugdrawscreen_screen/DebugDrawScreenPresenter.hpp>
 
 
 /**
@@ -63,8 +60,7 @@ public:
             touchgfx::meta::TypeList< DebugGpsDataScreenView,
             touchgfx::meta::TypeList< DebugSdCardScreenView,
             touchgfx::meta::TypeList< DebugEnvSensorsScreenView,
-            touchgfx::meta::TypeList< DebugDrawScreenView,
-            touchgfx::meta::Nil > > > > > >
+            touchgfx::meta::Nil > > > > >
             > GeneratedViewTypes;
 
     /**
@@ -82,8 +78,7 @@ public:
             touchgfx::meta::TypeList< DebugGpsDataScreenPresenter,
             touchgfx::meta::TypeList< DebugSdCardScreenPresenter,
             touchgfx::meta::TypeList< DebugEnvSensorsScreenPresenter,
-            touchgfx::meta::TypeList< DebugDrawScreenPresenter,
-            touchgfx::meta::Nil > > > > > >
+            touchgfx::meta::Nil > > > > >
             > GeneratedPresenterTypes;
 
     /**
