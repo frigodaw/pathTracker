@@ -14,8 +14,8 @@ public:
     void initialize();
 
     void FlushTrackList(void);
-    void SetTrackScale(uint16_t scaleVal);
-    void AddCoordsToTrackList(uint8_t coordsX, uint8_t coordsY);
+    void SetTrackScale(uint32_t scaleVal);
+    bool AddCoordsToTrackList(uint8_t coordsX, uint8_t coordsY);
     void TrackRedraw(void);
 
 private:

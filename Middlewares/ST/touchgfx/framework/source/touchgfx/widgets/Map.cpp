@@ -34,47 +34,6 @@ void Map::draw(const touchgfx::Rect& invalidatedArea) const
         }
     }
 
-    /* Draw scale line */
-    uint16_t xStart = (absolute.width - MAP_SCALE_LINE_LENGTH_PX) / MAP_SCALE_LINE_DIV_COEFF;
-    uint16_t xEnd = xStart + MAP_SCALE_LINE_LENGTH_PX;
-    uint16_t yStart = absolute.bottom() - MAP_SCALE_LOCATION_ABOVE_BOTTOM_PX - MAP_SCALE_LINE_HEIGTH_PX;
-    uint16_t yEnd = yStart + MAP_SCALE_LINE_HEIGTH_PX;
-
-    for (uint16_t y = yStart; y < yEnd; y++)
-    {
-        for (uint16_t x = xStart; x < xEnd; x++)
-        {
-            framebuffer[x + (y) * touchgfx::HAL::DISPLAY_WIDTH] = trackColor;
-        }
-    }
-
-    xStart = (absolute.width - MAP_SCALE_INNER_LINE_LENGTH_PX) / MAP_SCALE_LINE_DIV_COEFF;
-    xEnd = xStart + MAP_SCALE_INNER_LINE_LENGTH_PX;
-    yStart = absolute.bottom() - MAP_SCALE_LOCATION_ABOVE_BOTTOM_PX - MAP_SCALE_LINE_HEIGTH_PX;
-    yEnd = yStart + MAP_SCALE_INNER_LINE_HEIGTH_PX;
-
-    for (uint16_t y = yStart; y < yEnd; y++)
-    {
-        for (uint16_t x = xStart; x < xEnd; x++)
-        {
-            framebuffer[x + (y) * touchgfx::HAL::DISPLAY_WIDTH] = backgroundColor;
-        }
-    }
-
-    /* Draw dots on a track points */
-    for (uint8_t i = 0u; i < trackList.idx; i++)
-    {
-        for (int y = 0u; y < meshInfo.elementDimension.Y; y++)
-        {
-            for (int x = 0u; x < meshInfo.elementDimension.X; x++)
-            {
-                xVal = absolute.x + trackList.coords[i].X * meshInfo.elementDimension.X + x;
-                yVal = absolute.y + trackList.coords[i].Y * meshInfo.elementDimension.Y + y;
-                framebuffer[xVal + (yVal) * touchgfx::HAL::DISPLAY_WIDTH] = trackColor;
-            }
-        }
-    }
-
     /* Connect dots and create line path */
     if(trackList.idx > 1u)
     {
@@ -129,6 +88,47 @@ void Map::draw(const touchgfx::Rect& invalidatedArea) const
         }
     }
 
+    /* Draw dots on a track points */
+    for (uint8_t i = 0u; i < trackList.idx; i++)
+    {
+        for (int y = 0u; y < meshInfo.elementDimension.Y; y++)
+        {
+            for (int x = 0u; x < meshInfo.elementDimension.X; x++)
+            {
+                xVal = absolute.x + trackList.coords[i].X * meshInfo.elementDimension.X + x;
+                yVal = absolute.y + trackList.coords[i].Y * meshInfo.elementDimension.Y + y;
+                framebuffer[xVal + (yVal) * touchgfx::HAL::DISPLAY_WIDTH] = trackColor;
+            }
+        }
+    }
+
+    /* Draw scale line */
+    uint16_t xStart = (absolute.width - MAP_SCALE_LINE_LENGTH_PX) / MAP_SCALE_LINE_DIV_COEFF;
+    uint16_t xEnd = xStart + MAP_SCALE_LINE_LENGTH_PX;
+    uint16_t yStart = absolute.bottom() - MAP_SCALE_LOCATION_ABOVE_BOTTOM_PX - MAP_SCALE_LINE_HEIGTH_PX;
+    uint16_t yEnd = yStart + MAP_SCALE_LINE_HEIGTH_PX;
+
+    for (uint16_t y = yStart; y < yEnd; y++)
+    {
+        for (uint16_t x = xStart; x < xEnd; x++)
+        {
+            framebuffer[x + (y) * touchgfx::HAL::DISPLAY_WIDTH] = trackColor;
+        }
+    }
+
+    xStart = (absolute.width - MAP_SCALE_INNER_LINE_LENGTH_PX) / MAP_SCALE_LINE_DIV_COEFF;
+    xEnd = xStart + MAP_SCALE_INNER_LINE_LENGTH_PX;
+    yStart = absolute.bottom() - MAP_SCALE_LOCATION_ABOVE_BOTTOM_PX - MAP_SCALE_LINE_HEIGTH_PX;
+    yEnd = yStart + MAP_SCALE_INNER_LINE_HEIGTH_PX;
+
+    for (uint16_t y = yStart; y < yEnd; y++)
+    {
+        for (uint16_t x = xStart; x < xEnd; x++)
+        {
+            framebuffer[x + (y) * touchgfx::HAL::DISPLAY_WIDTH] = backgroundColor;
+        }
+    }
+
     touchgfx::HAL::getInstance()->unlockFrameBuffer();
 }
 
@@ -145,33 +145,33 @@ void Map::FlushTrackList(void)
 {
     memset(&trackList, 255u, sizeof(trackList));
     trackList.idx = 0u;
-    lineColor += 1000u;
+    lineColor += MAP_TRACK_COLOR_CHANGE_INTERVAL;
 }
 
 
 /* Method called to set scale on a map */
-void Map::SetTrackScale(uint16_t scaleVal)
+void Map::SetTrackScale(uint32_t scaleVal)
 {
     scale = scaleVal;
 }
 
 
 /* Method called to add coordinates to track list. */
-void Map::AddCoordsToTrackList(uint8_t x, uint8_t y)
+bool Map::AddCoordsToTrackList(uint8_t x, uint8_t y)
 {
     Map_CoordinatesXY_T meshCoords = MapCoordsToMesh(x,y);
-    bool duplicate = false;
+    bool newPoint = true;
 
     for(uint8_t i=0u; i<trackList.idx; i++)
     {
         if((meshCoords.X == trackList.coords[i].X) && (meshCoords.Y == trackList.coords[i].Y))
         {
-            duplicate = true;
+            newPoint = false;
             break;
         }
     }
 
-    if(false == duplicate)
+    if(true == newPoint)
     {
         if(trackList.idx < (MAP_TRACK_DRAWABLE_ELEMENTS - 1u))
         {
@@ -180,6 +180,8 @@ void Map::AddCoordsToTrackList(uint8_t x, uint8_t y)
             trackList.idx++;
         }
     }
+
+    return newPoint;
 }
 
 
@@ -216,12 +218,12 @@ Map_FunctionType_T Map::MapCoordsToLinearFunction(Map_CoordinatesXY_T curr, Map_
     if(curr.X != prev.X)
     {
         a = ((float)(curr.Y-prev.Y)) / ((float)(curr.X-prev.X));
-        type = (a <= MAP_TRACK_A_COEFF_LIMIT) ? MAP_FUNCTION_Y_FX : MAP_FUNCTION_X_FY;
+        type = (abs(a) <= MAP_TRACK_A_COEFF_LIMIT) ? MAP_FUNCTION_Y_FX : MAP_FUNCTION_X_FY;
     }
     else if(curr.Y != prev.Y)
     {
         a = ((float)(curr.X-prev.X)) / ((float)(curr.Y-prev.Y));
-        type = (a <= MAP_TRACK_A_COEFF_LIMIT) ? MAP_FUNCTION_X_FY : MAP_FUNCTION_Y_FX;
+        type = (abs(a) <= MAP_TRACK_A_COEFF_LIMIT) ? MAP_FUNCTION_X_FY : MAP_FUNCTION_Y_FX;
     }
 
     switch (type)

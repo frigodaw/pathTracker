@@ -33,7 +33,7 @@ AppActivityScreenPresenter::AppActivityScreenPresenter(AppActivityScreenView& v)
 
     appInternalData.state = APP_STATE_INIT;
     appInternalData.screen = APP_SCREEN_MAIN;
-    appInternalData.maxDistancePerSecond = APP_DISTANCE_MAXVALUE_PERSEC;
+    appInternalData.maxDistancePerSecond = APP_DISTANCE_MAXVALUE_KM_S;
     appInternalData.maxSlopePerSecond = APP_SLOPE_MAXVALUE_PERSEC;
     appInternalData.mainTimePeriod = APP_MAINPERIOD_MS;
     appInternalData.callCounter = APP_MAX_CALL_COUNTER;
@@ -52,7 +52,7 @@ AppActivityScreenPresenter::AppActivityScreenPresenter(AppActivityScreenView& v)
 
 void AppActivityScreenPresenter::activate()
 {
-    uint16_t scaleVal = GetScaleValue(trackData.scale);
+    uint32_t scaleVal = GetScaleValue();
     view.SetTrackScale(scaleVal);
 
     model->SignalRequestFromPresenter();
@@ -177,10 +177,13 @@ void AppActivityScreenPresenter::Main(void)
             if(appInternalData.callCounter >= APP_MAX_CALL_COUNTER)
             {
                 appInternalData.callCounter = 0u;
+                appInternalData.fileCounter++;
 
                  /* Gps related method can execute only if signal is fixed */
                 if(true == IsFix())
                 {
+                    FilterCoords();
+
                     InsertDataIntoFile();
 
                     CalculateSpeedAndDistance();
@@ -190,6 +193,14 @@ void AppActivityScreenPresenter::Main(void)
 
                 DrawTrack();
             }
+
+            if(appInternalData.fileCounter >= APP_MAX_FILE_COUNTER)
+            {
+                appInternalData.fileCounter= 0u;
+
+                SaveFile();
+            }
+            
         }
     }
     else if(APP_FILE_PENDING == fileInfo.fileStatus)
@@ -226,10 +237,11 @@ void AppActivityScreenPresenter::InsertDataIntoFile(void)
     AppActivity_floatToInt_T lon = {0u};
     AppActivity_floatToInt_T alt = {0u};
 
-    AddCoordsToTrackList(gpsSignals.latitude, gpsSignals.longitude);
+    SaveCoordsInCcmRam(gpsSignals.latitudeFiltered, gpsSignals.longitudeFiltered);
+    FindMaxCoords(gpsSignals.latitudeFiltered, gpsSignals.longitudeFiltered);
 
-    ConvertFloatToInt(gpsSignals.latitude,  lat, APP_LATLON_PRECISION);
-    ConvertFloatToInt(gpsSignals.longitude, lon, APP_LATLON_PRECISION);
+    ConvertFloatToInt(gpsSignals.latitudeFiltered,  lat, APP_LATLON_PRECISION);
+    ConvertFloatToInt(gpsSignals.longitudeFiltered, lon, APP_LATLON_PRECISION);
     ConvertFloatToInt(sensorData.altitude,  alt, APP_ALTI_PRECISION);
 
 #ifdef APP_GPXFILE_SHORTMODE
@@ -341,21 +353,29 @@ void AppActivityScreenPresenter::UpdateSignalSdCard(void)
 }
 
 
+float AppActivityScreenPresenter::CalculateDistance(float lat, float lon, float lastLat, float lastLon)
+{
+    float distance = sqrtf( POW2( (lat - lastLat) ) + 
+                            POW2( (cosf(lastLat * APP_DISTANCE_COEFF_TORAD) * (lon - lastLon) ) ) 
+                          ) * APP_DISTANCE_COEFF_TONUM;
+
+    return distance;
+}
+
+
 /* Method called to calculate total distance and speed. */
 void AppActivityScreenPresenter::CalculateSpeedAndDistance(void)
 {
     static float lastLat = 0.f;
     static float lastLon = 0.f;
 
-    if((0.f == lastLat) || (0.f == lastLon))
+    if(APP_DISTANCE_MIN_POINTS_NUM > fileInfo.points)
     {
-        /* Do not proceed on first entry */
+        /* Do not proceed on first entry when there is no enough points */
     }
     else
     {
-        float distance = sqrtf( POW2( (gpsSignals.latitude - lastLat) ) + 
-                                POW2( (cosf(lastLat * APP_DISTANCE_COEFF_TORAD) * (gpsSignals.longitude - lastLon) ) ) ) *
-                            APP_DISTANCE_COEFF_TONUM;
+        float distance = CalculateDistance(gpsSignals.latitudeFiltered, gpsSignals.longitudeFiltered, lastLat, lastLon);
 
         /* To prevent calculation and data acquisition mistakes */
         if(appInternalData.maxDistancePerSecond > distance)
@@ -375,8 +395,8 @@ void AppActivityScreenPresenter::CalculateSpeedAndDistance(void)
         view.NotifySignalChanged_activityData_maxSpeed(activityData.maxSpeed);
     }
 
-    lastLat = gpsSignals.latitude;
-    lastLon = gpsSignals.longitude;
+    lastLat = gpsSignals.latitudeFiltered;
+    lastLon = gpsSignals.longitudeFiltered;
 }
 
 
@@ -559,23 +579,33 @@ void AppActivityScreenPresenter::UpdateAltitude(void)
    saved in gpx file. */
 void AppActivityScreenPresenter::DrawTrack(void)
 {
-    MapCoordinates();
-
     if(APP_SCREEN_MAP == appInternalData.screen)
     {
-        uint16_t scaleVal = GetScaleValue(trackData.scale);
-        view.FlushTrackList();
+        uint8_t addedPoints = 0u;
+        uint8_t skip = CalculateSkippedCoords();
+        uint32_t scaleVal = GetScaleValue();
         view.SetTrackScale(scaleVal);
+        view.FlushTrackList();
 
-        for (uint16_t idx = 0u; idx < trackPointsData.idxTrack; idx++)
+        MapCenterCoordinates();
+
+        for (uint16_t idx = trackPointsData.idxTrack; ((idx > 0u) && (APP_TRACK_MAP_ELEMENTS > addedPoints)) ; idx--)
         {
             bool coordsInView = CoordsInView(trackPointsData.coords[idx]);
 
             if(true == coordsInView)
             {
                 AppActivity_coordinatesXY_T coordsXY = MapGPSCoordsToXY(trackPointsData.coords[idx]);
-                view.AddCoordsToTrackList(coordsXY);
+                bool newPoint = view.AddCoordsToTrackList(coordsXY);
+
+                if(true == newPoint)
+                {
+                    addedPoints++;
+                }
             }
+
+            /* Skip some points depending on selected scale */
+            idx = (idx > skip) ? (idx - skip) : idx;
         }
 
         view.TrackRedraw();
@@ -619,6 +649,48 @@ void AppActivityScreenPresenter::DrawTrack(void)
         retVal = FS_LseekEnd((FS_File_T**)&fileInfo.filePtr);
 #endif
     }
+}
+
+
+/* Function called to calculate number of coords to skip during
+   selecting points to draw. */
+uint8_t AppActivityScreenPresenter::CalculateSkippedCoords(void)
+{
+    uint8_t skip = 0u;
+
+    if(APP_TRACK_MAP_ELEMENTS > fileInfo.points)   /* Do not skip when there is less points than maximum possible to draw */
+    {
+        skip = 0u;
+    }
+    else
+    {
+        switch(trackData.scale)
+        {
+            case APP_TRACK_SCALE50:
+                skip = APP_TRACK_SKIPPED_COORDS_50;
+                break;
+            case APP_TRACK_SCALE100:
+                skip = APP_TRACK_SKIPPED_COORDS_100;
+                break;
+            case APP_TRACK_SCALE500:
+                skip = APP_TRACK_SKIPPED_COORDS_500;
+                break;
+            case APP_TRACK_SCALE1000:
+                skip = APP_TRACK_SKIPPED_COORDS_1000;
+                break;
+            case APP_TRACK_SCALE5000:
+                skip = APP_TRACK_SKIPPED_COORDS_5000;
+                break;
+            case APP_TRACK_SCALEFULL:
+                skip = (uint8_t)(fileInfo.points / APP_TRACK_MAP_ELEMENTS);
+                break;
+            default:
+                skip = 0u;
+                break;
+        }
+    }
+
+    return skip;
 }
 
 
@@ -697,12 +769,20 @@ bool AppActivityScreenPresenter::CoordsInView(AppActivity_coordinatesGPS_T coord
 
 /* Method called to find latitude and longitude to corresponding
    corners of a display. */
-void AppActivityScreenPresenter::MapCoordinates(void)
+void AppActivityScreenPresenter::MapCenterCoordinates(void)
 {
-    float scaleDistCoeff = MapScaleToDistance(trackData.scale);
+    float scaleDistCoeff = MapScaleToDistance();
 
-    trackData.mapCoordsGPS.center.lat = gpsSignals.latitude;
-    trackData.mapCoordsGPS.center.lon = gpsSignals.longitude;
+    if(APP_TRACK_SCALEFULL == trackData.scale)
+    {
+        trackData.mapCoordsGPS.center.lat = trackData.maxCoordsGPS.center.lat;
+        trackData.mapCoordsGPS.center.lon = trackData.maxCoordsGPS.center.lon;
+    }
+    else
+    {
+        trackData.mapCoordsGPS.center.lat = gpsSignals.latitudeFiltered;
+        trackData.mapCoordsGPS.center.lon = gpsSignals.longitudeFiltered;
+    }
 
     trackData.mapCoordsGPS.upLeft = MapXYCoordsToGPS(trackData.mapCoordsXY->upLeft, scaleDistCoeff);
     trackData.mapCoordsGPS.upRight = MapXYCoordsToGPS(trackData.mapCoordsXY->upRight, scaleDistCoeff);
@@ -712,11 +792,11 @@ void AppActivityScreenPresenter::MapCoordinates(void)
 
 
 /* Function called to get scale value from enum indicator. */
-uint16_t AppActivityScreenPresenter::GetScaleValue(AppActivity_trackScale_T scaleEnum)
+uint32_t AppActivityScreenPresenter::GetScaleValue(void)
 {
-    uint16_t scaleVal = 0u;
+    uint32_t scaleVal = 0u;
 
-    switch (scaleEnum)
+    switch (trackData.scale)
     {
         case APP_TRACK_SCALE50:
             scaleVal = APP_TRACK_SCALE_50;
@@ -734,7 +814,7 @@ uint16_t AppActivityScreenPresenter::GetScaleValue(AppActivity_trackScale_T scal
             scaleVal = APP_TRACK_SCALE_5000;
             break;
         case APP_TRACK_SCALEFULL:
-            scaleVal = 0u;
+            scaleVal = CalculateFullScale();
             break;
         default:
             scaleVal = APP_TRACK_SCALE_ERROR;
@@ -745,14 +825,32 @@ uint16_t AppActivityScreenPresenter::GetScaleValue(AppActivity_trackScale_T scal
 }
 
 
+/* Method called to calculate scale value for full
+   track view. */
+uint32_t AppActivityScreenPresenter::CalculateFullScale(void)
+{
+    uint32_t scaleVal = 0.f;
+    float maxDist = 0.f;
+
+    /* Calculate maximum width and heigth of track in meters */
+    float maxHeigth = CalculateDistance(trackData.maxCoordsGPS.N.lat, trackData.maxCoordsGPS.N.lon, trackData.maxCoordsGPS.S.lat, trackData.maxCoordsGPS.S.lon);
+    float maxWidth  = CalculateDistance(trackData.maxCoordsGPS.E.lat, trackData.maxCoordsGPS.E.lon, trackData.maxCoordsGPS.W.lat, trackData.maxCoordsGPS.W.lon);
+
+    maxDist = (maxHeigth > maxWidth) ? maxHeigth : maxWidth;
+    scaleVal = (uint32_t)(maxDist * (float)APP_TRACK_SCALE_COEFF_M_IN_KM / APP_TRACK_SCALE_FULL_COEFFVIEW);
+
+    return scaleVal;
+}
+
+
 /* Method called to map enum scale to corresponding value
    in kilometers. */
-float AppActivityScreenPresenter::MapScaleToDistance(AppActivity_trackScale_T scaleEnum)
+float AppActivityScreenPresenter::MapScaleToDistance(void)
 {
-    float scaleDist = (float)GetScaleValue(scaleEnum);
+    float scaleDist = (float)GetScaleValue();
 
     /* Scale to 1px per x km */
-    scaleDist /= (float)(APP_TRACK_SCALE_WIDTH_PX * APP_TRACK_SCALE_COEFF_MINKM);
+    scaleDist /= (float)(APP_TRACK_SCALE_WIDTH_PX * APP_TRACK_SCALE_COEFF_M_IN_KM);
 
     return scaleDist;
 }
@@ -846,8 +944,8 @@ uint32_t AppActivityScreenPresenter::CalculateFileOffset(uint16_t points)
 }
 
 
-/* Method called to add new coords to track list safely. */
-void AppActivityScreenPresenter::AddCoordsToTrackList(float lat, float lon)
+/* Method called to save new coords to track list safely. */
+void AppActivityScreenPresenter::SaveCoordsInCcmRam(float lat, float lon)
 {
     if((trackPointsData.idxTrack + 1u) < trackPointsData.idxMap)
     {
@@ -869,6 +967,103 @@ void AppActivityScreenPresenter::AddCoordsToTrackList(float lat, float lon)
         trackPointsData.coords[0u].lat = 0.f;
         trackPointsData.coords[0u].lon = 0.f;
     }
+}
+
+
+/* Method called to find extreme locations. */
+void AppActivityScreenPresenter::FindMaxCoords(float lat, float lon)
+{
+    bool calcNewCenter = false;
+
+    if((0.f == trackData.maxCoordsGPS.N.lat) && (0.f == trackData.maxCoordsGPS.E.lon) && 
+       (0.f == trackData.maxCoordsGPS.W.lon) && (0.f == trackData.maxCoordsGPS.S.lat))
+    {
+        /* Assign current coords to all maxs during first call */
+        trackData.maxCoordsGPS.N.lat = lat;
+        trackData.maxCoordsGPS.N.lon = lon;
+        trackData.maxCoordsGPS.E.lat = lat;
+        trackData.maxCoordsGPS.E.lon = lon;
+        trackData.maxCoordsGPS.W.lat = lat;
+        trackData.maxCoordsGPS.W.lon = lon;
+        trackData.maxCoordsGPS.S.lat = lat;
+        trackData.maxCoordsGPS.S.lon = lon;
+        calcNewCenter = true;
+    }
+    else
+    {
+        if(lat > trackData.maxCoordsGPS.N.lat)
+        {
+            trackData.maxCoordsGPS.N.lat = lat;
+            trackData.maxCoordsGPS.N.lon = lon;
+            calcNewCenter = true;
+        }
+        else if(lon > trackData.maxCoordsGPS.E.lon)
+        {
+            trackData.maxCoordsGPS.E.lat = lat;
+            trackData.maxCoordsGPS.E.lon = lon;
+            calcNewCenter = true;
+        }
+        else if(lon < trackData.maxCoordsGPS.W.lon)
+        {
+            trackData.maxCoordsGPS.W.lat = lat;
+            trackData.maxCoordsGPS.W.lon = lon;
+            calcNewCenter = true;
+        }
+        else if(lat < trackData.maxCoordsGPS.S.lat)
+        {
+            trackData.maxCoordsGPS.S.lat = lat;
+            trackData.maxCoordsGPS.S.lon = lon;
+            calcNewCenter = true;
+        }
+    }
+
+    if(true == calcNewCenter)
+    {
+        trackData.maxCoordsGPS.center.lat = (trackData.maxCoordsGPS.N.lat + trackData.maxCoordsGPS.S.lat) / APP_TRACK_MEANTWO_COEEF;
+        trackData.maxCoordsGPS.center.lon = (trackData.maxCoordsGPS.E.lon + trackData.maxCoordsGPS.W.lon) / APP_TRACK_MEANTWO_COEEF;
+    }
+}
+
+
+/* Method called to filter out wrong coordinates
+   by selecting median from set. */
+void AppActivityScreenPresenter::FilterCoords(void)
+{
+    static float lat[APP_COORDS_FILTER_ARR_SIZE] = {0.f};
+    static float lon[APP_COORDS_FILTER_ARR_SIZE] = {0.f};
+    static uint8_t idx = APP_COORDS_FILTER_IDX_INIT;
+
+    if(APP_COORDS_FILTER_IDX_INIT == idx)
+    {
+        for(uint8_t i = 0u; i < APP_COORDS_FILTER_IDX_INIT; i++)
+        {
+            lat[i] = gpsSignals.latitude;
+            lon[i] = gpsSignals.longitude;
+        }
+        idx = 0u;
+    }
+    else
+    {
+        lat[idx] = gpsSignals.latitude;
+        lon[idx] = gpsSignals.longitude;
+
+        gpsSignals.latitudeFiltered = MedianFromArray(lat, APP_COORDS_FILTER_ARR_SIZE);
+        gpsSignals.longitudeFiltered = MedianFromArray(lon, APP_COORDS_FILTER_ARR_SIZE);
+
+        idx = (idx >= (APP_COORDS_FILTER_ARR_SIZE - 1u)) ? 0u : (idx + 1u);
+    }
+}
+
+
+/* Method called to close and reopen gpx file.
+   This behaviour should prevent unexpected loss of data. */
+void AppActivityScreenPresenter::SaveFile(void)
+{
+    uint8_t retVal = FS_CloseFile((FS_File_T**)&fileInfo.filePtr);
+    fileInfo.fileStatus = (RET_OK == retVal) ? APP_FILE_CLOSED : APP_FILE_ERROR;
+
+    retVal = FS_OpenFile((FS_File_T**)&fileInfo.filePtr, fileInfo.name, FS_MODEAPPEND);
+    fileInfo.fileStatus = (RET_OK == retVal) ? APP_FILE_CREATED : APP_FILE_ERROR;
 }
 
 /* Method called to collect signals from Model:

@@ -64,7 +64,8 @@ typedef enum
 {
     FS_NOMODE,
     FS_MODEREAD,
-    FS_MODEWRITE
+    FS_MODEWRITE,
+    FS_MODEAPPEND
 }FS_fileMode;
 /* END OF THE ENUM AREA */
 

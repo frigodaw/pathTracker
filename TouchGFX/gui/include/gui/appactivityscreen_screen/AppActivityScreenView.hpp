@@ -26,8 +26,8 @@ public:
     void ShowSdCard(bool isSdCard);
 
     void FlushTrackList(void);
-    void SetTrackScale(uint16_t scaleVal);
-    void AddCoordsToTrackList(AppActivity_coordinatesXY_T coordsXY);
+    void SetTrackScale(uint32_t scaleVal);
+    bool AddCoordsToTrackList(AppActivity_coordinatesXY_T coordsXY);
     void TrackRedraw(void);
 
     void NotifySignalChanged_gpsData_fixQuality(uint8_t newFixQuality);

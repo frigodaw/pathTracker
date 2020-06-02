@@ -125,16 +125,17 @@ void AppActivityScreenView::FlushTrackList(void)
 }
 
 
-void AppActivityScreenView::SetTrackScale(uint16_t scaleVal)
+void AppActivityScreenView::SetTrackScale(uint32_t scaleVal)
 {
     ActivityDataCC_Map.SetTrackScale(scaleVal);
 }
 
 
-void AppActivityScreenView::AddCoordsToTrackList(AppActivity_coordinatesXY_T coordsXY)
+bool AppActivityScreenView::AddCoordsToTrackList(AppActivity_coordinatesXY_T coordsXY)
 {
-    ActivityDataCC_Map.AddCoordsToTrackList(coordsXY.X, coordsXY.Y);
+    bool newPoint = ActivityDataCC_Map.AddCoordsToTrackList(coordsXY.X, coordsXY.Y);
     ActivityDataCC_Map.invalidate();
+    return newPoint;
 }
 
 void AppActivityScreenView::TrackRedraw(void)

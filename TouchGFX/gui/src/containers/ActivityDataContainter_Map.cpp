@@ -23,7 +23,7 @@ void ActivityDataContainter_Map::FlushTrackList(void)
 }
 
 
-void ActivityDataContainter_Map::SetTrackScale(uint16_t scaleVal)
+void ActivityDataContainter_Map::SetTrackScale(uint32_t scaleVal)
 {
     Map.SetTrackScale(scaleVal);
 
@@ -46,9 +46,10 @@ void ActivityDataContainter_Map::SetTrackScale(uint16_t scaleVal)
 }
 
 
-void ActivityDataContainter_Map::AddCoordsToTrackList(uint8_t x, uint8_t y)
+bool ActivityDataContainter_Map::AddCoordsToTrackList(uint8_t x, uint8_t y)
 {
-    Map.AddCoordsToTrackList(x, y);
+    bool newPoint = Map.AddCoordsToTrackList(x, y);
+    return newPoint;
 }
 
 

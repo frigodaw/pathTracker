@@ -11,9 +11,10 @@
 #define MAP_ELEMENT_SIZE_COMMON             3u
 #define MAP_ELEMENT_SIZE_X                  MAP_ELEMENT_SIZE_COMMON
 #define MAP_ELEMENT_SIZE_Y                  MAP_ELEMENT_SIZE_COMMON
-#define MAP_TRACK_DRAWABLE_ELEMENTS         128u
+#define MAP_TRACK_DRAWABLE_ELEMENTS         100u
 #define MAP_EMPTYSLOT_VALUE                 255u
 #define MAP_TRACK_A_COEFF_LIMIT             1.f
+#define MAP_TRACK_COLOR_CHANGE_INTERVAL     128u
 
 #define MAP_SCALE_LINE_LENGTH_PX            100u
 #define MAP_SCALE_LINE_HEIGTH_PX            5u
@@ -37,8 +38,8 @@ typedef enum
 /* START OF THE STRUCT AREA */
 typedef struct
 {
-    uint8_t X;
-    uint8_t Y;
+    uint16_t X;
+    uint16_t Y;
 }Map_CoordinatesXY_T;
 
 typedef struct
@@ -66,8 +67,8 @@ public:
     virtual touchgfx::Rect getSolidRect() const;
 
     void FlushTrackList(void);
-    void AddCoordsToTrackList(uint8_t x, uint8_t y);
-    void SetTrackScale(uint16_t scaleVal);
+    bool AddCoordsToTrackList(uint8_t x, uint8_t y);
+    void SetTrackScale(uint32_t scaleVal);
 
     void SetMesh(void);
     Map_CoordinatesXY_T MapCoordsToMesh(uint8_t x, uint8_t y);
@@ -77,7 +78,7 @@ public:
 private:
     Map_TrackList_T trackList;
     Map_MeshInfo_T meshInfo;
-    uint16_t scale;
+    uint32_t scale;
     uint16_t backgroundColor;
     uint16_t trackColor;
     uint16_t lineColor;

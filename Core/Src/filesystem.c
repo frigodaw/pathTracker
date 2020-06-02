@@ -11,9 +11,6 @@
 /* Main file system variable */
 static FATFS fs = {0u};
 
-/* Component's buffer to read and write data to and from a test file */
-//static uint8_t fsBuffer[FS_BUFFSIZE] = {0u};
-
 /* Variable to store currently opened read and write file */
 static FS_FilesCollection_T files = {0u};
 
@@ -118,6 +115,10 @@ uint8_t FS_OpenFile(FS_File_T** file, FS_FullPathType path, FS_fileMode mode)
             break;
         case FS_MODEWRITE:
             fileMode = FA_READ | FA_WRITE | FA_CREATE_ALWAYS;
+            *file = &(files.out);
+            break;
+        case FS_MODEAPPEND:
+            fileMode = FA_READ | FA_WRITE | FA_OPEN_APPEND;
             *file = &(files.out);
             break;
         
@@ -336,7 +337,7 @@ FRESULT FS_ReadDir(FS_Dir_T* dir)
             memset(&fileInfo, 0u, sizeof(fileInfo));
             fresult |= f_readdir(&openedDir, &fileInfo);
 
-            if((0u != fileInfo.fsize) || (0u != fileInfo.fdate))
+            if((0u != fileInfo.fsize) || (0u != fileInfo.fdate) || (0u != fileInfo.ftime) || (0u != fileInfo.fattrib))
             {
                 /* Due to memory issues, save names only for the first FS_SAVEDFILESNUM files */
                 //if(i < FS_SAVEDFILESNUM)
