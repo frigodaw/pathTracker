@@ -52,7 +52,7 @@ using namespace touchgfx;
 #define APP_TIMER_COEFF_TOSEC       APP_MAX_CALL_COUNTER
 
 #define APP_TRACK_WINDOW_WIDTH_PX       240u
-#define APP_TRACK_WINDOW_HEIGHT_PX      225u
+#define APP_TRACK_WINDOW_HEIGHT_PX      205u
 #define APP_TRACK_WINDOW_MID_X          ((uint8_t)((APP_TRACK_WINDOW_WIDTH_PX)/(2u)))
 #define APP_TRACK_WINDOW_MID_Y          ((uint8_t)((APP_TRACK_WINDOW_HEIGHT_PX)/(2u)))
 #define APP_TRACK_WINDOW_UPLEFT_X       0u
@@ -83,15 +83,20 @@ using namespace touchgfx;
 #define APP_TRACK_SKIPPED_COORDS_500    1u
 #define APP_TRACK_SKIPPED_COORDS_1000   2u
 #define APP_TRACK_SKIPPED_COORDS_5000   5u
+#define APP_TRACK_SKIP_DRAWN_POINTS_BOTTOM_LIMIT    120u
+#define APP_TRACK_SKIP_DRAWN_POINTS_UPPER_LIMIT     190u
+#define APP_TRACK_SKIP_MAX_VALUE        255u
 
 #define APP_TRACK_FILE_HEADEROFFSET     180u
 #define APP_TRACK_FILE_DATAOFFSET       101u
 #define APP_TRACK_FILE_READLINES        32u
 
-#define APP_TRACK_MAP_ELEMENTS          100u
+#define APP_TRACK_MAP_ELEMENTS          200u
 #define APP_TRACK_COMMONARRAY_LENGTH    8192uL
 #define APP_TRACK_TRACK_FIRST_ELEMENT   0u
 #define APP_TRACK_MAP_FIRST_ELEMENT     (APP_TRACK_COMMONARRAY_LENGTH - 1uL)
+#define APP_TRACK_SKIP_BOTTOM_LIMIT     1u
+#define APP_TRACK_MAP_OFFSET_FOR_TRACK  1u
 
 #define APP_COORDS_FILTER_ARR_SIZE      3u
 #define APP_COORDS_FILTER_IDX_INIT      255u
@@ -154,9 +159,7 @@ typedef enum
 typedef struct
 {
     float latitude;
-    float latitudeFiltered;
     float longitude;
-    float longitudeFiltered;
     float altitude;
     uint8_t timeSec;
     uint8_t timeMin;
@@ -270,6 +273,8 @@ typedef struct
     AppActivity_maxCoordsGPS_T maxCoordsGPS;
     AppActivity_mapCoordsXY_T  *mapCoordsXY;
     AppActivity_trackScale_T   scale;
+    uint8_t                    addedPoints;
+    uint8_t                    skip;
 }AppActivity_trackData_T;
 
 typedef struct
@@ -277,6 +282,7 @@ typedef struct
     AppActivity_coordinatesGPS_T *coords;
     uint16_t idxTrack;
     uint16_t idxMap;
+    bool     overflow;
 }AppActivity_trackPointsData_T;
 /* END OF THE STRUCT AREA */
 
@@ -319,7 +325,7 @@ public:
     uint32_t GetScaleValue(void);
     uint32_t CalculateFullScale(void);
     float MapScaleToDistance(void);
-    uint8_t CalculateSkippedCoords(void);
+    void CalculateSkippedCoords(void);
     AppActivity_coordinatesGPS_T MapXYCoordsToGPS(AppActivity_coordinatesXY_T coords, float scaleCoeff);
     AppActivity_coordinatesGPS_T GetCoordsGPSFromBuffer(uint8_t* buffer, uint8_t size);
     bool CoordsInView(AppActivity_coordinatesGPS_T coords);

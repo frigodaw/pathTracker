@@ -31,15 +31,27 @@ void ActivityDataContainter_Map::SetTrackScale(uint32_t scaleVal)
 
     if(scaleVal >= MAPDATACONTAINER_SCALE_THRESHOLD)
     {
-        scaleVal /= MAPDATACONTAINER_SCALE_THRESHOLD;
         Unicode::fromUTF8((const uint8_t*)"km", unit, SCALETEXTBOXBUFFER2_SIZE);
+
+        /* Detect thousands */
+        if((scaleVal % MAPDATACONTAINER_SCALE_THRESHOLD) == 0)
+        {
+            scaleVal /= MAPDATACONTAINER_SCALE_THRESHOLD;
+            Unicode::snprintf(ScaleTextBoxBuffer1, SCALETEXTBOXBUFFER1_SIZE, "%d", scaleVal);
+        }
+        /* Detect custom scale and round to hundreds */
+        else
+        {
+            float floatScaleVal = (float)(((uint32_t)(scaleVal / MAPDATACONTAINER_SCALE_THRESHOLD_FULLVIEW_COEEF1)) / MAPDATACONTAINER_SCALE_THRESHOLD_FULLVIEW_COEEF2);
+            Unicode::snprintfFloats(ScaleTextBoxBuffer1, SCALETEXTBOXBUFFER1_SIZE, "%#.1f", &floatScaleVal);
+        }
     }
     else
     {
         Unicode::fromUTF8((const uint8_t*)"m", unit, SCALETEXTBOXBUFFER2_SIZE);
+        Unicode::snprintf(ScaleTextBoxBuffer1, SCALETEXTBOXBUFFER1_SIZE, "%d", scaleVal);
     }
 
-    Unicode::snprintf(ScaleTextBoxBuffer1, SCALETEXTBOXBUFFER1_SIZE, "%d", scaleVal);
     Unicode::snprintf(ScaleTextBoxBuffer2, SCALETEXTBOXBUFFER2_SIZE, "%s", unit);
 
     TrackRedraw();

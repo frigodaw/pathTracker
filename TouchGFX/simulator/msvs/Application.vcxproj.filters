@@ -190,12 +190,6 @@
     <Filter Include="Source Files\gui\debuggpsdatascreen_screen">
       <UniqueIdentifier>C8EF9368-8088-3398-B797-3C73EDF45F2B</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\gui\debugdrawscreen_screen">
-      <UniqueIdentifier>177CCCF6-CF09-4566-F497-BB299B3AAEFB</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\gui\debugdrawscreen_screen">
-      <UniqueIdentifier>B9B0B757-7304-C5CC-8B93-8E2CD03ACA9C</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source Files\generated\gui_generated\debuggpsdatascreen_screen">
       <UniqueIdentifier>4183A9D7-8047-889F-5F6F-450E8718157F</UniqueIdentifier>
     </Filter>
@@ -296,12 +290,6 @@
     </ClCompile>
     <ClCompile Include="..\..\generated\gui_generated\src\appmenuscreen_screen\AppMenuScreenViewBase.cpp">
       <Filter>Source Files\generated\gui_generated\appmenuscreen_screen</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\gui\src\debugdrawscreen_screen\DebugDrawScreenPresenter.cpp">
-      <Filter>Source Files\gui\debugdrawscreen_screen</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\gui\src\debugdrawscreen_screen\DebugDrawScreenView.cpp">
-      <Filter>Source Files\gui\debugdrawscreen_screen</Filter>
     </ClCompile>
     <ClCompile Include="..\..\gui\src\debuggpsdatascreen_screen\DebugGpsDataScreenPresenter.cpp">
       <Filter>Source Files\gui\debuggpsdatascreen_screen</Filter>
@@ -831,12 +819,6 @@
     </ClInclude>
     <ClInclude Include="..\..\generated\gui_generated\include\gui_generated\appmenuscreen_screen\AppMenuScreenViewBase.hpp">
       <Filter>Header Files\generated\gui_generated\appmenuscreen_screen</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\gui\include\gui\debugdrawscreen_screen\DebugDrawScreenPresenter.hpp">
-      <Filter>Header Files\gui\debugdrawscreen_screen</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\gui\include\gui\debugdrawscreen_screen\DebugDrawScreenView.hpp">
-      <Filter>Header Files\gui\debugdrawscreen_screen</Filter>
     </ClInclude>
     <ClInclude Include="..\..\gui\include\gui\debuggpsdatascreen_screen\DebugGpsDataScreenPresenter.hpp">
       <Filter>Header Files\gui\debuggpsdatascreen_screen</Filter>

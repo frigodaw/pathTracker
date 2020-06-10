@@ -26,8 +26,6 @@
     <ClCompile Include="..\..\gui\src\appmenuscreen_screen\AppMenuScreenPresenter.cpp"/>
     <ClCompile Include="..\..\gui\src\appmenuscreen_screen\AppMenuScreenView.cpp"/>
     <ClCompile Include="..\..\generated\gui_generated\src\appmenuscreen_screen\AppMenuScreenViewBase.cpp"/>
-    <ClCompile Include="..\..\gui\src\debugdrawscreen_screen\DebugDrawScreenPresenter.cpp"/>
-    <ClCompile Include="..\..\gui\src\debugdrawscreen_screen\DebugDrawScreenView.cpp"/>
     <ClCompile Include="..\..\gui\src\debuggpsdatascreen_screen\DebugGpsDataScreenPresenter.cpp"/>
     <ClCompile Include="..\..\gui\src\debuggpsdatascreen_screen\DebugGpsDataScreenView.cpp"/>
     <ClCompile Include="..\..\generated\gui_generated\src\debuggpsdatascreen_screen\DebugGpsDataScreenViewBase.cpp"/>
@@ -207,8 +205,6 @@
     <ClInclude Include="..\..\gui\include\gui\appmenuscreen_screen\AppMenuScreenPresenter.hpp"/>
     <ClInclude Include="..\..\gui\include\gui\appmenuscreen_screen\AppMenuScreenView.hpp"/>
     <ClInclude Include="..\..\generated\gui_generated\include\gui_generated\appmenuscreen_screen\AppMenuScreenViewBase.hpp"/>
-    <ClInclude Include="..\..\gui\include\gui\debugdrawscreen_screen\DebugDrawScreenPresenter.hpp"/>
-    <ClInclude Include="..\..\gui\include\gui\debugdrawscreen_screen\DebugDrawScreenView.hpp"/>
     <ClInclude Include="..\..\gui\include\gui\debuggpsdatascreen_screen\DebugGpsDataScreenPresenter.hpp"/>
     <ClInclude Include="..\..\gui\include\gui\debuggpsdatascreen_screen\DebugGpsDataScreenView.hpp"/>
     <ClInclude Include="..\..\generated\gui_generated\include\gui_generated\debuggpsdatascreen_screen\DebugGpsDataScreenViewBase.hpp"/>

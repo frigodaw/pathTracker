@@ -39,7 +39,7 @@ void Map::draw(const touchgfx::Rect& invalidatedArea) const
     {
         Map_CoordinatesXY_T prev = {0u};
         Map_CoordinatesXY_T curr = {0u};
-        Map_CoordinatesXY_T lineCoords = {0u};
+        Map_CoordinatesXY_U16_T lineCoords = {0u};
         Map_FunctionType_T funcType = MAP_FUNCTION_INVALID;
         float a = 0.f;
         float b = 0.f;
@@ -95,8 +95,8 @@ void Map::draw(const touchgfx::Rect& invalidatedArea) const
         {
             for (int x = 0u; x < meshInfo.elementDimension.X; x++)
             {
-                xVal = absolute.x + trackList.coords[i].X * meshInfo.elementDimension.X + x;
-                yVal = absolute.y + trackList.coords[i].Y * meshInfo.elementDimension.Y + y;
+                xVal = absolute.x + (uint16_t)(trackList.coords[i].X * meshInfo.elementDimension.X) + x;
+                yVal = absolute.y + (uint16_t)(trackList.coords[i].Y * meshInfo.elementDimension.Y) + y;
                 framebuffer[xVal + (yVal) * touchgfx::HAL::DISPLAY_WIDTH] = trackColor;
             }
         }

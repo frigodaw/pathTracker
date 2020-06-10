@@ -2555,7 +2555,7 @@
             },
             "Name": "ScaleTextBox",
             "X": 0,
-            "Y": 195,
+            "Y": 205,
             "Width": 240,
             "Height": 20,
             "Type": "TextArea",

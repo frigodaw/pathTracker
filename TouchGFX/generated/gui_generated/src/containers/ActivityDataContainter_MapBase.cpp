@@ -9,7 +9,7 @@ ActivityDataContainter_MapBase::ActivityDataContainter_MapBase()
 {
     setWidth(240);
     setHeight(225);
-    ScaleTextBox.setPosition(0, 195, 240, 20);
+    ScaleTextBox.setPosition(0, 205, 240, 20);
     ScaleTextBox.setColor(touchgfx::Color::getColorFrom24BitRGB(0, 0, 0));
     ScaleTextBox.setLinespacing(0);
     touchgfx::Unicode::snprintf(ScaleTextBoxBuffer1, SCALETEXTBOXBUFFER1_SIZE, "%s", touchgfx::TypedText(T_SINGLEUSEID222).getText());

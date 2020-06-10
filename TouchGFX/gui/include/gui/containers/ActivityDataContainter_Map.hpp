@@ -4,7 +4,9 @@
 #include <gui_generated/containers/ActivityDataContainter_MapBase.hpp>
 #include <touchgfx/widgets/Map.hpp>
 
-#define MAPDATACONTAINER_SCALE_THRESHOLD        1000u
+#define MAPDATACONTAINER_SCALE_THRESHOLD                    1000u
+#define MAPDATACONTAINER_SCALE_THRESHOLD_FULLVIEW_COEEF1    100u
+#define MAPDATACONTAINER_SCALE_THRESHOLD_FULLVIEW_COEEF2    10u
 
 class ActivityDataContainter_Map : public ActivityDataContainter_MapBase
 {

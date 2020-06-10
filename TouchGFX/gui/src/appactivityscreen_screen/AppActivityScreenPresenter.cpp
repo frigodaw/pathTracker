@@ -237,11 +237,11 @@ void AppActivityScreenPresenter::InsertDataIntoFile(void)
     AppActivity_floatToInt_T lon = {0u};
     AppActivity_floatToInt_T alt = {0u};
 
-    SaveCoordsInCcmRam(gpsSignals.latitudeFiltered, gpsSignals.longitudeFiltered);
-    FindMaxCoords(gpsSignals.latitudeFiltered, gpsSignals.longitudeFiltered);
+    SaveCoordsInCcmRam(gpsSignals.latitude, gpsSignals.longitude);
+    FindMaxCoords(gpsSignals.latitude, gpsSignals.longitude);
 
-    ConvertFloatToInt(gpsSignals.latitudeFiltered,  lat, APP_LATLON_PRECISION);
-    ConvertFloatToInt(gpsSignals.longitudeFiltered, lon, APP_LATLON_PRECISION);
+    ConvertFloatToInt(gpsSignals.latitude,  lat, APP_LATLON_PRECISION);
+    ConvertFloatToInt(gpsSignals.longitude, lon, APP_LATLON_PRECISION);
     ConvertFloatToInt(sensorData.altitude,  alt, APP_ALTI_PRECISION);
 
 #ifdef APP_GPXFILE_SHORTMODE
@@ -375,7 +375,7 @@ void AppActivityScreenPresenter::CalculateSpeedAndDistance(void)
     }
     else
     {
-        float distance = CalculateDistance(gpsSignals.latitudeFiltered, gpsSignals.longitudeFiltered, lastLat, lastLon);
+        float distance = CalculateDistance(gpsSignals.latitude, gpsSignals.longitude, lastLat, lastLon);
 
         /* To prevent calculation and data acquisition mistakes */
         if(appInternalData.maxDistancePerSecond > distance)
@@ -395,8 +395,8 @@ void AppActivityScreenPresenter::CalculateSpeedAndDistance(void)
         view.NotifySignalChanged_activityData_maxSpeed(activityData.maxSpeed);
     }
 
-    lastLat = gpsSignals.latitudeFiltered;
-    lastLon = gpsSignals.longitudeFiltered;
+    lastLat = gpsSignals.latitude;
+    lastLon = gpsSignals.longitude;
 }
 
 
@@ -581,12 +581,13 @@ void AppActivityScreenPresenter::DrawTrack(void)
 {
     if(APP_SCREEN_MAP == appInternalData.screen)
     {
+        bool firstCycle = true;
         uint8_t addedPoints = 0u;
-        uint8_t skip = CalculateSkippedCoords();
         uint32_t scaleVal = GetScaleValue();
         view.SetTrackScale(scaleVal);
         view.FlushTrackList();
 
+        CalculateSkippedCoords();
         MapCenterCoordinates();
 
         for (uint16_t idx = trackPointsData.idxTrack; ((idx > 0u) && (APP_TRACK_MAP_ELEMENTS > addedPoints)) ; idx--)
@@ -604,10 +605,20 @@ void AppActivityScreenPresenter::DrawTrack(void)
                 }
             }
 
+            /* Set index to 0 if array was overflowed */
+            if((APP_TRACK_SKIP_BOTTOM_LIMIT >= idx) && (true == trackPointsData.overflow) && (true == firstCycle))
+            {
+                idx = trackPointsData.idxMap - APP_TRACK_MAP_OFFSET_FOR_TRACK;
+                firstCycle = false;
+            }
             /* Skip some points depending on selected scale */
-            idx = (idx > skip) ? (idx - skip) : idx;
+            else if((idx > trackData.skip) && ((uint16_t)(idx - trackData.skip) > APP_TRACK_SKIP_BOTTOM_LIMIT))
+            {
+                idx -= trackData.skip;
+            }
         }
 
+        trackData.addedPoints = addedPoints;
         view.TrackRedraw();
 
 #if 0
@@ -654,43 +665,62 @@ void AppActivityScreenPresenter::DrawTrack(void)
 
 /* Function called to calculate number of coords to skip during
    selecting points to draw. */
-uint8_t AppActivityScreenPresenter::CalculateSkippedCoords(void)
+void AppActivityScreenPresenter::CalculateSkippedCoords(void)
 {
-    uint8_t skip = 0u;
-
     if(APP_TRACK_MAP_ELEMENTS > fileInfo.points)   /* Do not skip when there is less points than maximum possible to draw */
     {
-        skip = 0u;
+        trackData.skip = 0u;
     }
-    else
+    else /* Calculate skip value based on previous results */
     {
-        switch(trackData.scale)
+        /* Small amount of points */
+        if (trackData.addedPoints < APP_TRACK_SKIP_DRAWN_POINTS_BOTTOM_LIMIT)
         {
-            case APP_TRACK_SCALE50:
-                skip = APP_TRACK_SKIPPED_COORDS_50;
-                break;
-            case APP_TRACK_SCALE100:
-                skip = APP_TRACK_SKIPPED_COORDS_100;
-                break;
-            case APP_TRACK_SCALE500:
-                skip = APP_TRACK_SKIPPED_COORDS_500;
-                break;
-            case APP_TRACK_SCALE1000:
-                skip = APP_TRACK_SKIPPED_COORDS_1000;
-                break;
-            case APP_TRACK_SCALE5000:
-                skip = APP_TRACK_SKIPPED_COORDS_5000;
-                break;
-            case APP_TRACK_SCALEFULL:
-                skip = (uint8_t)(fileInfo.points / APP_TRACK_MAP_ELEMENTS);
-                break;
-            default:
-                skip = 0u;
-                break;
+            if(trackData.skip == 0u)
+            {
+                /* Select default skip value */
+                switch(trackData.scale)
+                {
+                    case APP_TRACK_SCALE50:
+                        trackData.skip = APP_TRACK_SKIPPED_COORDS_50;
+                        break;
+                    case APP_TRACK_SCALE100:
+                        trackData.skip = APP_TRACK_SKIPPED_COORDS_100;
+                        break;
+                    case APP_TRACK_SCALE500:
+                        trackData.skip = APP_TRACK_SKIPPED_COORDS_500;
+                        break;
+                    case APP_TRACK_SCALE1000:
+                        trackData.skip = APP_TRACK_SKIPPED_COORDS_1000;
+                        break;
+                    case APP_TRACK_SCALE5000:
+                        trackData.skip = APP_TRACK_SKIPPED_COORDS_5000;
+                        break;
+                    case APP_TRACK_SCALEFULL:
+                        trackData.skip = (uint8_t)(fileInfo.points / APP_TRACK_MAP_ELEMENTS);
+                        break;
+                    default:
+                        trackData.skip = 0u;
+                        break;
+                }
+            }
+            else
+            {
+                trackData.skip -= 1u;
+            }
+            trackData.skip = (trackData.skip != 0u) ? (trackData.skip - 1u) : 0u;
+        }
+        /* Enough points */
+        else if((trackData.addedPoints >= APP_TRACK_SKIP_DRAWN_POINTS_BOTTOM_LIMIT) && (trackData.addedPoints < APP_TRACK_SKIP_DRAWN_POINTS_UPPER_LIMIT))
+        {
+
+        }
+        /* Too much points */
+        else
+        {
+            trackData.skip = (trackData.skip != APP_TRACK_SKIP_MAX_VALUE) ? (trackData.skip + 1u) : 0u;
         }
     }
-
-    return skip;
 }
 
 
@@ -780,8 +810,8 @@ void AppActivityScreenPresenter::MapCenterCoordinates(void)
     }
     else
     {
-        trackData.mapCoordsGPS.center.lat = gpsSignals.latitudeFiltered;
-        trackData.mapCoordsGPS.center.lon = gpsSignals.longitudeFiltered;
+        trackData.mapCoordsGPS.center.lat = gpsSignals.latitude;
+        trackData.mapCoordsGPS.center.lon = gpsSignals.longitude;
     }
 
     trackData.mapCoordsGPS.upLeft = MapXYCoordsToGPS(trackData.mapCoordsXY->upLeft, scaleDistCoeff);
@@ -963,6 +993,7 @@ void AppActivityScreenPresenter::SaveCoordsInCcmRam(float lat, float lon)
     }
     else
     {
+        trackPointsData.overflow = true;
         trackPointsData.idxTrack = 0u;
         trackPointsData.coords[0u].lat = 0.f;
         trackPointsData.coords[0u].lon = 0.f;
@@ -1035,23 +1066,22 @@ void AppActivityScreenPresenter::FilterCoords(void)
 
     if(APP_COORDS_FILTER_IDX_INIT == idx)
     {
-        for(uint8_t i = 0u; i < APP_COORDS_FILTER_IDX_INIT; i++)
+        for(uint8_t i = 0u; i < APP_COORDS_FILTER_ARR_SIZE; i++)
         {
             lat[i] = gpsSignals.latitude;
             lon[i] = gpsSignals.longitude;
         }
         idx = 0u;
     }
-    else
-    {
-        lat[idx] = gpsSignals.latitude;
-        lon[idx] = gpsSignals.longitude;
 
-        gpsSignals.latitudeFiltered = MedianFromArray(lat, APP_COORDS_FILTER_ARR_SIZE);
-        gpsSignals.longitudeFiltered = MedianFromArray(lon, APP_COORDS_FILTER_ARR_SIZE);
+    lat[idx] = gpsSignals.latitude;
+    lon[idx] = gpsSignals.longitude;
 
-        idx = (idx >= (APP_COORDS_FILTER_ARR_SIZE - 1u)) ? 0u : (idx + 1u);
-    }
+    gpsSignals.latitude = MedianFromArray(lat, APP_COORDS_FILTER_ARR_SIZE);
+    gpsSignals.longitude = MedianFromArray(lon, APP_COORDS_FILTER_ARR_SIZE);
+
+    idx = (idx >= (APP_COORDS_FILTER_ARR_SIZE - 1u)) ? 0u : (idx + 1u);
+
 }
 
 

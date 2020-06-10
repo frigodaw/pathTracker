@@ -8,10 +8,10 @@
 
 
 /* START OF THE DEFINE AREA */
-#define MAP_ELEMENT_SIZE_COMMON             3u
+#define MAP_ELEMENT_SIZE_COMMON             4u
 #define MAP_ELEMENT_SIZE_X                  MAP_ELEMENT_SIZE_COMMON
 #define MAP_ELEMENT_SIZE_Y                  MAP_ELEMENT_SIZE_COMMON
-#define MAP_TRACK_DRAWABLE_ELEMENTS         100u
+#define MAP_TRACK_DRAWABLE_ELEMENTS         200u
 #define MAP_EMPTYSLOT_VALUE                 255u
 #define MAP_TRACK_A_COEFF_LIMIT             1.f
 #define MAP_TRACK_COLOR_CHANGE_INTERVAL     128u
@@ -21,7 +21,7 @@
 #define MAP_SCALE_INNER_LINE_LENGTH_PX      96u
 #define MAP_SCALE_INNER_LINE_HEIGTH_PX      3u
 #define MAP_SCALE_LINE_DIV_COEFF            2u
-#define MAP_SCALE_LOCATION_ABOVE_BOTTOM_PX  10u
+#define MAP_SCALE_LOCATION_ABOVE_BOTTOM_PX  0u
 /* END OF THE DEFINE AREA */
 
 
@@ -38,9 +38,15 @@ typedef enum
 /* START OF THE STRUCT AREA */
 typedef struct
 {
+    uint8_t X;
+    uint8_t Y;
+}Map_CoordinatesXY_T;
+
+typedef struct
+{
     uint16_t X;
     uint16_t Y;
-}Map_CoordinatesXY_T;
+}Map_CoordinatesXY_U16_T;
 
 typedef struct
 {
