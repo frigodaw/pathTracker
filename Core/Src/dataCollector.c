@@ -11,6 +11,7 @@
 #include "neoGps.h"
 #include "fileSystem.h"
 #include "envSensors.h"
+#include "settings.h"
 
 /* -------------------- main -------------------- */
 /*  File: main.c
@@ -349,3 +350,36 @@ float DC_get_sensorData_temperature(void)
     return sensorData.temperature;
 }
 /* -------------------- envSensors -------------------- */
+
+
+
+/* -------------------- settings -------------------- */
+/*  File: AppSettingsScreenPresenter.c
+    Type: getter
+    Variable: settingsData.value[SETTINGS_ID_TIMEZONE]
+*/
+uint8_t DC_get_appSettings_settingsData_value_timezone(void)
+{
+    return settingsData.value[SETTINGS_ID_TIMEZONE];
+}
+
+
+/*  File: AppSettingsScreenPresenter.c
+    Type: getter
+    Variable: settingsData.value[SETTINGS_ID_MESH_SIZE]
+*/
+uint8_t DC_get_appSettings_settingsData_value_meshsize(void)
+{
+    return settingsData.value[SETTINGS_ID_MESH_SIZE];
+}
+
+
+/*  File: AppSettingsScreenPresenter.c
+    Type: getter
+    Variable: settingsData.value[SETTINGS_ID_SENSORS]
+*/
+uint8_t DC_get_appSettings_settingsData_value_sensors(void)
+{
+    return settingsData.value[SETTINGS_ID_SENSORS];
+}
+/* -------------------- settings -------------------- */

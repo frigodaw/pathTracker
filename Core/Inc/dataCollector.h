@@ -76,6 +76,11 @@ uint8_t  DC_get_fileSystem_dirInfo_out_filesNum(void);
 float    DC_get_sensorData_altitude(void);
 float    DC_get_sensorData_pressure(void);
 float    DC_get_sensorData_temperature(void);
+
+/* ---------- settings ---------- */
+uint8_t  DC_get_appSettings_settingsData_value_timezone(void);
+uint8_t  DC_get_appSettings_settingsData_value_meshsize(void);
+uint8_t  DC_get_appSettings_settingsData_value_sensors(void);
 /* END OF THE FUNCTIONS PROTOTYPES AREA */
 
 # ifdef __cplusplus

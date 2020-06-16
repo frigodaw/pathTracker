@@ -244,6 +244,18 @@
     <Filter Include="Header Files\generated\gui_generated\debugenvsensorsscreen_screen">
       <UniqueIdentifier>2663E68C-6B6E-9A6A-6B13-4ACDDB89B6B3</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\gui\appsettingsscreen_screen">
+      <UniqueIdentifier>0E28530B-267F-3A77-3D5D-0ECEDBBC7F9B</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\gui\appsettingsscreen_screen">
+      <UniqueIdentifier>54F85E47-2E97-6291-B731-7DE1F67E25FD</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\generated\gui_generated\appsettingsscreen_screen">
+      <UniqueIdentifier>232BC58F-15E3-E11E-5B2D-E246F17FB0C9</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\generated\gui_generated\appsettingsscreen_screen">
+      <UniqueIdentifier>FAF25D98-5239-8406-719D-2D4BB4C2C0E6</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="$(TouchGFXReleasePath)\framework\source\platform\driver\touch\SDL2TouchController.cpp">
@@ -367,6 +379,21 @@
       <Filter>Source Files\gui\containers</Filter>
     </ClCompile>
     <ClCompile Include="..\..\generated\gui_generated\src\containers\ActivityDataContainter_MapBase.cpp">
+      <Filter>Source Files\generated\gui_generated\containers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\gui\src\appsettingsscreen_screen\AppSettingsScreenPresenter.cpp">
+      <Filter>Source Files\gui\appsettingsscreen_screen</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\gui\src\appsettingsscreen_screen\AppSettingsScreenView.cpp">
+      <Filter>Source Files\gui\appsettingsscreen_screen</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\generated\gui_generated\src\appsettingsscreen_screen\AppSettingsScreenViewBase.cpp">
+      <Filter>Source Files\generated\gui_generated\appsettingsscreen_screen</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\gui\src\containers\SettingsContainter.cpp">
+      <Filter>Source Files\gui\containers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\generated\gui_generated\src\containers\SettingsContainterBase.cpp">
       <Filter>Source Files\generated\gui_generated\containers</Filter>
     </ClCompile>
   </ItemGroup>
@@ -896,6 +923,21 @@
       <Filter>Header Files\gui\containers</Filter>
     </ClInclude>
     <ClInclude Include="..\..\generated\gui_generated\include\gui_generated\containers\ActivityDataContainter_MapBase.hpp">
+      <Filter>Header Files\generated\gui_generated\containers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\gui\include\gui\appsettingsscreen_screen\AppSettingsScreenPresenter.hpp">
+      <Filter>Header Files\gui\appsettingsscreen_screen</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\gui\include\gui\appsettingsscreen_screen\AppSettingsScreenView.hpp">
+      <Filter>Header Files\gui\appsettingsscreen_screen</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\generated\gui_generated\include\gui_generated\appsettingsscreen_screen\AppSettingsScreenViewBase.hpp">
+      <Filter>Header Files\generated\gui_generated\appsettingsscreen_screen</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\gui\include\gui\containers\SettingsContainter.hpp">
+      <Filter>Header Files\gui\containers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\generated\gui_generated\include\gui_generated\containers\SettingsContainterBase.hpp">
       <Filter>Header Files\generated\gui_generated\containers</Filter>
     </ClInclude>
   </ItemGroup>

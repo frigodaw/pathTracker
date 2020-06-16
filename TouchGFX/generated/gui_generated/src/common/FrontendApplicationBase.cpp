@@ -21,6 +21,8 @@
 #include <gui/debugsdcardscreen_screen/DebugSdCardScreenPresenter.hpp>
 #include <gui/debugenvsensorsscreen_screen/DebugEnvSensorsScreenView.hpp>
 #include <gui/debugenvsensorsscreen_screen/DebugEnvSensorsScreenPresenter.hpp>
+#include <gui/appsettingsscreen_screen/AppSettingsScreenView.hpp>
+#include <gui/appsettingsscreen_screen/AppSettingsScreenPresenter.hpp>
 
 using namespace touchgfx;
 
@@ -115,4 +117,17 @@ void FrontendApplicationBase::gotoDebugEnvSensorsScreenScreenNoTransition()
 void FrontendApplicationBase::gotoDebugEnvSensorsScreenScreenNoTransitionImpl()
 {
     touchgfx::makeTransition<DebugEnvSensorsScreenView, DebugEnvSensorsScreenPresenter, touchgfx::NoTransition, Model >(&currentScreen, &currentPresenter, frontendHeap, &currentTransition, &model);
+}
+
+// AppSettingsScreen
+
+void FrontendApplicationBase::gotoAppSettingsScreenScreenNoTransition()
+{
+    transitionCallback = touchgfx::Callback<FrontendApplicationBase>(this, &FrontendApplication::gotoAppSettingsScreenScreenNoTransitionImpl);
+    pendingScreenTransitionCallback = &transitionCallback;
+}
+
+void FrontendApplicationBase::gotoAppSettingsScreenScreenNoTransitionImpl()
+{
+    touchgfx::makeTransition<AppSettingsScreenView, AppSettingsScreenPresenter, touchgfx::NoTransition, Model >(&currentScreen, &currentPresenter, frontendHeap, &currentTransition, &model);
 }

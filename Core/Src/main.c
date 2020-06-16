@@ -36,6 +36,7 @@
 #include "stm32f429i_discovery_gyroscope.h"
 #include "bmp280.h"
 #include "envSensors.h"
+#include "settings.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -172,9 +173,9 @@ int main(void)
   MX_TouchGFX_Init();
   /* USER CODE BEGIN 2 */
   Gps_Init();
+  Settings_Init();
   Main_Init();
-  //Main_SensorsInit();
-  BSP_GYRO_Init();
+  Main_SensorsInit();
   FS_Init();
   /* USER CODE END 2 */
 
@@ -1049,8 +1050,7 @@ void DefaultTask(void const * argument)
   for(;;)
   {
     FS_Main();
-    //EnvSensors_Main();
-    //BSP_GYRO_GetXYZ(gyro_xyz);
+    EnvSensors_Main();
     DC_inc_main_cnt_c_defaultTask();
     osDelay(1000);
   }

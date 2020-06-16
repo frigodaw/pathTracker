@@ -23,6 +23,10 @@
         "cstdio": "cpp",
         "stdio.h": "c",
         "*.rh": "c",
-        "cstdlib": "cpp"
+        "cstdlib": "cpp",
+        "system_error": "cpp",
+        "xtr1common": "cpp",
+        "xlocale": "cpp",
+        "xiosbase": "cpp"
     }
 }

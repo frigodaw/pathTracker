@@ -69,11 +69,13 @@ using namespace touchgfx;
 #define APP_TRACK_SCALE_WIDTH_PX        100u
 #define APP_TRACK_SCALE_COEFF_M_IN_KM   1000uL
 
+#define APP_TRACK_SCALE_MIN             1u
 #define APP_TRACK_SCALE_50              50u
 #define APP_TRACK_SCALE_100             100u
 #define APP_TRACK_SCALE_500             500u
 #define APP_TRACK_SCALE_1000            1000uL
 #define APP_TRACK_SCALE_5000            5000uL
+#define APP_TRACK_SCALE_10000           10000uL
 #define APP_TRACK_SCALE_FULL_COEFFVIEW  1.75f
 #define APP_TRACK_SCALE_FULL_COEFFROUND 1000uL
 #define APP_TRACK_SCALE_ERROR           0u
@@ -83,6 +85,7 @@ using namespace touchgfx;
 #define APP_TRACK_SKIPPED_COORDS_500    1u
 #define APP_TRACK_SKIPPED_COORDS_1000   2u
 #define APP_TRACK_SKIPPED_COORDS_5000   5u
+#define APP_TRACK_SKIPPED_COORDS_10000  10u
 #define APP_TRACK_SKIP_DRAWN_POINTS_BOTTOM_LIMIT    120u
 #define APP_TRACK_SKIP_DRAWN_POINTS_UPPER_LIMIT     190u
 #define APP_TRACK_SKIP_MAX_VALUE        255u
@@ -101,6 +104,33 @@ using namespace touchgfx;
 #define APP_COORDS_FILTER_ARR_SIZE      3u
 #define APP_COORDS_FILTER_IDX_INIT      255u
 
+#define APP_TIMEZONE_HR_MIN             0
+#define APP_TIMEZONE_HR_MAX             23
+#define APP_TIMEZONE_HR_FULLDAY         24
+#define APP_TIMEZONE_NUMOFMONTHS        12u
+#define APP_TIMEZONE_DAYS_JAN           31u
+#define APP_TIMEZONE_DAYS_FEB           28u
+#define APP_TIMEZONE_DAYS_MAR           31u
+#define APP_TIMEZONE_DAYS_APR           30u
+#define APP_TIMEZONE_DAYS_MAY           31u
+#define APP_TIMEZONE_DAYS_JUN           30u
+#define APP_TIMEZONE_DAYS_JUL           31u
+#define APP_TIMEZONE_DAYS_AUG           31u
+#define APP_TIMEZONE_DAYS_SEP           30u
+#define APP_TIMEZONE_DAYS_OCT           31u
+#define APP_TIMEZONE_DAYS_NOV           30u
+#define APP_TIMEZONE_DAYS_DEC           31u
+#define APP_TIMEZONE_FILL_THOUSANDS     2000u
+#define APP_TIMEZONE_MOD_4              4u
+#define APP_TIMEZONE_MOD_100            100u
+#define APP_TIMEZONE_MOD_400            400u
+#define APP_TIMEZONE_LEAPYEAR_FEB_ADD   1u
+#define APP_TIMEZONE_FIRST_DAY          1u
+#define APP_TIMEZONE_MONTH_JANUARY      1u
+#define APP_TIMEZONE_MONTH_FEBRUARY     2u
+#define APP_TIMEZONE_MONTH_DECEMBER     12u
+#define APP_TIMEZONE_INIT_YEAR          0u
+#define APP_TIMEZONE_MAX_YEAR           99u
 /* END OF THE DEFINE AREA */
 
 
@@ -140,6 +170,7 @@ typedef enum
     APP_TRACK_SCALE500,
     APP_TRACK_SCALE1000,
     APP_TRACK_SCALE5000,
+    APP_TRACK_SCALE10000,
     APP_TRACK_SCALEFULL,
     APP_TRACK_MAX_SCALE
 }AppActivity_trackScale_T;
@@ -152,6 +183,19 @@ typedef enum
     APP_TRACK_LONEND,
     APP_TRACK_FOUNDALL
 }AppActivity_trackCoordsFromBuffer_T;
+
+typedef enum
+{
+    APP_ALTI_GPS,
+    APP_ALTI_SENSORS
+}AppActivity_altitudeSource_T;
+
+typedef enum
+{
+    APP_TIMEZONE_NOCHANGE_DAY,
+    APP_TIMEZONE_DECREMENT_DAY,
+    APP_TIMEZONE_INCREMENT_DAY
+}AppActivity_timezoneDateChange_T;
 /* END OF THE ENUM AREA */
 
 
@@ -182,6 +226,12 @@ typedef struct
 
 typedef struct
 {
+    float *ptrValue;
+    AppActivity_altitudeSource_T altiSrc;
+}AppActivity_altitudeInfo_T;
+
+typedef struct
+{
     uint8_t state;
 }AppActivity_sdCardData_T;
 typedef struct
@@ -205,8 +255,8 @@ typedef struct
     float slope;
     float slopeMax;
     float altitude;
-    int32_t altiUp;
-    int32_t altiDown;
+    float altiUp;
+    float altiDown;
     int32_t altiMax;
 }AppActivity_activityData_T;
 
@@ -220,6 +270,8 @@ typedef struct
     uint8_t  fileCounter;
     AppActivity_activeScreen_T screen;
     AppActivity_activityState_T state;
+    bool     sensorEnabled;
+    int8_t   timezone;
 }AppActivity_appInternalData_T;
 
 typedef struct
@@ -284,6 +336,26 @@ typedef struct
     uint16_t idxMap;
     bool     overflow;
 }AppActivity_trackPointsData_T;
+
+typedef struct
+{
+    uint8_t sec;
+    uint8_t min;
+    uint8_t hr;
+}AppActivity_time_T;
+
+typedef struct
+{
+    uint8_t year;
+    uint8_t mon;
+    uint8_t day;
+}AppActivity_date_T;
+
+typedef struct
+{
+    AppActivity_time_T time;
+    AppActivity_date_T date;
+}AppActivity_calendar_T;
 /* END OF THE STRUCT AREA */
 
 
@@ -316,6 +388,7 @@ public:
     float CalculateDistance(float lat, float lon, float lastLat, float lastLon);
     void CalculateAltitude(void);
     void IncrementTimer(void);
+    void ApplyTimezone(void);
     void UpdateTime(void);
     void UpdateAltitude(void);
     template <typename T> T MedianFromArray(T* array, const uint8_t size);
@@ -336,6 +409,9 @@ public:
     void FindMaxCoords(float lat, float lon);
     void SaveFile(void);
     void FilterCoords(void);
+    void SelectAltitudeSource(void);
+    void ApplyDate(AppActivity_timezoneDateChange_T dateChange);
+    bool IsLeapYear(uint16_t year);
 
 
     void NotifySignalChanged_gpsData_latitude(float newLatitude);
@@ -364,6 +440,8 @@ private:
     AppActivity_appInternalData_T   appInternalData;
     AppActivity_trackData_T         trackData;
     AppActivity_trackPointsData_T   trackPointsData;
+    AppActivity_altitudeInfo_T      altitudeInfo;
+    AppActivity_calendar_T          calendar;
 };
 
 #endif // APPACTIVITYSCREENPRESENTER_HPP

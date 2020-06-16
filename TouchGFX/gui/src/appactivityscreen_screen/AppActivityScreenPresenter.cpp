@@ -10,6 +10,12 @@
 uint32_t timeDiff = 0u;
 uint32_t timeMaxDiff = 0u;
 
+/* Const array containg number of days per each month. */
+static const uint8_t daysInMon[APP_TIMEZONE_NUMOFMONTHS] = { APP_TIMEZONE_DAYS_JAN, APP_TIMEZONE_DAYS_FEB, APP_TIMEZONE_DAYS_MAR,
+                                                     APP_TIMEZONE_DAYS_APR, APP_TIMEZONE_DAYS_MAY, APP_TIMEZONE_DAYS_JUN,
+                                                     APP_TIMEZONE_DAYS_JUL, APP_TIMEZONE_DAYS_AUG, APP_TIMEZONE_DAYS_SEP,
+                                                     APP_TIMEZONE_DAYS_OCT, APP_TIMEZONE_DAYS_NOV, APP_TIMEZONE_DAYS_DEC };
+
 /* Common array to store lat and lon coordinates recorded during activity 
    and from preloaded .gpx file. First part is for tracked coords, second one 
    for points to navigate. */
@@ -30,6 +36,8 @@ AppActivityScreenPresenter::AppActivityScreenPresenter(AppActivityScreenView& v)
     memset(&gpsSignals, 0u, sizeof(gpsSignals));
     memset(&sensorData, 0u, sizeof(sensorData));
     memset(&trackData, 0u, sizeof(trackData));
+    memset(&altitudeInfo, 0u, sizeof(altitudeInfo));
+    memset(&calendar, 0u, sizeof(calendar));
 
     appInternalData.state = APP_STATE_INIT;
     appInternalData.screen = APP_SCREEN_MAIN;
@@ -37,6 +45,8 @@ AppActivityScreenPresenter::AppActivityScreenPresenter(AppActivityScreenView& v)
     appInternalData.maxSlopePerSecond = APP_SLOPE_MAXVALUE_PERSEC;
     appInternalData.mainTimePeriod = APP_MAINPERIOD_MS;
     appInternalData.callCounter = APP_MAX_CALL_COUNTER;
+    appInternalData.sensorEnabled = false;
+    appInternalData.timezone = DC_get_appSettings_settingsData_value_timezone();
 
     fileInfo.fileStatus = APP_FILE_NOFILE;
 
@@ -47,6 +57,7 @@ AppActivityScreenPresenter::AppActivityScreenPresenter(AppActivityScreenView& v)
     trackPointsData.idxTrack = APP_TRACK_TRACK_FIRST_ELEMENT;
     trackPointsData.idxMap = APP_TRACK_MAP_FIRST_ELEMENT;
 
+    SelectAltitudeSource();
     SetBitmapButton(BITMAP_BLUE_ICONS_PLAY_32_ID);
 }
 
@@ -98,8 +109,8 @@ void AppActivityScreenPresenter::InitActivity(void)
         appInternalData.lastTime = DC_get_main_tim_t_100ms();
 
         snprintf(fileInfo.name, APP_FILENAMEMAXLEN, "%s/20%.2d%.2d%.2d_%.2d%.2d%.2d.gpx",
-                FS_OUTPUTPATH, gpsSignals.dateYear, gpsSignals.dateMon, gpsSignals.dateDay,
-                gpsSignals.timeHr, gpsSignals.timeMin, gpsSignals.timeSec);
+                FS_OUTPUTPATH, calendar.date.year, calendar.date.mon, calendar.date.day,
+                calendar.time.hr, calendar.time.min, calendar.time.sec);
 
         uint8_t retVal = FS_OpenFile((FS_File_T**)&fileInfo.filePtr, fileInfo.name, FS_MODEWRITE);
         if(RET_OK == retVal)
@@ -242,13 +253,13 @@ void AppActivityScreenPresenter::InsertDataIntoFile(void)
 
     ConvertFloatToInt(gpsSignals.latitude,  lat, APP_LATLON_PRECISION);
     ConvertFloatToInt(gpsSignals.longitude, lon, APP_LATLON_PRECISION);
-    ConvertFloatToInt(sensorData.altitude,  alt, APP_ALTI_PRECISION);
+    ConvertFloatToInt(*altitudeInfo.ptrValue,  alt, APP_ALTI_PRECISION);
 
 #ifdef APP_GPXFILE_SHORTMODE
     snprintf((char*)buffer, APP_MAXFILEBUFFERSIZE,
         "\t\t\t<trkpt lat=\"%d.%.*lu\" lon=\"%d.%.*lu\"><ele>%d.%.*lu</ele><time>20%.2d-%.2d-%.2dT%.2d:%.2d:%.2d.000Z</time></trkpt>\n",
         lat.sint, APP_LATLON_PRECISION, lat.frac, lon.sint, APP_LATLON_PRECISION, lon.frac, alt.sint, APP_ALTI_PRECISION, alt.frac,
-        gpsSignals.dateYear, gpsSignals.dateMon, gpsSignals.dateDay, gpsSignals.timeHr, gpsSignals.timeMin, gpsSignals.timeSec);
+        calendar.date.year, calendar.date.mon, calendar.date.day, calendar.time.hr, calendar.time.min, calendar.time.sec);
     fileInfo.errorStatus = FS_WriteFile((FS_File_T*)fileInfo.filePtr, (uint8_t*)buffer);
 
 #else   /* Default saving mode */
@@ -262,7 +273,7 @@ void AppActivityScreenPresenter::InsertDataIntoFile(void)
     snprintf((char*)buffer, APP_MAXFILEBUFFERSIZE,
         "\t\t\t\t<time>20%.2d-%.2d-%.2dT%.2d:%.2d:%.2d.000Z</time>\n"
         "\t\t\t</trkpt>\n",
-        gpsSignals.dateYear, gpsSignals.dateMon, gpsSignals.dateDay, gpsSignals.timeHr, gpsSignals.timeMin, gpsSignals.timeSec);
+        calendar.date.year, calendar.date.mon, calendar.date.day, calendar.time.hr, calendar.time.min, calendar.time.sec);
     fileInfo.errorStatus = FS_WriteFile((FS_File_T*)fileInfo.filePtr, (uint8_t*)buffer);
 #endif
 
@@ -407,7 +418,7 @@ void AppActivityScreenPresenter::CalculateAltitude(void)
     static float   lastDist[APP_ALTI_INTERVAL] = {0u};
     static float   lastAlti[APP_ALTI_INTERVAL] = {0u};
     static float   lastDistance = activityData.distance;
-    static float   lastAltitude = sensorData.altitude;
+    static float   lastAltitude = *altitudeInfo.ptrValue;
 
     if(APP_ALTI_INTERVAL == idx)
     {
@@ -415,14 +426,14 @@ void AppActivityScreenPresenter::CalculateAltitude(void)
         for(uint8_t i=0u; i < APP_ALTI_INTERVAL; i++)
         {
             lastDist[i] = 0.f;
-            lastAlti[i] = sensorData.altitude;
+            lastAlti[i] = *altitudeInfo.ptrValue;
         }
         idx = 0u;
     }
 
     /* Add new data to cyclic buffer */
     lastDist[idx] = activityData.distance;
-    lastAlti[idx] = sensorData.altitude;
+    lastAlti[idx] = *altitudeInfo.ptrValue;
 
     //float currDistance = MedianFromArray<float>(lastDist, APP_ALTI_INTERVAL);
     //float currAltitude = MedianFromArray<float>(lastAlti, APP_ALTI_INTERVAL);
@@ -460,8 +471,8 @@ void AppActivityScreenPresenter::CalculateAltitude(void)
     {
         view.NotifySignalChanged_activityData_altitude(activityData.altitude);
         view.NotifySignalChanged_activityData_slope(activityData.slope);
-        view.NotifySignalChanged_activityData_altiUp(activityData.altiUp);
-        view.NotifySignalChanged_activityData_altiDown(activityData.altiDown);
+        view.NotifySignalChanged_activityData_altiUp((int32_t)activityData.altiUp);
+        view.NotifySignalChanged_activityData_altiDown((int32_t)activityData.altiDown);
         view.NotifySignalChanged_activityData_altiMax(activityData.altiMax);
         view.NotifySignalChanged_activityData_slopeMax(activityData.slopeMax);
     }
@@ -550,10 +561,109 @@ void AppActivityScreenPresenter::IncrementTimer(void)
 }
 
 
+/* Method called to consider time zone during time and date
+   calculations. */
+void AppActivityScreenPresenter::ApplyTimezone(void)
+{
+    AppActivity_timezoneDateChange_T dateChange = APP_TIMEZONE_NOCHANGE_DAY;
+    int8_t newTimeHr = (int8_t)gpsSignals.timeHr + appInternalData.timezone;
+
+    if((APP_TIMEZONE_HR_MIN <= newTimeHr) && (newTimeHr <= APP_TIMEZONE_HR_MAX))
+    {
+        /* Nothing to change, time is between 0 and 23 */
+        dateChange = APP_TIMEZONE_NOCHANGE_DAY;
+    }
+    else if(APP_TIMEZONE_HR_MIN > newTimeHr)
+    {
+        newTimeHr += APP_TIMEZONE_HR_FULLDAY;
+        dateChange = APP_TIMEZONE_DECREMENT_DAY;
+    }
+    else /* newTimeHr > APP_TIMEZONE_HR_MAX */
+    {
+        newTimeHr -= APP_TIMEZONE_HR_FULLDAY;
+        dateChange = APP_TIMEZONE_INCREMENT_DAY;
+    }
+
+    calendar.time.hr = (uint8_t)newTimeHr;
+    calendar.time.min = gpsSignals.timeMin;
+    calendar.time.sec = gpsSignals.timeSec;
+
+    ApplyDate(dateChange);
+}
+
+
+/* Method called to set new date according to current timezone
+   and date from gps. */
+void AppActivityScreenPresenter::ApplyDate(AppActivity_timezoneDateChange_T dateChange)
+{
+    uint8_t day = gpsSignals.dateDay;
+    uint8_t mon = gpsSignals.dateMon;
+    uint8_t year = gpsSignals.dateYear;
+    bool isLeapYear = IsLeapYear(year);
+    uint8_t leapOffset = 0u;
+
+    switch (dateChange)
+    {
+        case APP_TIMEZONE_NOCHANGE_DAY:
+            break;
+
+        case APP_TIMEZONE_DECREMENT_DAY:
+            if(gpsSignals.dateDay <= APP_TIMEZONE_FIRST_DAY)            /* Day is the first day of month, month needs to be decremented too */
+            {
+                if(gpsSignals.dateMon <= APP_TIMEZONE_MONTH_JANUARY)    /* Month is the first month of year, year needs to be decremented too */
+                {
+                    mon = APP_TIMEZONE_MONTH_DECEMBER;
+                    year = (year != APP_TIMEZONE_INIT_YEAR) ? (year - 1u) : APP_TIMEZONE_INIT_YEAR;
+                    isLeapYear = IsLeapYear(year);
+                }
+                else    /* Month is not the first month in year */
+                {
+                    mon--;
+                }
+                leapOffset = ((true == isLeapYear) && (APP_TIMEZONE_MONTH_FEBRUARY == mon)) ? APP_TIMEZONE_LEAPYEAR_FEB_ADD : 0u;
+                day = daysInMon[mon-1u] + leapOffset;
+            }
+            else    /* Day is not the first day */
+            {
+                day--;
+            }
+            break;
+
+        case APP_TIMEZONE_INCREMENT_DAY:
+            leapOffset = ((true == isLeapYear) && (APP_TIMEZONE_MONTH_FEBRUARY == mon)) ? 1u : 0u;
+            if(gpsSignals.dateDay >= (daysInMon[mon-1u] + leapOffset))     /* Day is the last day of month, month needs to be incremented too */
+            {
+                day = APP_TIMEZONE_FIRST_DAY;
+                if(gpsSignals.dateMon >= APP_TIMEZONE_MONTH_DECEMBER)   /* Month is the last month of year, year needs to be incremented too */
+                {
+                    mon = APP_TIMEZONE_MONTH_JANUARY;
+                    year = (year != APP_TIMEZONE_MAX_YEAR) ? (year + 1u) : APP_TIMEZONE_MAX_YEAR;
+                }
+                else    /* Month is not the last month in year */
+                {
+                    mon++;
+                }
+            }
+            else    /* Day is not the last day */
+            {
+                day++;
+            }
+            break;
+
+        default:
+            break;
+    }
+
+    calendar.date.year = year;
+    calendar.date.mon = mon;
+    calendar.date.day = day;
+}
+
+
 /* Method called to update activity time (clock). */
 void AppActivityScreenPresenter::UpdateTime(void)
 {
-    activityData.time = gpsSignals.timeHr * APP_TIME_COEFF2 + gpsSignals.timeMin * APP_TIME_COEFF1 + gpsSignals.timeSec;
+    activityData.time = calendar.time.hr * APP_TIME_COEFF2 + calendar.time.min * APP_TIME_COEFF1 + calendar.time.sec;
 
     if(APP_SCREEN_MAIN == appInternalData.screen)
     {
@@ -569,7 +679,7 @@ void AppActivityScreenPresenter::UpdateAltitude(void)
     {
         if((APP_SCREEN_ALTI == appInternalData.screen) || (APP_STATE_INIT == appInternalData.state))
         {
-            view.NotifySignalChanged_sensorData_altitude(sensorData.altitude);
+            view.NotifySignalChanged_sensorData_altitude(*altitudeInfo.ptrValue);
         }
     }
 }
@@ -695,6 +805,9 @@ void AppActivityScreenPresenter::CalculateSkippedCoords(void)
                         break;
                     case APP_TRACK_SCALE5000:
                         trackData.skip = APP_TRACK_SKIPPED_COORDS_5000;
+                        break;
+                    case APP_TRACK_SCALE10000:
+                        trackData.skip = APP_TRACK_SKIPPED_COORDS_10000;
                         break;
                     case APP_TRACK_SCALEFULL:
                         trackData.skip = (uint8_t)(fileInfo.points / APP_TRACK_MAP_ELEMENTS);
@@ -843,6 +956,9 @@ uint32_t AppActivityScreenPresenter::GetScaleValue(void)
         case APP_TRACK_SCALE5000:
             scaleVal = APP_TRACK_SCALE_5000;
             break;
+        case APP_TRACK_SCALE10000:
+            scaleVal = APP_TRACK_SCALE_10000;
+            break;
         case APP_TRACK_SCALEFULL:
             scaleVal = CalculateFullScale();
             break;
@@ -867,7 +983,15 @@ uint32_t AppActivityScreenPresenter::CalculateFullScale(void)
     float maxWidth  = CalculateDistance(trackData.maxCoordsGPS.E.lat, trackData.maxCoordsGPS.E.lon, trackData.maxCoordsGPS.W.lat, trackData.maxCoordsGPS.W.lon);
 
     maxDist = (maxHeigth > maxWidth) ? maxHeigth : maxWidth;
-    scaleVal = (uint32_t)(maxDist * (float)APP_TRACK_SCALE_COEFF_M_IN_KM / APP_TRACK_SCALE_FULL_COEFFVIEW);
+
+    if(maxDist > 0.f)
+    {
+        scaleVal = (uint32_t)(maxDist * (float)APP_TRACK_SCALE_COEFF_M_IN_KM / APP_TRACK_SCALE_FULL_COEFFVIEW);
+    }
+    else
+    {
+        scaleVal = APP_TRACK_SCALE_MIN;
+    }
 
     return scaleVal;
 }
@@ -1096,6 +1220,40 @@ void AppActivityScreenPresenter::SaveFile(void)
     fileInfo.fileStatus = (RET_OK == retVal) ? APP_FILE_CREATED : APP_FILE_ERROR;
 }
 
+
+/* Method called to select altitude signal depending
+   on sensor status. Switch between sensor and gps. */
+void AppActivityScreenPresenter::SelectAltitudeSource(void)
+{
+    appInternalData.sensorEnabled = (bool)DC_get_appSettings_settingsData_value_sensors();
+
+    if(true == appInternalData.sensorEnabled)
+    {
+        altitudeInfo.ptrValue = &sensorData.altitude;
+        altitudeInfo.altiSrc = APP_ALTI_SENSORS;
+    }
+    else
+    {
+        altitudeInfo.ptrValue = &gpsSignals.altitude;
+        altitudeInfo.altiSrc = APP_ALTI_GPS;
+    }
+}
+
+
+/* Method called to check whether current year is leap year or not. */
+bool AppActivityScreenPresenter::IsLeapYear(uint16_t year)
+{
+    bool isLeap = false;
+    year += APP_TIMEZONE_FILL_THOUSANDS;
+
+    if( (((year % APP_TIMEZONE_MOD_4) == 0u) && ((year % APP_TIMEZONE_MOD_100) != 0u)) || ((year % APP_TIMEZONE_MOD_400) == 0u) )
+    {
+        isLeap = true;
+    }
+
+    return isLeap;
+}
+
 /* Method called to collect signals from Model:
     - latitude
     - longitude
@@ -1121,12 +1279,14 @@ void AppActivityScreenPresenter::NotifySignalChanged_gpsData_longitude(float new
 void AppActivityScreenPresenter::NotifySignalChanged_gpsData_altitude(float newAltitude)
 {
     gpsSignals.altitude = newAltitude;
+    UpdateAltitude();
 }
 void AppActivityScreenPresenter::NotifySignalChanged_gpsData_time(uint32_t newTime)
 {
     gpsSignals.timeSec  = newTime % APP_TIME_COEFF1;
     gpsSignals.timeMin = (newTime / APP_TIME_COEFF1) % APP_TIME_COEFF1;
     gpsSignals.timeHr = ((newTime / APP_TIME_COEFF2) % APP_TIME_COEFF1);
+    ApplyTimezone();
     UpdateTime();
 }
 void AppActivityScreenPresenter::NotifySignalChanged_gpsData_date(uint32_t newDate)
@@ -1134,6 +1294,7 @@ void AppActivityScreenPresenter::NotifySignalChanged_gpsData_date(uint32_t newDa
     gpsSignals.dateYear = newDate % APP_DATE_COEFF1;
     gpsSignals.dateMon  = (newDate / APP_DATE_COEFF1) % APP_DATE_COEFF1;
     gpsSignals.dateDay  = ((newDate / APP_DATE_COEFF2) % APP_DATE_COEFF1);
+    ApplyTimezone();
 }
 void AppActivityScreenPresenter::NotifySignalChanged_gpsData_fixQuality(uint8_t newFixQuality)
 {

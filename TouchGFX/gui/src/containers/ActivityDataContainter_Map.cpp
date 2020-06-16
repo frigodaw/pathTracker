@@ -42,7 +42,7 @@ void ActivityDataContainter_Map::SetTrackScale(uint32_t scaleVal)
         /* Detect custom scale and round to hundreds */
         else
         {
-            float floatScaleVal = (float)(((uint32_t)(scaleVal / MAPDATACONTAINER_SCALE_THRESHOLD_FULLVIEW_COEEF1)) / MAPDATACONTAINER_SCALE_THRESHOLD_FULLVIEW_COEEF2);
+            float floatScaleVal = ((float)(scaleVal / MAPDATACONTAINER_SCALE_THRESHOLD_FULLVIEW_COEEF1)) / ((float)MAPDATACONTAINER_SCALE_THRESHOLD_FULLVIEW_COEEF2);
             Unicode::snprintfFloats(ScaleTextBoxBuffer1, SCALETEXTBOXBUFFER1_SIZE, "%#.1f", &floatScaleVal);
         }
     }

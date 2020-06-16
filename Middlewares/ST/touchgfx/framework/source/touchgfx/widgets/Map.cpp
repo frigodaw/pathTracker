@@ -1,5 +1,7 @@
 #include <touchgfx/widgets/Map.hpp>
 #include <touchgfx/hal/HAL.hpp>
+#include "dataCollector.h"
+
 
 namespace touchgfx
 {
@@ -188,8 +190,8 @@ bool Map::AddCoordsToTrackList(uint8_t x, uint8_t y)
 /* Method called to split widget display into smaller elements. */
 void Map::SetMesh(void)
 {
-    meshInfo.elementDimension.X = MAP_ELEMENT_SIZE_X;
-    meshInfo.elementDimension.Y = MAP_ELEMENT_SIZE_Y;
+    meshInfo.elementDimension.X = DC_get_appSettings_settingsData_value_meshsize();
+    meshInfo.elementDimension.Y = DC_get_appSettings_settingsData_value_meshsize();
 
     meshInfo.elementsPerCoord.X = getWidth()/meshInfo.elementDimension.X;
     meshInfo.elementsPerCoord.Y = getHeight()/meshInfo.elementDimension.Y;

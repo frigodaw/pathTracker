@@ -303,6 +303,19 @@
               "ActionComponent": "AppActivityScreen",
               "Type": "ActionGotoScreen"
             }
+          },
+          {
+            "InteractionName": "GoToAppSettingsScreen",
+            "HasCompletedTrigger": false,
+            "Trigger": {
+              "TriggerComponent": "SettingsButton",
+              "Type": "TriggerClicked"
+            },
+            "Action": {
+              "ScreenTransitionType": "ScreenTransitionNone",
+              "ActionComponent": "AppSettingsScreen",
+              "Type": "ActionGotoScreen"
+            }
           }
         ],
         "Name": "AppMenuScreen",
@@ -932,6 +945,247 @@
           }
         ],
         "Name": "DebugEnvSensorsScreen",
+        "OverrideDefaultBufferSize": false,
+        "CanvasBufferSize": 0
+      },
+      {
+        "Components": [
+          {
+            "CustomContainerDefinitionName": "ScreenBackgroundContainer",
+            "Name": "BackgroundCC",
+            "X": 0,
+            "Y": 0,
+            "Width": 240,
+            "Height": 320,
+            "Type": "CustomContainerInstance",
+            "Visible": true,
+            "Draggable": false,
+            "Clickable": false,
+            "Fadeable": false,
+            "Moveable": false
+          },
+          {
+            "CustomContainerDefinitionName": "SettingsContainter",
+            "Name": "SettingsCC",
+            "X": 0,
+            "Y": 90,
+            "Width": 240,
+            "Height": 110,
+            "Type": "CustomContainerInstance",
+            "Visible": true,
+            "Draggable": false,
+            "Clickable": false,
+            "Fadeable": false,
+            "Moveable": false
+          },
+          {
+            "Pressed": "__designer\\Blue_Buttons_Round_Edge_icon_button_pressed.png",
+            "Released": "__designer\\Blue_Buttons_Round_Edge_icon_button.png",
+            "Alpha": 255,
+            "IconPressed": "__designer\\Blue_Icons_Home_32.png",
+            "IconReleased": "__designer\\Blue_Icons_Home_32.png",
+            "IconX": 15,
+            "IconY": 16,
+            "IconHeight": 29,
+            "IconWidth": 30,
+            "ButtonStyle": "Style1",
+            "IconStyle": "Icon27",
+            "Name": "ExitButton",
+            "X": 0,
+            "Y": 260,
+            "Width": 60,
+            "Height": 60,
+            "Type": "ButtonWithIcon",
+            "Visible": true,
+            "Draggable": false,
+            "Clickable": false,
+            "Fadeable": false,
+            "Moveable": false
+          },
+          {
+            "Pressed": "__designer\\Blue_Buttons_Round_Edge_icon_button_pressed.png",
+            "Released": "__designer\\Blue_Buttons_Round_Edge_icon_button.png",
+            "Alpha": 255,
+            "IconPressed": "__designer\\Blue_Icons_Next_arrow_32.png",
+            "IconReleased": "__designer\\Blue_Icons_Next_arrow_32.png",
+            "IconX": 22,
+            "IconY": 15,
+            "IconHeight": 30,
+            "IconWidth": 17,
+            "ButtonStyle": "Style1",
+            "IconStyle": "Icon39",
+            "Name": "NextButton",
+            "X": 180,
+            "Y": 260,
+            "Width": 60,
+            "Height": 60,
+            "Type": "ButtonWithIcon",
+            "Visible": true,
+            "Draggable": false,
+            "Clickable": false,
+            "Fadeable": false,
+            "Moveable": false
+          },
+          {
+            "Pressed": "__designer\\Blue_Buttons_Round_Edge_icon_button_pressed.png",
+            "Released": "__designer\\Blue_Buttons_Round_Edge_icon_button.png",
+            "Alpha": 255,
+            "IconPressed": "__designer\\Blue_Icons_Back_arrow_32.png",
+            "IconReleased": "__designer\\Blue_Icons_Back_arrow_32.png",
+            "IconX": 22,
+            "IconY": 15,
+            "IconHeight": 30,
+            "IconWidth": 17,
+            "ButtonStyle": "Style1",
+            "IconStyle": "Icon5",
+            "Name": "BackButton",
+            "X": 90,
+            "Y": 260,
+            "Width": 60,
+            "Height": 60,
+            "Type": "ButtonWithIcon",
+            "Visible": true,
+            "Draggable": false,
+            "Clickable": false,
+            "Fadeable": false,
+            "Moveable": false
+          },
+          {
+            "Pressed": "__designer\\Blue_Buttons_Round_Edge_small_pressed.png",
+            "Released": "__designer\\Blue_Buttons_Round_Edge_small.png",
+            "Alpha": 255,
+            "IconPressed": "__designer\\Blue_Icons_Down_arrow_32.png",
+            "IconReleased": "__designer\\Blue_Icons_Down_arrow_32.png",
+            "IconX": 70,
+            "IconY": 22,
+            "IconHeight": 17,
+            "IconWidth": 30,
+            "ButtonStyle": "Style4",
+            "IconStyle": "Icon13",
+            "Name": "DownButton",
+            "X": 35,
+            "Y": 200,
+            "Width": 170,
+            "Height": 60,
+            "Type": "ButtonWithIcon",
+            "Visible": true,
+            "Draggable": false,
+            "Clickable": false,
+            "Fadeable": false,
+            "Moveable": false
+          },
+          {
+            "Pressed": "__designer\\Blue_Buttons_Round_Edge_small_pressed.png",
+            "Released": "__designer\\Blue_Buttons_Round_Edge_small.png",
+            "Alpha": 255,
+            "IconPressed": "__designer\\Blue_Icons_Up_arrow_32.png",
+            "IconReleased": "__designer\\Blue_Icons_Up_arrow_32.png",
+            "IconX": 70,
+            "IconY": 22,
+            "IconHeight": 17,
+            "IconWidth": 30,
+            "ButtonStyle": "Style4",
+            "IconStyle": "Icon67",
+            "Name": "UpButton",
+            "X": 35,
+            "Y": 30,
+            "Width": 170,
+            "Height": 60,
+            "Type": "ButtonWithIcon",
+            "Visible": true,
+            "Draggable": false,
+            "Clickable": false,
+            "Fadeable": false,
+            "Moveable": false
+          },
+          {
+            "TextId": "SingleUseId225",
+            "TextRotation": "0",
+            "Color": {
+              "Red": 0,
+              "Green": 0,
+              "Blue": 0
+            },
+            "Alpha": 255,
+            "AutoSize": true,
+            "LineSpacing": 0,
+            "Name": "NameLabel",
+            "X": 79,
+            "Y": 5,
+            "Width": 82,
+            "Height": 25,
+            "Type": "TextArea",
+            "Visible": true,
+            "Draggable": false,
+            "Clickable": false,
+            "Fadeable": false,
+            "Moveable": false
+          }
+        ],
+        "Interactions": [
+          {
+            "InteractionName": "GoToAppMenuScreen",
+            "HasCompletedTrigger": false,
+            "Trigger": {
+              "TriggerComponent": "ExitButton",
+              "Type": "TriggerClicked"
+            },
+            "Action": {
+              "ScreenTransitionType": "ScreenTransitionNone",
+              "ActionComponent": "AppMenuScreen",
+              "Type": "ActionGotoScreen"
+            }
+          },
+          {
+            "InteractionName": "DisplayPreviousSetting",
+            "HasCompletedTrigger": false,
+            "Trigger": {
+              "TriggerComponent": "BackButton",
+              "Type": "TriggerClicked"
+            },
+            "Action": {
+              "FunctionName": "DisplayPreviousSetting",
+              "Type": "ActionCustom"
+            }
+          },
+          {
+            "InteractionName": "DisplayNextSetting",
+            "HasCompletedTrigger": false,
+            "Trigger": {
+              "TriggerComponent": "NextButton",
+              "Type": "TriggerClicked"
+            },
+            "Action": {
+              "FunctionName": "DisplayNextSetting",
+              "Type": "ActionCustom"
+            }
+          },
+          {
+            "InteractionName": "IncrementValue",
+            "HasCompletedTrigger": false,
+            "Trigger": {
+              "TriggerComponent": "UpButton",
+              "Type": "TriggerClicked"
+            },
+            "Action": {
+              "FunctionName": "IncrementValue",
+              "Type": "ActionCustom"
+            }
+          },
+          {
+            "InteractionName": "DecrementValue",
+            "HasCompletedTrigger": false,
+            "Trigger": {
+              "TriggerComponent": "DownButton",
+              "Type": "TriggerClicked"
+            },
+            "Action": {
+              "FunctionName": "DecrementValue",
+              "Type": "ActionCustom"
+            }
+          }
+        ],
+        "Name": "AppSettingsScreen",
         "OverrideDefaultBufferSize": false,
         "CanvasBufferSize": 0
       }
@@ -2572,6 +2826,91 @@
         "Y": 0,
         "Width": 240,
         "Height": 225
+      },
+      {
+        "Components": [
+          {
+            "Color": {
+              "Red": 255,
+              "Green": 255,
+              "Blue": 255
+            },
+            "Alpha": 255,
+            "Name": "VarBackground",
+            "X": 0,
+            "Y": 0,
+            "Width": 240,
+            "Height": 110,
+            "Type": "Box",
+            "Visible": true,
+            "Draggable": false,
+            "Clickable": false,
+            "Fadeable": false,
+            "Moveable": false
+          },
+          {
+            "TextId": "SingleUseId237",
+            "TextRotation": "0",
+            "Color": {
+              "Red": 0,
+              "Green": 0,
+              "Blue": 0
+            },
+            "Alpha": 255,
+            "AutoSize": false,
+            "LineSpacing": 0,
+            "Wildcard1": {
+              "TextId": "SingleUseId239",
+              "UseBuffer": true,
+              "BufferSize": 16
+            },
+            "Name": "VarTextBox",
+            "X": 40,
+            "Y": 50,
+            "Width": 160,
+            "Height": 30,
+            "Type": "TextArea",
+            "Visible": true,
+            "Draggable": false,
+            "Clickable": false,
+            "Fadeable": false,
+            "Moveable": false
+          },
+          {
+            "TextId": "SingleUseId236",
+            "TextRotation": "0",
+            "Color": {
+              "Red": 0,
+              "Green": 0,
+              "Blue": 0
+            },
+            "Alpha": 255,
+            "AutoSize": false,
+            "LineSpacing": 0,
+            "Wildcard1": {
+              "TextId": "SingleUseId238",
+              "UseBuffer": true,
+              "BufferSize": 16
+            },
+            "Name": "VarNameLabel",
+            "X": 40,
+            "Y": 10,
+            "Width": 160,
+            "Height": 20,
+            "Type": "TextArea",
+            "Visible": true,
+            "Draggable": false,
+            "Clickable": false,
+            "Fadeable": false,
+            "Moveable": false
+          }
+        ],
+        "Interactions": [],
+        "Name": "SettingsContainter",
+        "X": 0,
+        "Y": 0,
+        "Width": 240,
+        "Height": 110
       }
     ],
     "TextEntries": [
@@ -3213,6 +3552,66 @@
       },
       {
         "TextEntryId": "SingleUseId224",
+        "IsResource": false
+      },
+      {
+        "TextEntryId": "SingleUseId225",
+        "IsResource": false
+      },
+      {
+        "TextEntryId": "SingleUseId226",
+        "IsResource": false
+      },
+      {
+        "TextEntryId": "SingleUseId227",
+        "IsResource": false
+      },
+      {
+        "TextEntryId": "SingleUseId228",
+        "IsResource": false
+      },
+      {
+        "TextEntryId": "SingleUseId229",
+        "IsResource": false
+      },
+      {
+        "TextEntryId": "SingleUseId230",
+        "IsResource": false
+      },
+      {
+        "TextEntryId": "SingleUseId231",
+        "IsResource": false
+      },
+      {
+        "TextEntryId": "SingleUseId232",
+        "IsResource": false
+      },
+      {
+        "TextEntryId": "SingleUseId233",
+        "IsResource": false
+      },
+      {
+        "TextEntryId": "SingleUseId234",
+        "IsResource": false
+      },
+      {
+        "TextEntryId": "SingleUseId235",
+        "IsResource": false
+      },
+      {
+        "TextEntryId": "SingleUseId236",
+        "IsResource": false
+      },
+      {
+        "TextEntryId": "SingleUseId237",
+        "IsResource": false
+      },
+      {
+        "TextEntryId": "SingleUseId238",
+        "IsResource": false
+      },
+      {
+        "TextEntryId": "SingleUseId239",
         "IsResource": false
       }
     ],

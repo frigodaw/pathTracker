@@ -8,9 +8,6 @@
 
 
 /* START OF THE DEFINE AREA */
-#define MAP_ELEMENT_SIZE_COMMON             4u
-#define MAP_ELEMENT_SIZE_X                  MAP_ELEMENT_SIZE_COMMON
-#define MAP_ELEMENT_SIZE_Y                  MAP_ELEMENT_SIZE_COMMON
 #define MAP_TRACK_DRAWABLE_ELEMENTS         200u
 #define MAP_EMPTYSLOT_VALUE                 255u
 #define MAP_TRACK_A_COEFF_LIMIT             1.f

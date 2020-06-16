@@ -30,6 +30,7 @@ AppMenuScreenViewBase::AppMenuScreenViewBase() :
     SettingsButton.setLabelText(touchgfx::TypedText(T_SINGLEUSEID223));
     SettingsButton.setLabelColor(touchgfx::Color::getColorFrom24BitRGB(255, 255, 255));
     SettingsButton.setLabelColorPressed(touchgfx::Color::getColorFrom24BitRGB(255, 255, 255));
+    SettingsButton.setAction(buttonCallback);
 
     StartActivityButton.setXY(35, 55);
     StartActivityButton.setBitmaps(touchgfx::Bitmap(BITMAP_BLUE_BUTTONS_ROUND_EDGE_SMALL_ID), touchgfx::Bitmap(BITMAP_BLUE_BUTTONS_ROUND_EDGE_SMALL_PRESSED_ID));
@@ -53,7 +54,14 @@ void AppMenuScreenViewBase::setupScreen()
 
 void AppMenuScreenViewBase::buttonCallbackHandler(const touchgfx::AbstractButton& src)
 {
-    if (&src == &StartActivityButton)
+    if (&src == &SettingsButton)
+    {
+        //GoToAppSettingsScreen
+        //When SettingsButton clicked change screen to AppSettingsScreen
+        //Go to AppSettingsScreen with no screen transition
+        application().gotoAppSettingsScreenScreenNoTransition();
+    }
+    else if (&src == &StartActivityButton)
     {
         //StartActivity
         //When StartActivityButton clicked call virtual function
