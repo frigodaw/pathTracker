@@ -49,6 +49,7 @@ AppActivityScreenPresenter::AppActivityScreenPresenter(AppActivityScreenView& v)
     appInternalData.timezone = DC_get_appSettings_settingsData_value_timezone();
 
     fileInfo.fileStatus = APP_FILE_NOFILE;
+    fileInfo.errorStatus = APP_FILEERROR_NOERROR;
 
     trackData.scale = APP_TRACK_SCALE100;
     trackData.mapCoordsXY = (AppActivity_mapCoordsXY_T*)&mapCoordsXY;
@@ -115,6 +116,7 @@ void AppActivityScreenPresenter::InitActivity(void)
         uint8_t retVal = FS_OpenFile((FS_File_T**)&fileInfo.filePtr, fileInfo.name, FS_MODEWRITE);
         if(RET_OK == retVal)
         {
+            fileInfo.errorStatus &= ~APP_FILEERROR_OPENFILE;
             fileInfo.fileStatus = APP_FILE_CREATED;
             appInternalData.state = APP_STATE_RUNNING;
             SetBitmapButton(BITMAP_BLUE_ICONS_PAUSE_32_ID);
@@ -129,13 +131,23 @@ void AppActivityScreenPresenter::InitActivity(void)
                 "\t<trk>\n"
                 "\t\t<name>Cycling</name>\n"
                 "\t\t<trkseg>\n";
-            fileInfo.errorStatus = FS_WriteFile((FS_File_T*)fileInfo.filePtr, (uint8_t*)initBufferOne);
-            fileInfo.errorStatus |= FS_WriteFile((FS_File_T*)fileInfo.filePtr, (uint8_t*)initBufferTwo);
+            retVal |= FS_WriteFile((FS_File_T*)fileInfo.filePtr, (uint8_t*)initBufferOne);
+            retVal |= FS_WriteFile((FS_File_T*)fileInfo.filePtr, (uint8_t*)initBufferTwo);
+
+            if(RET_OK == retVal)
+            {
+                fileInfo.errorStatus &= ~APP_FILEERROR_WRITEDATA;
+            }
+            else
+            {
+                fileInfo.errorStatus |= APP_FILEERROR_WRITEDATA;
+            }
         }
         else
         {
             /* File can not be created */
             fileInfo.fileStatus = APP_FILE_ERROR;
+            fileInfo.errorStatus |= APP_FILEERROR_OPENFILE;
         }
     }
     else
@@ -156,16 +168,28 @@ void AppActivityScreenPresenter::FinishActivity(void)
             "\t\t</trkseg>\n"
             "\t</trk>\n"
             "</gpx>";
-        fileInfo.errorStatus = FS_WriteFile((FS_File_T*)fileInfo.filePtr, (uint8_t*)finishBuffer);
+        uint8_t retVal = RET_OK;
 
-        uint8_t retVal = FS_CloseFile((FS_File_T**)&fileInfo.filePtr);
+        retVal = FS_WriteFile((FS_File_T*)fileInfo.filePtr, (uint8_t*)finishBuffer);
+        if(RET_OK == retVal)
+        {
+            fileInfo.errorStatus &= ~APP_FILEERROR_WRITEDATA;
+        }
+        else
+        {
+            fileInfo.errorStatus |= APP_FILEERROR_WRITEDATA;
+        }
+
+        retVal = FS_CloseFile((FS_File_T**)&fileInfo.filePtr);
         if(RET_OK == retVal)
         {
             fileInfo.fileStatus = APP_FILE_CLOSED;
+            fileInfo.errorStatus &= ~APP_FILEERROR_FINISHACTIVITY;
         }
         else
         {
             fileInfo.fileStatus = APP_FILE_ERROR;
+            fileInfo.errorStatus |= APP_FILEERROR_FINISHACTIVITY;
         }
         fileInfo.filePtr = NULL;
         appInternalData.state = APP_STATE_FINISHED;
@@ -242,6 +266,7 @@ void AppActivityScreenPresenter::SetBitmapButton(const uint16_t bitmapId)
    info gpx file. */
 void AppActivityScreenPresenter::InsertDataIntoFile(void)
 {
+    uint8_t retVal = RET_OK;
     uint8_t buffer[APP_MAXFILEBUFFERSIZE] = {0u};
 
     AppActivity_floatToInt_T lat = {0u};
@@ -260,7 +285,16 @@ void AppActivityScreenPresenter::InsertDataIntoFile(void)
         "\t\t\t<trkpt lat=\"%d.%.*lu\" lon=\"%d.%.*lu\"><ele>%d.%.*lu</ele><time>20%.2d-%.2d-%.2dT%.2d:%.2d:%.2d.000Z</time></trkpt>\n",
         lat.sint, APP_LATLON_PRECISION, lat.frac, lon.sint, APP_LATLON_PRECISION, lon.frac, alt.sint, APP_ALTI_PRECISION, alt.frac,
         calendar.date.year, calendar.date.mon, calendar.date.day, calendar.time.hr, calendar.time.min, calendar.time.sec);
-    fileInfo.errorStatus = FS_WriteFile((FS_File_T*)fileInfo.filePtr, (uint8_t*)buffer);
+    retVal = FS_WriteFile((FS_File_T*)fileInfo.filePtr, (uint8_t*)buffer);
+
+    if(RET_OK == retVal)
+    {
+        fileInfo.errorStatus &= ~APP_FILEERROR_WRITEDATA;
+    }
+    else
+    {
+        fileInfo.errorStatus |= APP_FILEERROR_WRITEDATA;
+    }
 
 #else   /* Default saving mode */
     snprintf((char*)buffer, APP_MAXFILEBUFFERSIZE,
@@ -342,7 +376,7 @@ bool AppActivityScreenPresenter::IsSdCard(void)
 {
     bool retVal = false;
 
-    if((APP_SDCARD_INITIALIZED == sdCardData.state) && (APP_FILE_ERROR != fileInfo.fileStatus) && (0u == fileInfo.errorStatus))
+    if((APP_SDCARD_INITIALIZED == sdCardData.state) && (APP_FILE_ERROR != fileInfo.fileStatus) && (APP_FILEERROR_NOERROR == fileInfo.errorStatus))
     {
         retVal = true;
     }
@@ -414,13 +448,13 @@ void AppActivityScreenPresenter::CalculateSpeedAndDistance(void)
 /* Method called to calculate all parameters related to altitude. */
 void AppActivityScreenPresenter::CalculateAltitude(void)
 {
-    static uint8_t idx = APP_ALTI_INTERVAL;
+    static uint8_t idx = 0u;
     static float   lastDist[APP_ALTI_INTERVAL] = {0u};
     static float   lastAlti[APP_ALTI_INTERVAL] = {0u};
     static float   lastDistance = activityData.distance;
     static float   lastAltitude = *altitudeInfo.ptrValue;
 
-    if(APP_ALTI_INTERVAL == idx)
+    if(false == appInternalData.initFunc.Initialized_CalculateAltitude)
     {
         /* Local init */
         for(uint8_t i=0u; i < APP_ALTI_INTERVAL; i++)
@@ -428,7 +462,10 @@ void AppActivityScreenPresenter::CalculateAltitude(void)
             lastDist[i] = 0.f;
             lastAlti[i] = *altitudeInfo.ptrValue;
         }
+        lastDistance = activityData.distance;
+        lastAltitude = *altitudeInfo.ptrValue;
         idx = 0u;
+        appInternalData.initFunc.Initialized_CalculateAltitude = true;
     }
 
     /* Add new data to cyclic buffer */
@@ -454,7 +491,7 @@ void AppActivityScreenPresenter::CalculateAltitude(void)
         activityData.altiDown -= altiDiff;
     }
 
-    if(distDiff > 0.f)
+    if(distDiff > APP_ALTI_DIST_THRESHOLD)
     {
         float slope = ((float)altiDiff / APP_SLOPE_MTOKM) / distDiff * APP_SLOPE_100PERCENT;
         if(appInternalData.maxSlopePerSecond > slope)
@@ -730,45 +767,6 @@ void AppActivityScreenPresenter::DrawTrack(void)
 
         trackData.addedPoints = addedPoints;
         view.TrackRedraw();
-
-#if 0
-        uint8_t buffer[APP_MAXFILEBUFFERSIZE] = {0u};
-        AppActivity_coordinatesGPS_T coordsGPS = {0.f};
-        uint32_t offset = 0u;
-        uint8_t readLines = 0u;
-        uint8_t retVal = RET_OK;
-        boolean isMoreLines = true;
-        bool coordsInView = false;
-
-        offset = CalculateFileOffset(fileInfo.points);
-        scaleVal = GetScaleValue(trackData.scale);
-        retVal = FS_Lseek((FS_File_T**)&fileInfo.filePtr, offset);
-
-        if(RET_OK == retVal)
-        {
-            view.FlushTrackList();
-            view.SetTrackScale(scaleVal);
-
-            while((true == isMoreLines) && (APP_TRACK_FILE_READLINES > readLines))
-            {
-                fileInfo.errorStatus = FS_ReadFile((FS_File_T*)fileInfo.filePtr, (uint8_t*)buffer, APP_MAXFILEBUFFERSIZE, &isMoreLines);
-                readLines++;
-
-                coordsGPS = GetCoordsGPSFromBuffer(buffer, APP_MAXFILEBUFFERSIZE);
-                coordsInView = CoordsInView(coordsGPS);
-
-                if(true == coordsInView)
-                {
-                    AppActivity_coordinatesXY_T coordsXY = MapGPSCoordsToXY(coordsGPS);
-                    view.AddCoordsToTrackList(coordsXY);
-                }
-            }
-
-            view.TrackRedraw();
-        }
-
-        retVal = FS_LseekEnd((FS_File_T**)&fileInfo.filePtr);
-#endif
     }
 }
 
@@ -1186,16 +1184,18 @@ void AppActivityScreenPresenter::FilterCoords(void)
 {
     static float lat[APP_COORDS_FILTER_ARR_SIZE] = {0.f};
     static float lon[APP_COORDS_FILTER_ARR_SIZE] = {0.f};
-    static uint8_t idx = APP_COORDS_FILTER_IDX_INIT;
+    static uint8_t idx = 0u;
 
-    if(APP_COORDS_FILTER_IDX_INIT == idx)
+    if(false == appInternalData.initFunc.Initialized_FilterCoords)
     {
+        /* Local init */
         for(uint8_t i = 0u; i < APP_COORDS_FILTER_ARR_SIZE; i++)
         {
             lat[i] = gpsSignals.latitude;
             lon[i] = gpsSignals.longitude;
         }
         idx = 0u;
+        appInternalData.initFunc.Initialized_FilterCoords = true;
     }
 
     lat[idx] = gpsSignals.latitude;

@@ -25,6 +25,7 @@ using namespace touchgfx;
 #define APP_ALTI_FIRSTCALL          255u
 #define APP_ALTI_INTERVAL           10u
 #define APP_ALTI_EVEN               2u
+#define APP_ALTI_DIST_THRESHOLD     1.f
 #define APP_SLOPE_100PERCENT        100.f
 #define APP_SLOPE_MTOKM             1000.f
 #define APP_LOCATION_COEFF_DIV      100.f
@@ -94,6 +95,11 @@ using namespace touchgfx;
 #define APP_TRACK_FILE_DATAOFFSET       101u
 #define APP_TRACK_FILE_READLINES        32u
 
+#define APP_FILEERROR_NOERROR           0x00u
+#define APP_FILEERROR_OPENFILE          0x01u
+#define APP_FILEERROR_WRITEDATA         0x02u
+#define APP_FILEERROR_FINISHACTIVITY    0x04u
+
 #define APP_TRACK_MAP_ELEMENTS          200u
 #define APP_TRACK_COMMONARRAY_LENGTH    8192uL
 #define APP_TRACK_TRACK_FIRST_ELEMENT   0u
@@ -102,7 +108,6 @@ using namespace touchgfx;
 #define APP_TRACK_MAP_OFFSET_FOR_TRACK  1u
 
 #define APP_COORDS_FILTER_ARR_SIZE      3u
-#define APP_COORDS_FILTER_IDX_INIT      255u
 
 #define APP_TIMEZONE_HR_MIN             0
 #define APP_TIMEZONE_HR_MAX             23
@@ -262,6 +267,12 @@ typedef struct
 
 typedef struct
 {
+    bool Initialized_CalculateAltitude;
+    bool Initialized_FilterCoords;
+}AppActivity_initFunctions_T;
+
+typedef struct
+{
     float    maxDistancePerSecond;
     float    maxSlopePerSecond;
     uint32_t lastTime;
@@ -272,6 +283,7 @@ typedef struct
     AppActivity_activityState_T state;
     bool     sensorEnabled;
     int8_t   timezone;
+    AppActivity_initFunctions_T initFunc;
 }AppActivity_appInternalData_T;
 
 typedef struct
