@@ -11,6 +11,7 @@
 #include <gui/containers/ActivityDataContainter_Map.hpp>
 #include <gui/containers/ActivityDataContainter_Alti.hpp>
 #include <gui/containers/ActivityDataContainter_Main.hpp>
+#include <gui/containers/ActivityDataContainter_Select.hpp>
 #include <touchgfx/widgets/TextArea.hpp>
 #include <touchgfx/widgets/ButtonWithIcon.hpp>
 #include <touchgfx/widgets/ScalableImage.hpp>
@@ -50,6 +51,21 @@ public:
         // Override and implement this function in AppActivityScreen
     }
 
+    virtual void DisplayNextMap()
+    {
+        // Override and implement this function in AppActivityScreen
+    }
+
+    virtual void DisplayPreviousMap()
+    {
+        // Override and implement this function in AppActivityScreen
+    }
+
+    virtual void ConfirmMapSelection()
+    {
+        // Override and implement this function in AppActivityScreen
+    }
+
 protected:
     FrontendApplication& application() {
         return *static_cast<FrontendApplication*>(touchgfx::Application::getInstance());
@@ -62,6 +78,7 @@ protected:
     ActivityDataContainter_Map ActivityDataCC_Map;
     ActivityDataContainter_Alti ActivityDataCC_Alti;
     ActivityDataContainter_Main ActivityDataCC_Main;
+    ActivityDataContainter_Select ActivityDataCC_Select;
     touchgfx::TextArea NameLabel;
     touchgfx::ButtonWithIcon ButtonForLabel;
     touchgfx::ButtonWithIcon NextButton;
@@ -69,6 +86,9 @@ protected:
     touchgfx::ButtonWithIcon StartStopButton;
     touchgfx::ButtonWithIcon ZoomInButton;
     touchgfx::ButtonWithIcon FinishButton;
+    touchgfx::ButtonWithIcon PrevMapButton;
+    touchgfx::ButtonWithIcon ConfirmMapButton;
+    touchgfx::ButtonWithIcon NextMapButton;
     touchgfx::ScalableImage FixImage;
     touchgfx::ScalableImage SdCardImage;
 

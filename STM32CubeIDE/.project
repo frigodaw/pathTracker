@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <projectDescription>
 	<name>pathTracker</name>
-	<comment></comment>
+	<comment/>
 	<projects>
 	</projects>
 	<buildSpec>
@@ -359,6 +359,11 @@
 			<locationURI>$%7BPARENT-1-PROJECT_LOC%7D/TouchGFX/generated/gui_generated/src/containers/ActivityDataContainter_MapBase.cpp</locationURI>
 		</link>
 		<link>
+			<name>Application/User/generated/ActivityDataContainter_SelectBase.cpp</name>
+			<type>1</type>
+			<locationURI>$%7BPARENT-1-PROJECT_LOC%7D/TouchGFX/generated/gui_generated/src/containers/ActivityDataContainter_SelectBase.cpp</locationURI>
+		</link>
+		<link>
 			<name>Application/User/generated/AppActivityScreenViewBase.cpp</name>
 			<type>1</type>
 			<locationURI>$%7BPARENT-1-PROJECT_LOC%7D/TouchGFX/generated/gui_generated/src/appactivityscreen_screen/AppActivityScreenViewBase.cpp</locationURI>
@@ -407,6 +412,11 @@
 			<name>Application/User/generated/Blue_Icons_Back_arrow_32.cpp</name>
 			<type>1</type>
 			<locationURI>$%7BPARENT-1-PROJECT_LOC%7D/TouchGFX/generated/images/src/__designer/Blue_Icons_Back_arrow_32.cpp</locationURI>
+		</link>
+		<link>
+			<name>Application/User/generated/Blue_Icons_Done_32.cpp</name>
+			<type>1</type>
+			<locationURI>$%7BPARENT-1-PROJECT_LOC%7D/TouchGFX/generated/images/src/__designer/Blue_Icons_Done_32.cpp</locationURI>
 		</link>
 		<link>
 			<name>Application/User/generated/Blue_Icons_Down_arrow_32.cpp</name>
@@ -467,6 +477,11 @@
 			<name>Application/User/generated/EnvSensorsContainterBase.cpp</name>
 			<type>1</type>
 			<locationURI>$%7BPARENT-1-PROJECT_LOC%7D/TouchGFX/generated/gui_generated/src/containers/EnvSensorsContainterBase.cpp</locationURI>
+		</link>
+		<link>
+			<name>Application/User/generated/FinishBlack.cpp</name>
+			<type>1</type>
+			<locationURI>$%7BPARENT-1-PROJECT_LOC%7D/TouchGFX/generated/images/src/FinishBlack.cpp</locationURI>
 		</link>
 		<link>
 			<name>Application/User/generated/FixIcon.cpp</name>
@@ -624,6 +639,11 @@
 			<locationURI>$%7BPARENT-1-PROJECT_LOC%7D/TouchGFX/gui/src/containers/ActivityDataContainter_Map.cpp</locationURI>
 		</link>
 		<link>
+			<name>Application/User/gui/ActivityDataContainter_Select.cpp</name>
+			<type>1</type>
+			<locationURI>$%7BPARENT-1-PROJECT_LOC%7D/TouchGFX/gui/src/containers/ActivityDataContainter_Select.cpp</locationURI>
+		</link>
+		<link>
 			<name>Application/User/gui/AppActivityScreenPresenter.cpp</name>
 			<type>1</type>
 			<locationURI>$%7BPARENT-1-PROJECT_LOC%7D/TouchGFX/gui/src/appactivityscreen_screen/AppActivityScreenPresenter.cpp</locationURI>
@@ -717,11 +737,6 @@
 			<name>Application/User/gui/SettingsContainter.cpp</name>
 			<type>1</type>
 			<locationURI>$%7BPARENT-1-PROJECT_LOC%7D/TouchGFX/gui/src/containers/SettingsContainter.cpp</locationURI>
-		</link>
-		<link>
-			<name>Application/User/gui/SettingsScrollWheelTemplateContainer.cpp</name>
-			<type>1</type>
-			<locationURI>$%7BPARENT-1-PROJECT_LOC%7D/TouchGFX/gui/src/containers/SettingsScrollWheelTemplateContainer.cpp</locationURI>
 		</link>
 		<link>
 			<name>Application/User/gui/StartScreenPresenter.cpp</name>

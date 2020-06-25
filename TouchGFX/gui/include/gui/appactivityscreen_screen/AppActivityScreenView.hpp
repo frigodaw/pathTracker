@@ -30,6 +30,10 @@ public:
     bool AddCoordsToTrackList(AppActivity_coordinatesXY_T coordsXY);
     void TrackRedraw(void);
 
+    void ConfirmMapSelection(void);
+    void DisplayPreviousMap(void);
+    void DisplayNextMap(void);
+
     void NotifySignalChanged_gpsData_fixQuality(uint8_t newFixQuality);
     void NotifySignalChanged_activityData_timer(uint32_t newTimer);
     void NotifySignalChanged_activityData_distance(float newDistance);

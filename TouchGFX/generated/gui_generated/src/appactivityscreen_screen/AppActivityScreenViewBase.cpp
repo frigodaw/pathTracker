@@ -21,6 +21,9 @@ AppActivityScreenViewBase::AppActivityScreenViewBase() :
     ActivityDataCC_Alti.setVisible(false);
 
     ActivityDataCC_Main.setXY(0, 35);
+    ActivityDataCC_Main.setVisible(false);
+
+    ActivityDataCC_Select.setXY(0, 35);
 
     NameLabel.setXY(84, 5);
     NameLabel.setColor(touchgfx::Color::getColorFrom24BitRGB(0, 0, 0));
@@ -56,6 +59,21 @@ AppActivityScreenViewBase::AppActivityScreenViewBase() :
     FinishButton.setIconXY(15, 15);
     FinishButton.setAction(buttonCallback);
 
+    PrevMapButton.setXY(0, 260);
+    PrevMapButton.setBitmaps(touchgfx::Bitmap(BITMAP_BLUE_BUTTONS_ROUND_EDGE_ICON_BUTTON_ID), touchgfx::Bitmap(BITMAP_BLUE_BUTTONS_ROUND_EDGE_ICON_BUTTON_PRESSED_ID), touchgfx::Bitmap(BITMAP_BLUE_ICONS_BACK_ARROW_32_ID), touchgfx::Bitmap(BITMAP_BLUE_ICONS_BACK_ARROW_32_ID));
+    PrevMapButton.setIconXY(22, 15);
+    PrevMapButton.setAction(buttonCallback);
+
+    ConfirmMapButton.setXY(90, 260);
+    ConfirmMapButton.setBitmaps(touchgfx::Bitmap(BITMAP_BLUE_BUTTONS_ROUND_EDGE_ICON_BUTTON_ID), touchgfx::Bitmap(BITMAP_BLUE_BUTTONS_ROUND_EDGE_ICON_BUTTON_PRESSED_ID), touchgfx::Bitmap(BITMAP_BLUE_ICONS_DONE_32_ID), touchgfx::Bitmap(BITMAP_BLUE_ICONS_DONE_32_ID));
+    ConfirmMapButton.setIconXY(15, 15);
+    ConfirmMapButton.setAction(buttonCallback);
+
+    NextMapButton.setXY(180, 260);
+    NextMapButton.setBitmaps(touchgfx::Bitmap(BITMAP_BLUE_BUTTONS_ROUND_EDGE_ICON_BUTTON_ID), touchgfx::Bitmap(BITMAP_BLUE_BUTTONS_ROUND_EDGE_ICON_BUTTON_PRESSED_ID), touchgfx::Bitmap(BITMAP_BLUE_ICONS_NEXT_ARROW_32_ID), touchgfx::Bitmap(BITMAP_BLUE_ICONS_NEXT_ARROW_32_ID));
+    NextMapButton.setIconXY(22, 15);
+    NextMapButton.setAction(buttonCallback);
+
     FixImage.setBitmap(touchgfx::Bitmap(BITMAP_FIXICON_ID));
     FixImage.setPosition(210, 5, 25, 25);
     FixImage.setScalingAlgorithm(touchgfx::ScalableImage::NEAREST_NEIGHBOR);
@@ -68,6 +86,7 @@ AppActivityScreenViewBase::AppActivityScreenViewBase() :
     add(ActivityDataCC_Map);
     add(ActivityDataCC_Alti);
     add(ActivityDataCC_Main);
+    add(ActivityDataCC_Select);
     add(NameLabel);
     add(ButtonForLabel);
     add(NextButton);
@@ -75,6 +94,9 @@ AppActivityScreenViewBase::AppActivityScreenViewBase() :
     add(StartStopButton);
     add(ZoomInButton);
     add(FinishButton);
+    add(PrevMapButton);
+    add(ConfirmMapButton);
+    add(NextMapButton);
     add(FixImage);
     add(SdCardImage);
 }
@@ -85,6 +107,7 @@ void AppActivityScreenViewBase::setupScreen()
     ActivityDataCC_Map.initialize();
     ActivityDataCC_Alti.initialize();
     ActivityDataCC_Main.initialize();
+    ActivityDataCC_Select.initialize();
 }
 
 void AppActivityScreenViewBase::buttonCallbackHandler(const touchgfx::AbstractButton& src)
@@ -128,5 +151,26 @@ void AppActivityScreenViewBase::buttonCallbackHandler(const touchgfx::AbstractBu
         //When FinishActivity completed change screen to AppMenuScreen
         //Go to AppMenuScreen with no screen transition
         application().gotoAppMenuScreenScreenNoTransition();
+    }
+    else if (&src == &PrevMapButton)
+    {
+        //DisplayPreviousMap
+        //When PrevMapButton clicked call virtual function
+        //Call DisplayPreviousMap
+        DisplayPreviousMap();
+    }
+    else if (&src == &ConfirmMapButton)
+    {
+        //ConfirmMapSelection
+        //When ConfirmMapButton clicked call virtual function
+        //Call ConfirmMapSelection
+        ConfirmMapSelection();
+    }
+    else if (&src == &NextMapButton)
+    {
+        //DisplayNextMap
+        //When NextMapButton clicked call virtual function
+        //Call DisplayNextMap
+        DisplayNextMap();
     }
 }

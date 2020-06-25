@@ -160,11 +160,11 @@ typedef enum
 
 typedef enum
 {
+    APP_SCREEN_NONE,
+    APP_SCREEN_SELECTMAP,
     APP_SCREEN_MAIN,
     APP_SCREEN_ALTI,
-    //APP_SCREEN_ALTICHART,
     APP_SCREEN_MAP,
-    //APP_SCREEN_SETTINGS
     APP_MAX_SCREENS
 }AppActivity_activeScreen_T;
 
@@ -424,6 +424,10 @@ public:
     void SelectAltitudeSource(void);
     void ApplyDate(AppActivity_timezoneDateChange_T dateChange);
     bool IsLeapYear(uint16_t year);
+
+    void DisplayPreviousMap(void);
+    void ConfirmMapSelection(void);
+    void DisplayNextMap(void);
 
 
     void NotifySignalChanged_gpsData_latitude(float newLatitude);

@@ -349,6 +349,26 @@ float DC_get_sensorData_temperature(void)
 {
     return sensorData.temperature;
 }
+
+
+/*  File: envSensors.c
+    Type: getter
+    Variable: sensorActivationFlags.enabled
+*/
+uint8_t DC_get_sensorActivationFlags_enabled(void)
+{
+    return sensorActivationFlags.enabled;
+}
+
+
+/*  File: envSensors.c
+    Type: setter
+    Variable: sensorActivationFlags.enabled
+*/
+void DC_set_sensorActivationFlags_enabled(uint8_t value)
+{
+    sensorActivationFlags.enabled = value;
+}
 /* -------------------- envSensors -------------------- */
 
 

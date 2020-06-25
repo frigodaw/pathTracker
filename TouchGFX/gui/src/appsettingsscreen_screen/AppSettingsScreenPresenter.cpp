@@ -1,5 +1,6 @@
 #include <gui/appsettingsscreen_screen/AppSettingsScreenView.hpp>
 #include <gui/appsettingsscreen_screen/AppSettingsScreenPresenter.hpp>
+#include "dataCollector.h"
 
 
 
@@ -14,6 +15,7 @@ void AppSettingsScreenPresenter::activate()
     settingsData.ptr = &settingsConstData[SETTINGS_ID_TIMEZONE];
 
     UpdateSettingsView();
+    UpdateVariableValues();
 
     model->SignalRequestFromPresenter();
     model->MainPeriodFromPresenter(SETTINGS_MAINPERIOD_MS);
@@ -87,6 +89,7 @@ void AppSettingsScreenPresenter::IncrementValue(void)
     }
 
     UpdateSettingsView();
+    UpdateVariableValues();
 }
 
 
@@ -103,6 +106,7 @@ void AppSettingsScreenPresenter::DecrementValue(void)
     }
 
     UpdateSettingsView();
+    UpdateVariableValues();
 }
 
 
@@ -111,4 +115,24 @@ void AppSettingsScreenPresenter::UpdateSettingsView(void)
 {
     view.UpdateSettingsLabel((char*)settingsData.ptr->name, SETTINGS_NAME_LEN);
     view.UpdateSettingsValue(settingsData.value[settingsData.ID]);
+}
+
+
+/* Method called to call DataCollector to set proper
+   variables to given value. */
+void AppSettingsScreenPresenter::UpdateVariableValues(void)
+{
+    switch(settingsData.ID)
+    {
+        case SETTINGS_ID_TIMEZONE:
+            break;
+        case SETTINGS_ID_MESH_SIZE:
+            break;
+        case SETTINGS_ID_SENSORS:
+            DC_set_sensorActivationFlags_enabled(settingsData.value[settingsData.ID]);
+            break;
+
+        default:
+            break;
+    }
 }

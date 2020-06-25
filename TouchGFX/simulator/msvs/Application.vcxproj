@@ -57,6 +57,8 @@
     <ClCompile Include="..\..\generated\gui_generated\src\appsettingsscreen_screen\AppSettingsScreenViewBase.cpp"/>
     <ClCompile Include="..\..\gui\src\containers\SettingsContainter.cpp"/>
     <ClCompile Include="..\..\generated\gui_generated\src\containers\SettingsContainterBase.cpp"/>
+    <ClCompile Include="..\..\gui\src\containers\ActivityDataContainter_Select.cpp"/>
+    <ClCompile Include="..\..\generated\gui_generated\src\containers\ActivityDataContainter_SelectBase.cpp"/>
   </ItemGroup>
   <ItemGroup>
     <None Include="$(ApplicationRoot)\assets\texts\texts.xlsx"/>
@@ -241,6 +243,8 @@
     <ClInclude Include="..\..\generated\gui_generated\include\gui_generated\appsettingsscreen_screen\AppSettingsScreenViewBase.hpp"/>
     <ClInclude Include="..\..\gui\include\gui\containers\SettingsContainter.hpp"/>
     <ClInclude Include="..\..\generated\gui_generated\include\gui_generated\containers\SettingsContainterBase.hpp"/>
+    <ClInclude Include="..\..\gui\include\gui\containers\ActivityDataContainter_Select.hpp"/>
+    <ClInclude Include="..\..\generated\gui_generated\include\gui_generated\containers\ActivityDataContainter_SelectBase.hpp"/>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="$(ApplicationRoot)\generated\simulator\touchgfx.rc"/>

@@ -44,9 +44,13 @@ void AppActivityScreenView::ChangeActivityDataCC(void)
 
 void AppActivityScreenView::SetActivityDataScreen(AppActivity_activeScreen_T screen)
 {
+    ActivityDataCC_Select.setVisible(false);
     ActivityDataCC_Main.setVisible(false);
     ActivityDataCC_Alti.setVisible(false);
     ActivityDataCC_Map.setVisible(false);
+    PrevMapButton.setVisible(false);
+    ConfirmMapButton.setVisible(false);
+    NextMapButton.setVisible(false);
     StartStopButton.setVisible(false);
     FinishButton.setVisible(false);
     ZoomInButton.setVisible(false);
@@ -54,6 +58,14 @@ void AppActivityScreenView::SetActivityDataScreen(AppActivity_activeScreen_T scr
 
     switch (screen)
     {
+        case APP_SCREEN_NONE:
+            break;
+        case APP_SCREEN_SELECTMAP:
+            ActivityDataCC_Select.setVisible(true);
+            PrevMapButton.setVisible(true);
+            ConfirmMapButton.setVisible(true);
+            NextMapButton.setVisible(true);
+            break;
         case APP_SCREEN_MAIN:
             ActivityDataCC_Main.setVisible(true);
             StartStopButton.setVisible(true);
@@ -76,9 +88,13 @@ void AppActivityScreenView::SetActivityDataScreen(AppActivity_activeScreen_T scr
             break;
     }
 
+    ActivityDataCC_Select.invalidate();
     ActivityDataCC_Main.invalidate();
     ActivityDataCC_Alti.invalidate();
     ActivityDataCC_Map.invalidate();
+    PrevMapButton.invalidate();
+    ConfirmMapButton.invalidate();
+    NextMapButton.invalidate();
     StartStopButton.invalidate();
     FinishButton.invalidate();
     ZoomInButton.invalidate();
@@ -141,6 +157,21 @@ bool AppActivityScreenView::AddCoordsToTrackList(AppActivity_coordinatesXY_T coo
 void AppActivityScreenView::TrackRedraw(void)
 {
     ActivityDataCC_Map.TrackRedraw();
+}
+
+void AppActivityScreenView::ConfirmMapSelection(void)
+{
+    presenter->ConfirmMapSelection();
+}
+
+void AppActivityScreenView::DisplayPreviousMap(void)
+{
+    presenter->DisplayPreviousMap();
+}
+
+void AppActivityScreenView::DisplayNextMap(void)
+{
+    presenter->DisplayNextMap();
 }
 
 

@@ -201,7 +201,7 @@ int main(void)
   defaultTaskHandle = osThreadCreate(osThread(defaultTask), NULL);
 
   /* definition and creation of ltdcTask */
-  osThreadDef(ltdcTask, LtdcTask, osPriorityAboveNormal, 0, 1024);
+  osThreadDef(ltdcTask, LtdcTask, osPriorityAboveNormal, 0, 768);
   ltdcTaskHandle = osThreadCreate(osThread(ltdcTask), NULL);
 
   /* definition and creation of gpsTask */

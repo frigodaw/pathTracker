@@ -76,6 +76,8 @@ uint8_t  DC_get_fileSystem_dirInfo_out_filesNum(void);
 float    DC_get_sensorData_altitude(void);
 float    DC_get_sensorData_pressure(void);
 float    DC_get_sensorData_temperature(void);
+uint8_t  DC_get_sensorActivationFlags_enabled(void);
+void     DC_set_sensorActivationFlags_enabled(uint8_t value);
 
 /* ---------- settings ---------- */
 uint8_t  DC_get_appSettings_settingsData_value_timezone(void);

@@ -8,19 +8,26 @@
 #include "envSensors.h"
 #include "math.h"
 #include "types.h"
+#include "settings.h"
 
 
 /* Variable to store transformed signals read from sensors. */
-ES_SensorData_T sensorData;
+ES_SensorData_T sensorData = {0.f};
 
+
+ES_ActivationFlags_T sensorActivationFlags = {(uint8_t)SETTINGS_DEFAULT_SENSORS};
 
 /* Main function for EnvSensors component. It is called from default task. */
 void EnvSensors_Main(void)
 {
-    bmp280_read_float(&bmp280, &sensorData.temperature, &sensorData.pressure, NULL);
-    float calcAltitude = EnvSensors_CalculateAltitude(sensorData.temperature, sensorData.pressure);
+    uint8_t enableFlag = EnvSensors_CheckStartConditions();
+    if(TRUE == enableFlag)
+    {
+        bmp280_read_float(&bmp280, &sensorData.temperature, &sensorData.pressure, NULL);
+        float calcAltitude = EnvSensors_CalculateAltitude(sensorData.temperature, sensorData.pressure);
 
-    sensorData.altitude = EnvSensors_FilterAltitude(calcAltitude);
+        sensorData.altitude = EnvSensors_FilterAltitude(calcAltitude);
+    }
 }
 
 
@@ -59,4 +66,13 @@ float EnvSensors_FilterAltitude(float calcAltitude)
     Ppost = Ppri - K*S*K;
 
     return xpost;
+}
+
+
+/* Function called whether it is allowed to enable
+   sensors depending on current settings value. */
+uint8_t EnvSensors_CheckStartConditions(void)
+{
+    uint8_t enableFlag = (TRUE == sensorActivationFlags.enabled) ? TRUE : FALSE;
+    return enableFlag;
 }

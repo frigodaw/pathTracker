@@ -40,7 +40,7 @@ AppActivityScreenPresenter::AppActivityScreenPresenter(AppActivityScreenView& v)
     memset(&calendar, 0u, sizeof(calendar));
 
     appInternalData.state = APP_STATE_INIT;
-    appInternalData.screen = APP_SCREEN_MAIN;
+    appInternalData.screen = APP_SCREEN_NONE;
     appInternalData.maxDistancePerSecond = APP_DISTANCE_MAXVALUE_KM_S;
     appInternalData.maxSlopePerSecond = APP_SLOPE_MAXVALUE_PERSEC;
     appInternalData.mainTimePeriod = APP_MAINPERIOD_MS;
@@ -66,6 +66,9 @@ void AppActivityScreenPresenter::activate()
 {
     uint32_t scaleVal = GetScaleValue();
     view.SetTrackScale(scaleVal);
+
+    appInternalData.screen = APP_SCREEN_SELECTMAP;
+    view.SetActivityDataScreen(appInternalData.screen);
 
     model->SignalRequestFromPresenter();
     model->MainPeriodFromPresenter(appInternalData.mainTimePeriod);
@@ -1253,6 +1256,31 @@ bool AppActivityScreenPresenter::IsLeapYear(uint16_t year)
 
     return isLeap;
 }
+
+
+/* Method called to show user previous map. */
+void AppActivityScreenPresenter::DisplayPreviousMap(void)
+{
+
+}
+
+/* Method called to show user next map. */
+void AppActivityScreenPresenter::DisplayNextMap(void)
+{
+
+}
+
+
+/* Method called to confirm selected map, it makes other
+   widgets visible. */
+void AppActivityScreenPresenter::ConfirmMapSelection(void)
+{
+    appInternalData.screen = APP_SCREEN_MAIN;
+    view.SetActivityDataScreen(appInternalData.screen);
+    view.NotifySignalChanged_activityData_time(activityData.time);
+}
+
+
 
 /* Method called to collect signals from Model:
     - latitude

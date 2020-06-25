@@ -374,6 +374,20 @@
             "Width": 240,
             "Height": 225,
             "Type": "CustomContainerInstance",
+            "Visible": false,
+            "Draggable": false,
+            "Clickable": false,
+            "Fadeable": false,
+            "Moveable": false
+          },
+          {
+            "CustomContainerDefinitionName": "ActivityDataContainter_Select",
+            "Name": "ActivityDataCC_Select",
+            "X": 0,
+            "Y": 35,
+            "Width": 240,
+            "Height": 225,
+            "Type": "CustomContainerInstance",
             "Visible": true,
             "Draggable": false,
             "Clickable": false,
@@ -546,6 +560,78 @@
             "Moveable": false
           },
           {
+            "Pressed": "__designer\\Blue_Buttons_Round_Edge_icon_button_pressed.png",
+            "Released": "__designer\\Blue_Buttons_Round_Edge_icon_button.png",
+            "Alpha": 255,
+            "IconPressed": "__designer\\Blue_Icons_Back_arrow_32.png",
+            "IconReleased": "__designer\\Blue_Icons_Back_arrow_32.png",
+            "IconX": 22,
+            "IconY": 15,
+            "IconHeight": 30,
+            "IconWidth": 17,
+            "ButtonStyle": "Style1",
+            "IconStyle": "Icon5",
+            "Name": "PrevMapButton",
+            "X": 0,
+            "Y": 260,
+            "Width": 60,
+            "Height": 60,
+            "Type": "ButtonWithIcon",
+            "Visible": true,
+            "Draggable": false,
+            "Clickable": false,
+            "Fadeable": false,
+            "Moveable": false
+          },
+          {
+            "Pressed": "__designer\\Blue_Buttons_Round_Edge_icon_button_pressed.png",
+            "Released": "__designer\\Blue_Buttons_Round_Edge_icon_button.png",
+            "Alpha": 255,
+            "IconPressed": "__designer\\Blue_Icons_Done_32.png",
+            "IconReleased": "__designer\\Blue_Icons_Done_32.png",
+            "IconX": 15,
+            "IconY": 15,
+            "IconHeight": 30,
+            "IconWidth": 30,
+            "ButtonStyle": "Style1",
+            "IconStyle": "Icon11",
+            "Name": "ConfirmMapButton",
+            "X": 90,
+            "Y": 260,
+            "Width": 60,
+            "Height": 60,
+            "Type": "ButtonWithIcon",
+            "Visible": true,
+            "Draggable": false,
+            "Clickable": false,
+            "Fadeable": false,
+            "Moveable": false
+          },
+          {
+            "Pressed": "__designer\\Blue_Buttons_Round_Edge_icon_button_pressed.png",
+            "Released": "__designer\\Blue_Buttons_Round_Edge_icon_button.png",
+            "Alpha": 255,
+            "IconPressed": "__designer\\Blue_Icons_Next_arrow_32.png",
+            "IconReleased": "__designer\\Blue_Icons_Next_arrow_32.png",
+            "IconX": 22,
+            "IconY": 15,
+            "IconHeight": 30,
+            "IconWidth": 17,
+            "ButtonStyle": "Style1",
+            "IconStyle": "Icon39",
+            "Name": "NextMapButton",
+            "X": 180,
+            "Y": 260,
+            "Width": 60,
+            "Height": 60,
+            "Type": "ButtonWithIcon",
+            "Visible": true,
+            "Draggable": false,
+            "Clickable": false,
+            "Fadeable": false,
+            "Moveable": false
+          },
+          {
             "Filename": "FixIcon.png",
             "Alpha": 255,
             "ScalingAlgorithm": "Nearest-neighbor",
@@ -649,6 +735,42 @@
             },
             "Action": {
               "FunctionName": "ZoomOut",
+              "Type": "ActionCustom"
+            }
+          },
+          {
+            "InteractionName": "DisplayNextMap",
+            "HasCompletedTrigger": false,
+            "Trigger": {
+              "TriggerComponent": "NextMapButton",
+              "Type": "TriggerClicked"
+            },
+            "Action": {
+              "FunctionName": "DisplayNextMap",
+              "Type": "ActionCustom"
+            }
+          },
+          {
+            "InteractionName": "DisplayPreviousMap",
+            "HasCompletedTrigger": false,
+            "Trigger": {
+              "TriggerComponent": "PrevMapButton",
+              "Type": "TriggerClicked"
+            },
+            "Action": {
+              "FunctionName": "DisplayPreviousMap",
+              "Type": "ActionCustom"
+            }
+          },
+          {
+            "InteractionName": "ConfirmMapSelection",
+            "HasCompletedTrigger": false,
+            "Trigger": {
+              "TriggerComponent": "ConfirmMapButton",
+              "Type": "TriggerClicked"
+            },
+            "Action": {
+              "FunctionName": "ConfirmMapSelection",
               "Type": "ActionCustom"
             }
           }
@@ -1771,6 +1893,59 @@
         "Y": 0,
         "Width": 240,
         "Height": 210
+      },
+      {
+        "Components": [
+          {
+            "TextId": "SingleUseId259",
+            "TextRotation": "0",
+            "Color": {
+              "Red": 0,
+              "Green": 0,
+              "Blue": 0
+            },
+            "Alpha": 255,
+            "AutoSize": false,
+            "LineSpacing": 0,
+            "Wildcard1": {
+              "TextId": "SingleUseId260",
+              "UseBuffer": true,
+              "BufferSize": 16
+            },
+            "Name": "DistanceTextBox",
+            "X": 0,
+            "Y": 0,
+            "Width": 240,
+            "Height": 25,
+            "Type": "TextArea",
+            "Visible": true,
+            "Draggable": false,
+            "Clickable": false,
+            "Fadeable": false,
+            "Moveable": false
+          },
+          {
+            "RelativeFilename": "FinishBlack.png",
+            "Alpha": 255,
+            "Name": "FinishIcon",
+            "X": 65,
+            "Y": 2,
+            "Width": 20,
+            "Height": 20,
+            "Type": "Image",
+            "Visible": true,
+            "Draggable": false,
+            "Clickable": false,
+            "Fadeable": false,
+            "Moveable": false
+          }
+        ],
+        "Interactions": [],
+        "Name": "ActivityDataContainter_Select",
+        "X": 0,
+        "Y": 0,
+        "Width": 240,
+        "Height": 225
       },
       {
         "Components": [
@@ -3612,6 +3787,14 @@
       },
       {
         "TextEntryId": "SingleUseId239",
+        "IsResource": false
+      },
+      {
+        "TextEntryId": "SingleUseId259",
+        "IsResource": false
+      },
+      {
+        "TextEntryId": "SingleUseId260",
         "IsResource": false
       }
     ],

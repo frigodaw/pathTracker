@@ -47,12 +47,18 @@ typedef struct
     float pressure;
     float temperature;
 }ES_SensorData_T;
+
+typedef struct
+{
+    uint8_t enabled;
+}ES_ActivationFlags_T;
 /* END OF THE TYPEDEF AREA */
 
 
 /* START OF THE EXTERN VARIABLES AREA */
 extern BMP280_HandleTypedef bmp280;
 extern ES_SensorData_T sensorData;
+extern ES_ActivationFlags_T sensorActivationFlags;
 /* END OF THE EXTERN VARIABLES AREA */
 
 
@@ -60,6 +66,7 @@ extern ES_SensorData_T sensorData;
 void EnvSensors_Main(void);
 float EnvSensors_CalculateAltitude(float temperature, float pressure);
 float EnvSensors_FilterAltitude(float calcAltitude);
+uint8_t EnvSensors_CheckStartConditions(void);
 /* END OF THE FUNCTIONS PROTOTYPES AREA */
 
 

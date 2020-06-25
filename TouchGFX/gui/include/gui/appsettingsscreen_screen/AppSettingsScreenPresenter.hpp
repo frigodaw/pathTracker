@@ -43,6 +43,7 @@ public:
     void IncrementValue(void);
     void DecrementValue(void);
     void UpdateSettingsView(void);
+    void UpdateVariableValues(void);
 
 private:
     AppSettingsScreenPresenter();
