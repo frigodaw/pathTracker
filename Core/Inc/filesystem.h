@@ -30,7 +30,8 @@ extern "C" {
 #define FS_MAXFAILSNUM      10u
 
 #if ((_USE_LFN == 2u) || (_USE_LFN == 3u))
-# define FS_FULLCHARLEN     _MAX_LFN
+# define FS_FULLCHAR_OFFSET 1u
+# define FS_FULLCHARLEN     ( ( (uint8_t)(_MAX_LFN) ) + ( (uint8_t)(FS_FULLCHAR_OFFSET) ) )
 #else
 # define FS_FULLCHARLEN     FS_SHORTCHARLEN
 #endif
@@ -41,6 +42,10 @@ extern "C" {
 #define FS_INPUTPATH        "in"
 #define FS_OUTPUTPATH       "out"
 #define FS_REPORTSPATH      "reports"
+
+#define FS_INPUTFILE_FIRST_ITEM         1u
+#define FS_FILEEXT_DELETE               4u
+#define FS_SEPARATOR_LEN                1u
 /* END OF THE DEFINE AREA */
 
 
@@ -79,6 +84,7 @@ typedef struct
     uint32_t totalSpace;
     uint32_t freeSpace;
     FS_cardInitState state;
+    uint8_t blocked;
 }FS_SDcardInfo_T;
 
 //typedefs to store path to file or directory
@@ -141,6 +147,7 @@ uint8_t FS_Lseek(FS_File_T** file, uint32_t offset);
 uint8_t FS_LseekEnd(FS_File_T** file);
 uint8_t FS_ReadFile(FS_File_T* file, uint8_t *buff, uint16_t len, boolean *isMoreLines);
 uint8_t FS_WriteFile(FS_File_T* file, uint8_t *buff);
+uint8_t FS_FindInputFile(uint8_t idx, FS_FullPathType filePath, uint8_t *fileDisplayPath, uint8_t maxLen);
 FRESULT FS_ReadDir(FS_Dir_T* dir);
 FRESULT FS_GetSDcardCapacity(void);
 FRESULT FS_GetSdCardInfo(void);

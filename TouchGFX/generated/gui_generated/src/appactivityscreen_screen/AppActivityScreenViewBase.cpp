@@ -23,12 +23,14 @@ AppActivityScreenViewBase::AppActivityScreenViewBase() :
     ActivityDataCC_Main.setXY(0, 35);
     ActivityDataCC_Main.setVisible(false);
 
-    ActivityDataCC_Select.setXY(0, 35);
+    ActivityDataCC_MapSelector.setXY(0, 35);
 
-    NameLabel.setXY(84, 5);
-    NameLabel.setColor(touchgfx::Color::getColorFrom24BitRGB(0, 0, 0));
-    NameLabel.setLinespacing(0);
-    NameLabel.setTypedText(touchgfx::TypedText(T_SINGLEUSEID97));
+    NameTextBox.setPosition(30, 5, 175, 25);
+    NameTextBox.setColor(touchgfx::Color::getColorFrom24BitRGB(0, 0, 0));
+    NameTextBox.setLinespacing(0);
+    Unicode::snprintf(NameTextBoxBuffer, NAMETEXTBOX_SIZE, "%s", touchgfx::TypedText(T_SINGLEUSEID261).getText());
+    NameTextBox.setWildcard(NameTextBoxBuffer);
+    NameTextBox.setTypedText(touchgfx::TypedText(T_SINGLEUSEID97));
 
     ButtonForLabel.setXY(90, 260);
     ButtonForLabel.setBitmaps(touchgfx::Bitmap(BITMAP_BLUE_BUTTONS_ROUND_EDGE_ICON_BUTTON_ID), touchgfx::Bitmap(BITMAP_BLUE_BUTTONS_ROUND_EDGE_ICON_BUTTON_PRESSED_ID), touchgfx::Bitmap(BITMAP_BLUE_ICONS_PLAY_32_ID), touchgfx::Bitmap(BITMAP_BLUE_ICONS_PLAY_32_ID));
@@ -86,8 +88,8 @@ AppActivityScreenViewBase::AppActivityScreenViewBase() :
     add(ActivityDataCC_Map);
     add(ActivityDataCC_Alti);
     add(ActivityDataCC_Main);
-    add(ActivityDataCC_Select);
-    add(NameLabel);
+    add(ActivityDataCC_MapSelector);
+    add(NameTextBox);
     add(ButtonForLabel);
     add(NextButton);
     add(ZoomOutButton);
@@ -107,7 +109,7 @@ void AppActivityScreenViewBase::setupScreen()
     ActivityDataCC_Map.initialize();
     ActivityDataCC_Alti.initialize();
     ActivityDataCC_Main.initialize();
-    ActivityDataCC_Select.initialize();
+    ActivityDataCC_MapSelector.initialize();
 }
 
 void AppActivityScreenViewBase::buttonCallbackHandler(const touchgfx::AbstractButton& src)

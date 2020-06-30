@@ -24,6 +24,9 @@ public:
     // AppActivityScreen
     void gotoAppActivityScreenScreenNoTransition();
 
+    // AppSettingsScreen
+    void gotoAppSettingsScreenScreenNoTransition();
+
     // DebugGpsDataScreen
     void gotoDebugGpsDataScreenScreenNoTransition();
 
@@ -32,9 +35,6 @@ public:
 
     // DebugEnvSensorsScreen
     void gotoDebugEnvSensorsScreenScreenNoTransition();
-
-    // AppSettingsScreen
-    void gotoAppSettingsScreenScreenNoTransition();
 
 protected:
     touchgfx::Callback<FrontendApplicationBase> transitionCallback;
@@ -50,6 +50,9 @@ protected:
     // AppActivityScreen
     void gotoAppActivityScreenScreenNoTransitionImpl();
 
+    // AppSettingsScreen
+    void gotoAppSettingsScreenScreenNoTransitionImpl();
+
     // DebugGpsDataScreen
     void gotoDebugGpsDataScreenScreenNoTransitionImpl();
 
@@ -58,9 +61,6 @@ protected:
 
     // DebugEnvSensorsScreen
     void gotoDebugEnvSensorsScreenScreenNoTransitionImpl();
-
-    // AppSettingsScreen
-    void gotoAppSettingsScreenScreenNoTransitionImpl();
 };
 
 #endif // FRONTENDAPPLICATIONBASE_HPP

@@ -33,6 +33,7 @@ public:
     void ConfirmMapSelection(void);
     void DisplayPreviousMap(void);
     void DisplayNextMap(void);
+    void ChangeMapDescription(uint8_t *fileName, uint8_t nameLen, float distance);
 
     void NotifySignalChanged_gpsData_fixQuality(uint8_t newFixQuality);
     void NotifySignalChanged_activityData_timer(uint32_t newTimer);

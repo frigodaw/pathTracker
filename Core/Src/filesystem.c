@@ -25,6 +25,7 @@ FS_DirsCollection_T dirInfo = {0u};
 void FS_Init(void)
 {
     FRESULT fresult = FR_OK;
+    sdCardInfo.blocked = FALSE;
 
     /* Set path to 'in' and 'out' directories */
     memcpy(&dirInfo.in.path, FS_INPUTPATH, strlen(FS_INPUTPATH) + 1u);
@@ -50,7 +51,7 @@ void FS_Main(void)
 {
     FRESULT fresult = FR_OK;
 
-    /* Proceed only with properly mounted SD card */
+    /* Proceed only with properly mounted SD card. */
     if(FS_INITIALIZED == sdCardInfo.state)
     {   
         fresult = FS_GetSdCardInfo();
@@ -90,10 +91,13 @@ FRESULT FS_GetSdCardInfo(void)
 {
     FRESULT fresult = FR_OK;
 
-    fresult |= FS_GetSDcardCapacity();
-    fresult |= FS_ReadDir(&dirInfo.in);
-    fresult |= FS_ReadDir(&dirInfo.out);
-    fresult |= FS_ReadDir(&dirInfo.reports);
+    if(FALSE == sdCardInfo.blocked)
+    {
+        fresult |= FS_GetSDcardCapacity();
+        fresult |= FS_ReadDir(&dirInfo.in);
+        fresult |= FS_ReadDir(&dirInfo.out);
+        fresult |= FS_ReadDir(&dirInfo.reports);
+    }
 
     return fresult;
 }
@@ -291,6 +295,58 @@ uint8_t FS_ReadFile(FS_File_T* file, uint8_t *buff, uint16_t len, boolean *isMor
     }
 
     return RET_OK;
+}
+
+
+/* Function called to find file with index 'idx'
+   and returns its name. */
+uint8_t FS_FindInputFile(uint8_t idx, FS_FullPathType filePath, uint8_t *fileDisplayPath, uint8_t maxLen)
+{
+    uint8_t retVal = RET_OK;
+    FRESULT fresult = FR_OK;
+    DIR openedDir = {0u};
+    FILINFO fileInfo = {0u};
+
+    memset(filePath, 0u, sizeof(FS_FullPathType));
+    memset(fileDisplayPath, 0u, sizeof(*fileDisplayPath)*maxLen);
+
+    fresult = f_findfirst(&openedDir, &fileInfo, (const char*)dirInfo.in.path, "*.gpx");
+
+    if(idx > FS_INPUTFILE_FIRST_ITEM)
+    {
+        for(uint8_t i = FS_INPUTFILE_FIRST_ITEM; i < idx; i++)
+        {
+            memset(fileInfo.fname, 0u, sizeof(FS_FullPathType));
+            fresult = f_findnext(&openedDir, &fileInfo);
+        }
+    }
+
+    if((FR_OK == fresult) && (0u != fileInfo.fname[0u]))
+    {
+        /* Save full path */
+        uint8_t num = strlen((const char*)dirInfo.in.path);
+        strncpy(filePath, (const char*)dirInfo.in.path, num);
+        strncat(filePath, "/", FS_SEPARATOR_LEN);
+        strncat(filePath, fileInfo.fname, sizeof(FS_FullPathType) - num - FS_SEPARATOR_LEN);
+
+        /* Remove file extension to display path */
+        uint8_t len = strlen(fileInfo.fname);
+        memset(&fileInfo.fname[len - FS_FILEEXT_DELETE], 0u, FS_FILEEXT_DELETE);
+        len -= FS_FILEEXT_DELETE;
+
+        len = (len > maxLen) ? maxLen : len;
+
+        strncpy((char*)fileDisplayPath, fileInfo.fname, len);
+        retVal = RET_OK;
+    }
+    else
+    {
+        retVal = RET_NOK;
+    }
+
+    fresult = f_closedir(&openedDir);
+
+    return retVal;
 }
 
 

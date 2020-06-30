@@ -14,7 +14,7 @@ using namespace touchgfx;
 #define APP_GPXFILE_SHORTMODE
 
 #define APP_SDCARD_INITIALIZED      1u
-#define APP_FILENAMEMAXLEN          32u
+#define APP_FILENAMEMAXLEN          33u
 #define APP_TIME_COEFF1             100u
 #define APP_TIME_COEFF2             10000uL
 #define APP_DATE_COEFF1             100u
@@ -136,6 +136,11 @@ using namespace touchgfx;
 #define APP_TIMEZONE_MONTH_DECEMBER     12u
 #define APP_TIMEZONE_INIT_YEAR          0u
 #define APP_TIMEZONE_MAX_YEAR           99u
+
+#define APP_MAP_FILENAME_DISPLAY_LEN    14u
+#define APP_MAP_FILENUM_OFFSET          1u
+#define APP_MAP_NOFILE                  0u
+#define APP_MAP_DEFAULT_LABEL           "No map"
 /* END OF THE DEFINE AREA */
 
 
@@ -155,6 +160,7 @@ typedef enum
     APP_FILE_CREATED,
     APP_FILE_PENDING,
     APP_FILE_CLOSED,
+    APP_FILE_OPENED,
     APP_FILE_ERROR = 0xFF
 }AppActivity_fileStatus_T;
 
@@ -239,6 +245,7 @@ typedef struct
 {
     uint8_t state;
 }AppActivity_sdCardData_T;
+
 typedef struct
 {
     char name[APP_FILENAMEMAXLEN];
@@ -368,6 +375,12 @@ typedef struct
     AppActivity_time_T time;
     AppActivity_date_T date;
 }AppActivity_calendar_T;
+
+typedef struct
+{
+    uint8_t current;
+    uint8_t max;
+}AppActivity_mapIndex_T;
 /* END OF THE STRUCT AREA */
 
 
@@ -425,6 +438,8 @@ public:
     void ApplyDate(AppActivity_timezoneDateChange_T dateChange);
     bool IsLeapYear(uint16_t year);
 
+    void FindMapsOnSdCard(void);
+    void GetMapInfo(void);
     void DisplayPreviousMap(void);
     void ConfirmMapSelection(void);
     void DisplayNextMap(void);
@@ -451,13 +466,15 @@ private:
     AppActivity_gpsSignals_T        gpsSignals;
     AppActivity_sensorData_T        sensorData;
     AppActivity_sdCardData_T        sdCardData;
-    AppActivity_fileInfo_T          fileInfo;
+    AppActivity_fileInfo_T          mapFileInfo;
+    AppActivity_fileInfo_T          trackFileInfo;
     AppActivity_activityData_T      activityData;
     AppActivity_appInternalData_T   appInternalData;
     AppActivity_trackData_T         trackData;
     AppActivity_trackPointsData_T   trackPointsData;
     AppActivity_altitudeInfo_T      altitudeInfo;
     AppActivity_calendar_T          calendar;
+    AppActivity_mapIndex_T          mapIndex;
 };
 
 #endif // APPACTIVITYSCREENPRESENTER_HPP

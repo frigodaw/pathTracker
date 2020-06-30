@@ -15,14 +15,14 @@
 #include <gui/appmenuscreen_screen/AppMenuScreenPresenter.hpp>
 #include <gui/appactivityscreen_screen/AppActivityScreenView.hpp>
 #include <gui/appactivityscreen_screen/AppActivityScreenPresenter.hpp>
+#include <gui/appsettingsscreen_screen/AppSettingsScreenView.hpp>
+#include <gui/appsettingsscreen_screen/AppSettingsScreenPresenter.hpp>
 #include <gui/debuggpsdatascreen_screen/DebugGpsDataScreenView.hpp>
 #include <gui/debuggpsdatascreen_screen/DebugGpsDataScreenPresenter.hpp>
 #include <gui/debugsdcardscreen_screen/DebugSdCardScreenView.hpp>
 #include <gui/debugsdcardscreen_screen/DebugSdCardScreenPresenter.hpp>
 #include <gui/debugenvsensorsscreen_screen/DebugEnvSensorsScreenView.hpp>
 #include <gui/debugenvsensorsscreen_screen/DebugEnvSensorsScreenPresenter.hpp>
-#include <gui/appsettingsscreen_screen/AppSettingsScreenView.hpp>
-#include <gui/appsettingsscreen_screen/AppSettingsScreenPresenter.hpp>
 
 using namespace touchgfx;
 
@@ -80,6 +80,19 @@ void FrontendApplicationBase::gotoAppActivityScreenScreenNoTransitionImpl()
     touchgfx::makeTransition<AppActivityScreenView, AppActivityScreenPresenter, touchgfx::NoTransition, Model >(&currentScreen, &currentPresenter, frontendHeap, &currentTransition, &model);
 }
 
+// AppSettingsScreen
+
+void FrontendApplicationBase::gotoAppSettingsScreenScreenNoTransition()
+{
+    transitionCallback = touchgfx::Callback<FrontendApplicationBase>(this, &FrontendApplication::gotoAppSettingsScreenScreenNoTransitionImpl);
+    pendingScreenTransitionCallback = &transitionCallback;
+}
+
+void FrontendApplicationBase::gotoAppSettingsScreenScreenNoTransitionImpl()
+{
+    touchgfx::makeTransition<AppSettingsScreenView, AppSettingsScreenPresenter, touchgfx::NoTransition, Model >(&currentScreen, &currentPresenter, frontendHeap, &currentTransition, &model);
+}
+
 // DebugGpsDataScreen
 
 void FrontendApplicationBase::gotoDebugGpsDataScreenScreenNoTransition()
@@ -117,17 +130,4 @@ void FrontendApplicationBase::gotoDebugEnvSensorsScreenScreenNoTransition()
 void FrontendApplicationBase::gotoDebugEnvSensorsScreenScreenNoTransitionImpl()
 {
     touchgfx::makeTransition<DebugEnvSensorsScreenView, DebugEnvSensorsScreenPresenter, touchgfx::NoTransition, Model >(&currentScreen, &currentPresenter, frontendHeap, &currentTransition, &model);
-}
-
-// AppSettingsScreen
-
-void FrontendApplicationBase::gotoAppSettingsScreenScreenNoTransition()
-{
-    transitionCallback = touchgfx::Callback<FrontendApplicationBase>(this, &FrontendApplication::gotoAppSettingsScreenScreenNoTransitionImpl);
-    pendingScreenTransitionCallback = &transitionCallback;
-}
-
-void FrontendApplicationBase::gotoAppSettingsScreenScreenNoTransitionImpl()
-{
-    touchgfx::makeTransition<AppSettingsScreenView, AppSettingsScreenPresenter, touchgfx::NoTransition, Model >(&currentScreen, &currentPresenter, frontendHeap, &currentTransition, &model);
 }

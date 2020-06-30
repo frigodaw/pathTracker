@@ -300,6 +300,16 @@ uint8_t DC_get_fileSystem_sdCardInfo_state(void)
 
 /*  File: fileSystem.c
     Type: getter
+    Variable: sdCardInfo.blocked
+*/
+uint8_t DC_get_fileSystem_sdCardInfo_blocked(void)
+{
+    return (uint8_t)sdCardInfo.blocked;
+}
+
+
+/*  File: fileSystem.c
+    Type: getter
     Variable: dirInfo.in.filesNum
 */
 uint8_t DC_get_fileSystem_dirInfo_in_filesNum(void)
@@ -315,6 +325,16 @@ uint8_t DC_get_fileSystem_dirInfo_in_filesNum(void)
 uint8_t DC_get_fileSystem_dirInfo_out_filesNum(void)
 {
     return dirInfo.out.filesNum;
+}
+
+
+/*  File: fileSystem.c
+    Type: setter
+    Variable: sdCardInfo.blocked
+*/
+void DC_set_fileSystem_sdCardInfo_blocked(uint8_t value)
+{
+    sdCardInfo.blocked = value;
 }
 /* -------------------- fileSystem -------------------- */
 

@@ -44,7 +44,7 @@ void AppActivityScreenView::ChangeActivityDataCC(void)
 
 void AppActivityScreenView::SetActivityDataScreen(AppActivity_activeScreen_T screen)
 {
-    ActivityDataCC_Select.setVisible(false);
+    ActivityDataCC_MapSelector.setVisible(false);
     ActivityDataCC_Main.setVisible(false);
     ActivityDataCC_Alti.setVisible(false);
     ActivityDataCC_Map.setVisible(false);
@@ -61,7 +61,7 @@ void AppActivityScreenView::SetActivityDataScreen(AppActivity_activeScreen_T scr
         case APP_SCREEN_NONE:
             break;
         case APP_SCREEN_SELECTMAP:
-            ActivityDataCC_Select.setVisible(true);
+            ActivityDataCC_MapSelector.setVisible(true);
             PrevMapButton.setVisible(true);
             ConfirmMapButton.setVisible(true);
             NextMapButton.setVisible(true);
@@ -88,7 +88,7 @@ void AppActivityScreenView::SetActivityDataScreen(AppActivity_activeScreen_T scr
             break;
     }
 
-    ActivityDataCC_Select.invalidate();
+    ActivityDataCC_MapSelector.invalidate();
     ActivityDataCC_Main.invalidate();
     ActivityDataCC_Alti.invalidate();
     ActivityDataCC_Map.invalidate();
@@ -172,6 +172,17 @@ void AppActivityScreenView::DisplayPreviousMap(void)
 void AppActivityScreenView::DisplayNextMap(void)
 {
     presenter->DisplayNextMap();
+}
+
+void AppActivityScreenView::ChangeMapDescription(uint8_t *fileName, uint8_t nameLen, float distance)
+{
+    Unicode::UnicodeChar fileNameUnicode[NAMETEXTBOX_SIZE] = {0u};
+    Unicode::fromUTF8((const uint8_t*)fileName, fileNameUnicode, NAMETEXTBOX_SIZE);
+    Unicode::snprintf(NameTextBoxBuffer, NAMETEXTBOX_SIZE, "%s", fileNameUnicode);
+    //NameTextBox.resizeToCurrentText();
+    NameTextBox.invalidate();
+
+    ActivityDataCC_MapSelector.ChangeMapDistance(distance);
 }
 
 

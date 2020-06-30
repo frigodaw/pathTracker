@@ -69,8 +69,10 @@ void     DC_set_neoGps_gpsData_write(uint16_t value);
 uint32_t DC_get_fileSystem_sdCardInfo_totalSpace(void);
 uint32_t DC_get_fileSystem_sdCardInfo_freeSpace(void);
 uint8_t  DC_get_fileSystem_sdCardInfo_state(void);
+uint8_t  DC_get_fileSystem_sdCardInfo_blocked(void);
 uint8_t  DC_get_fileSystem_dirInfo_in_filesNum(void);
 uint8_t  DC_get_fileSystem_dirInfo_out_filesNum(void);
+void     DC_set_fileSystem_sdCardInfo_blocked(uint8_t value);
 
 /* ---------- envSensors ---------- */
 float    DC_get_sensorData_altitude(void);

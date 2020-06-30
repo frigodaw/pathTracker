@@ -11,8 +11,8 @@
 #include <gui/containers/ActivityDataContainter_Map.hpp>
 #include <gui/containers/ActivityDataContainter_Alti.hpp>
 #include <gui/containers/ActivityDataContainter_Main.hpp>
-#include <gui/containers/ActivityDataContainter_Select.hpp>
-#include <touchgfx/widgets/TextArea.hpp>
+#include <gui/containers/ActivityDataContainter_MapSelector.hpp>
+#include <touchgfx/widgets/TextAreaWithWildcard.hpp>
 #include <touchgfx/widgets/ButtonWithIcon.hpp>
 #include <touchgfx/widgets/ScalableImage.hpp>
 
@@ -78,8 +78,8 @@ protected:
     ActivityDataContainter_Map ActivityDataCC_Map;
     ActivityDataContainter_Alti ActivityDataCC_Alti;
     ActivityDataContainter_Main ActivityDataCC_Main;
-    ActivityDataContainter_Select ActivityDataCC_Select;
-    touchgfx::TextArea NameLabel;
+    ActivityDataContainter_MapSelector ActivityDataCC_MapSelector;
+    touchgfx::TextAreaWithOneWildcard NameTextBox;
     touchgfx::ButtonWithIcon ButtonForLabel;
     touchgfx::ButtonWithIcon NextButton;
     touchgfx::ButtonWithIcon ZoomOutButton;
@@ -91,6 +91,12 @@ protected:
     touchgfx::ButtonWithIcon NextMapButton;
     touchgfx::ScalableImage FixImage;
     touchgfx::ScalableImage SdCardImage;
+
+    /*
+     * Wildcard Buffers
+     */
+    static const uint16_t NAMETEXTBOX_SIZE = 16;
+    touchgfx::Unicode::UnicodeChar NameTextBoxBuffer[NAMETEXTBOX_SIZE];
 
 private:
 

@@ -32,12 +32,14 @@ AppActivityScreenPresenter::AppActivityScreenPresenter(AppActivityScreenView& v)
 {
     memset(&activityData, 0u, sizeof(activityData));
     memset(&appInternalData, 0u, sizeof(appInternalData));
-    memset(&fileInfo, 0u, sizeof(fileInfo));
+    memset(&mapFileInfo, 0u, sizeof(mapFileInfo));
+    memset(&trackFileInfo, 0u, sizeof(trackFileInfo));
     memset(&gpsSignals, 0u, sizeof(gpsSignals));
     memset(&sensorData, 0u, sizeof(sensorData));
     memset(&trackData, 0u, sizeof(trackData));
     memset(&altitudeInfo, 0u, sizeof(altitudeInfo));
     memset(&calendar, 0u, sizeof(calendar));
+    memset(&mapIndex, 0u, sizeof(mapIndex));
 
     appInternalData.state = APP_STATE_INIT;
     appInternalData.screen = APP_SCREEN_NONE;
@@ -48,8 +50,10 @@ AppActivityScreenPresenter::AppActivityScreenPresenter(AppActivityScreenView& v)
     appInternalData.sensorEnabled = false;
     appInternalData.timezone = DC_get_appSettings_settingsData_value_timezone();
 
-    fileInfo.fileStatus = APP_FILE_NOFILE;
-    fileInfo.errorStatus = APP_FILEERROR_NOERROR;
+    mapFileInfo.fileStatus = APP_FILE_NOFILE;
+    mapFileInfo.errorStatus = APP_FILEERROR_NOERROR;
+    trackFileInfo.fileStatus = APP_FILE_NOFILE;
+    trackFileInfo.errorStatus = APP_FILEERROR_NOERROR;
 
     trackData.scale = APP_TRACK_SCALE100;
     trackData.mapCoordsXY = (AppActivity_mapCoordsXY_T*)&mapCoordsXY;
@@ -57,6 +61,8 @@ AppActivityScreenPresenter::AppActivityScreenPresenter(AppActivityScreenView& v)
     trackPointsData.coords = trackPoints;
     trackPointsData.idxTrack = APP_TRACK_TRACK_FIRST_ELEMENT;
     trackPointsData.idxMap = APP_TRACK_MAP_FIRST_ELEMENT;
+
+    mapIndex.max = DC_get_fileSystem_dirInfo_in_filesNum();
 
     SelectAltitudeSource();
     SetBitmapButton(BITMAP_BLUE_ICONS_PLAY_32_ID);
@@ -73,12 +79,16 @@ void AppActivityScreenPresenter::activate()
     model->SignalRequestFromPresenter();
     model->MainPeriodFromPresenter(appInternalData.mainTimePeriod);
 
+    DC_set_fileSystem_sdCardInfo_blocked((uint8_t)true);
+
+    GetMapInfo();
+
     appInternalData.state = APP_STATE_READY;
 }
 
 void AppActivityScreenPresenter::deactivate()
 {
-
+    DC_set_fileSystem_sdCardInfo_blocked((uint8_t)false);
 }
 
 
@@ -112,15 +122,15 @@ void AppActivityScreenPresenter::InitActivity(void)
     {
         appInternalData.lastTime = DC_get_main_tim_t_100ms();
 
-        snprintf(fileInfo.name, APP_FILENAMEMAXLEN, "%s/20%.2d%.2d%.2d_%.2d%.2d%.2d.gpx",
+        snprintf(trackFileInfo.name, APP_FILENAMEMAXLEN, "%s/20%.2d%.2d%.2d_%.2d%.2d%.2d.gpx",
                 FS_OUTPUTPATH, calendar.date.year, calendar.date.mon, calendar.date.day,
                 calendar.time.hr, calendar.time.min, calendar.time.sec);
 
-        uint8_t retVal = FS_OpenFile((FS_File_T**)&fileInfo.filePtr, fileInfo.name, FS_MODEWRITE);
+        uint8_t retVal = FS_OpenFile((FS_File_T**)&trackFileInfo.filePtr, trackFileInfo.name, FS_MODEWRITE);
         if(RET_OK == retVal)
         {
-            fileInfo.errorStatus &= ~APP_FILEERROR_OPENFILE;
-            fileInfo.fileStatus = APP_FILE_CREATED;
+            trackFileInfo.errorStatus &= ~APP_FILEERROR_OPENFILE;
+            trackFileInfo.fileStatus = APP_FILE_CREATED;
             appInternalData.state = APP_STATE_RUNNING;
             SetBitmapButton(BITMAP_BLUE_ICONS_PAUSE_32_ID);
 
@@ -134,29 +144,29 @@ void AppActivityScreenPresenter::InitActivity(void)
                 "\t<trk>\n"
                 "\t\t<name>Cycling</name>\n"
                 "\t\t<trkseg>\n";
-            retVal |= FS_WriteFile((FS_File_T*)fileInfo.filePtr, (uint8_t*)initBufferOne);
-            retVal |= FS_WriteFile((FS_File_T*)fileInfo.filePtr, (uint8_t*)initBufferTwo);
+            retVal |= FS_WriteFile((FS_File_T*)trackFileInfo.filePtr, (uint8_t*)initBufferOne);
+            retVal |= FS_WriteFile((FS_File_T*)trackFileInfo.filePtr, (uint8_t*)initBufferTwo);
 
             if(RET_OK == retVal)
             {
-                fileInfo.errorStatus &= ~APP_FILEERROR_WRITEDATA;
+                trackFileInfo.errorStatus &= ~APP_FILEERROR_WRITEDATA;
             }
             else
             {
-                fileInfo.errorStatus |= APP_FILEERROR_WRITEDATA;
+                trackFileInfo.errorStatus |= APP_FILEERROR_WRITEDATA;
             }
         }
         else
         {
             /* File can not be created */
-            fileInfo.fileStatus = APP_FILE_ERROR;
-            fileInfo.errorStatus |= APP_FILEERROR_OPENFILE;
+            trackFileInfo.fileStatus = APP_FILE_ERROR;
+            trackFileInfo.errorStatus |= APP_FILEERROR_OPENFILE;
         }
     }
     else
     {
         /* No fix, file will not be created */
-        fileInfo.fileStatus = APP_FILE_PENDING;
+        trackFileInfo.fileStatus = APP_FILE_PENDING;
     }
 }
 
@@ -165,7 +175,7 @@ void AppActivityScreenPresenter::InitActivity(void)
    to change appInternalData.state. */
 void AppActivityScreenPresenter::FinishActivity(void)
 {
-    if(APP_FILE_NOFILE != fileInfo.fileStatus)
+    if(APP_FILE_NOFILE != trackFileInfo.fileStatus)
     {
         const char* finishBuffer = 
             "\t\t</trkseg>\n"
@@ -173,28 +183,28 @@ void AppActivityScreenPresenter::FinishActivity(void)
             "</gpx>";
         uint8_t retVal = RET_OK;
 
-        retVal = FS_WriteFile((FS_File_T*)fileInfo.filePtr, (uint8_t*)finishBuffer);
+        retVal = FS_WriteFile((FS_File_T*)trackFileInfo.filePtr, (uint8_t*)finishBuffer);
         if(RET_OK == retVal)
         {
-            fileInfo.errorStatus &= ~APP_FILEERROR_WRITEDATA;
+            trackFileInfo.errorStatus &= ~APP_FILEERROR_WRITEDATA;
         }
         else
         {
-            fileInfo.errorStatus |= APP_FILEERROR_WRITEDATA;
+            trackFileInfo.errorStatus |= APP_FILEERROR_WRITEDATA;
         }
 
-        retVal = FS_CloseFile((FS_File_T**)&fileInfo.filePtr);
+        retVal = FS_CloseFile((FS_File_T**)&trackFileInfo.filePtr);
         if(RET_OK == retVal)
         {
-            fileInfo.fileStatus = APP_FILE_CLOSED;
-            fileInfo.errorStatus &= ~APP_FILEERROR_FINISHACTIVITY;
+            trackFileInfo.fileStatus = APP_FILE_CLOSED;
+            trackFileInfo.errorStatus &= ~APP_FILEERROR_FINISHACTIVITY;
         }
         else
         {
-            fileInfo.fileStatus = APP_FILE_ERROR;
-            fileInfo.errorStatus |= APP_FILEERROR_FINISHACTIVITY;
+            trackFileInfo.fileStatus = APP_FILE_ERROR;
+            trackFileInfo.errorStatus |= APP_FILEERROR_FINISHACTIVITY;
         }
-        fileInfo.filePtr = NULL;
+        trackFileInfo.filePtr = NULL;
         appInternalData.state = APP_STATE_FINISHED;
     }
 }
@@ -203,7 +213,7 @@ void AppActivityScreenPresenter::FinishActivity(void)
 /* Main method, triggered periodically by model. */
 void AppActivityScreenPresenter::Main(void)
 {
-    if(APP_FILE_CREATED == fileInfo.fileStatus)
+    if(APP_FILE_CREATED == trackFileInfo.fileStatus)
     {
         if(APP_STATE_RUNNING == appInternalData.state)
         {
@@ -241,7 +251,7 @@ void AppActivityScreenPresenter::Main(void)
             
         }
     }
-    else if(APP_FILE_PENDING == fileInfo.fileStatus)
+    else if(APP_FILE_PENDING == trackFileInfo.fileStatus)
     {
         InitActivity();
     }
@@ -288,15 +298,15 @@ void AppActivityScreenPresenter::InsertDataIntoFile(void)
         "\t\t\t<trkpt lat=\"%d.%.*lu\" lon=\"%d.%.*lu\"><ele>%d.%.*lu</ele><time>20%.2d-%.2d-%.2dT%.2d:%.2d:%.2d.000Z</time></trkpt>\n",
         lat.sint, APP_LATLON_PRECISION, lat.frac, lon.sint, APP_LATLON_PRECISION, lon.frac, alt.sint, APP_ALTI_PRECISION, alt.frac,
         calendar.date.year, calendar.date.mon, calendar.date.day, calendar.time.hr, calendar.time.min, calendar.time.sec);
-    retVal = FS_WriteFile((FS_File_T*)fileInfo.filePtr, (uint8_t*)buffer);
+    retVal = FS_WriteFile((FS_File_T*)trackFileInfo.filePtr, (uint8_t*)buffer);
 
     if(RET_OK == retVal)
     {
-        fileInfo.errorStatus &= ~APP_FILEERROR_WRITEDATA;
+        trackFileInfo.errorStatus &= ~APP_FILEERROR_WRITEDATA;
     }
     else
     {
-        fileInfo.errorStatus |= APP_FILEERROR_WRITEDATA;
+        trackFileInfo.errorStatus |= APP_FILEERROR_WRITEDATA;
     }
 
 #else   /* Default saving mode */
@@ -304,18 +314,18 @@ void AppActivityScreenPresenter::InsertDataIntoFile(void)
         "\t\t\t<trkpt lat=\"%d.%.*lu\" lon=\"%d.%.*lu\">\n"
         "\t\t\t\t<ele>%d.%.*lu</ele>\n",
         lat.sint, APP_LATLON_PRECISION, lat.frac, lon.sint, APP_LATLON_PRECISION, lon.frac, alt.sint, APP_ALTI_PRECISION, alt.frac);
-    fileInfo.errorStatus = FS_WriteFile((FS_File_T*)fileInfo.filePtr, (uint8_t*)buffer);
+    trackFileInfo.errorStatus = FS_WriteFile((FS_File_T*)trackFileInfo.filePtr, (uint8_t*)buffer);
 
     memset(buffer, 0u, sizeof(buffer));
     snprintf((char*)buffer, APP_MAXFILEBUFFERSIZE,
         "\t\t\t\t<time>20%.2d-%.2d-%.2dT%.2d:%.2d:%.2d.000Z</time>\n"
         "\t\t\t</trkpt>\n",
         calendar.date.year, calendar.date.mon, calendar.date.day, calendar.time.hr, calendar.time.min, calendar.time.sec);
-    fileInfo.errorStatus = FS_WriteFile((FS_File_T*)fileInfo.filePtr, (uint8_t*)buffer);
+    trackFileInfo.errorStatus = FS_WriteFile((FS_File_T*)trackFileInfo.filePtr, (uint8_t*)buffer);
 #endif
 
     UpdateSignalSdCard();
-    fileInfo.points++;
+    trackFileInfo.points++;
 }
 
 
@@ -379,7 +389,7 @@ bool AppActivityScreenPresenter::IsSdCard(void)
 {
     bool retVal = false;
 
-    if((APP_SDCARD_INITIALIZED == sdCardData.state) && (APP_FILE_ERROR != fileInfo.fileStatus) && (APP_FILEERROR_NOERROR == fileInfo.errorStatus))
+    if((APP_SDCARD_INITIALIZED == sdCardData.state) && (APP_FILE_ERROR != trackFileInfo.fileStatus) && (APP_FILEERROR_NOERROR == trackFileInfo.errorStatus))
     {
         retVal = true;
     }
@@ -417,7 +427,7 @@ void AppActivityScreenPresenter::CalculateSpeedAndDistance(void)
     static float lastLat = 0.f;
     static float lastLon = 0.f;
 
-    if(APP_DISTANCE_MIN_POINTS_NUM > fileInfo.points)
+    if(APP_DISTANCE_MIN_POINTS_NUM > trackFileInfo.points)
     {
         /* Do not proceed on first entry when there is no enough points */
     }
@@ -778,7 +788,7 @@ void AppActivityScreenPresenter::DrawTrack(void)
    selecting points to draw. */
 void AppActivityScreenPresenter::CalculateSkippedCoords(void)
 {
-    if(APP_TRACK_MAP_ELEMENTS > fileInfo.points)   /* Do not skip when there is less points than maximum possible to draw */
+    if(APP_TRACK_MAP_ELEMENTS > trackFileInfo.points)   /* Do not skip when there is less points than maximum possible to draw */
     {
         trackData.skip = 0u;
     }
@@ -811,7 +821,7 @@ void AppActivityScreenPresenter::CalculateSkippedCoords(void)
                         trackData.skip = APP_TRACK_SKIPPED_COORDS_10000;
                         break;
                     case APP_TRACK_SCALEFULL:
-                        trackData.skip = (uint8_t)(fileInfo.points / APP_TRACK_MAP_ELEMENTS);
+                        trackData.skip = (uint8_t)(trackFileInfo.points / APP_TRACK_MAP_ELEMENTS);
                         break;
                     default:
                         trackData.skip = 0u;
@@ -1216,11 +1226,11 @@ void AppActivityScreenPresenter::FilterCoords(void)
    This behaviour should prevent unexpected loss of data. */
 void AppActivityScreenPresenter::SaveFile(void)
 {
-    uint8_t retVal = FS_CloseFile((FS_File_T**)&fileInfo.filePtr);
-    fileInfo.fileStatus = (RET_OK == retVal) ? APP_FILE_CLOSED : APP_FILE_ERROR;
+    uint8_t retVal = FS_CloseFile((FS_File_T**)&trackFileInfo.filePtr);
+    trackFileInfo.fileStatus = (RET_OK == retVal) ? APP_FILE_CLOSED : APP_FILE_ERROR;
 
-    retVal = FS_OpenFile((FS_File_T**)&fileInfo.filePtr, fileInfo.name, FS_MODEAPPEND);
-    fileInfo.fileStatus = (RET_OK == retVal) ? APP_FILE_CREATED : APP_FILE_ERROR;
+    retVal = FS_OpenFile((FS_File_T**)&trackFileInfo.filePtr, trackFileInfo.name, FS_MODEAPPEND);
+    trackFileInfo.fileStatus = (RET_OK == retVal) ? APP_FILE_CREATED : APP_FILE_ERROR;
 }
 
 
@@ -1258,16 +1268,51 @@ bool AppActivityScreenPresenter::IsLeapYear(uint16_t year)
 }
 
 
+/* Method called to find maps on SD card
+   and display them on select screen. */
+void AppActivityScreenPresenter::FindMapsOnSdCard(void)
+{
+
+}
+
+
+/* Method called to open map file and get
+   information about it. */
+void AppActivityScreenPresenter::GetMapInfo(void)
+{
+    //FS_FullPathType filePath = {0u};
+    uint8_t fileDisplayPath[APP_MAP_FILENAME_DISPLAY_LEN] = {APP_MAP_DEFAULT_LABEL};
+    float distance = 0.f;
+    uint8_t retVal = RET_OK;
+
+    if(mapIndex.current > APP_MAP_NOFILE)
+    {
+        retVal |= FS_FindInputFile(mapIndex.current, mapFileInfo.name, fileDisplayPath, APP_MAP_FILENAME_DISPLAY_LEN);
+        retVal |= FS_OpenFile((FS_File_T**)&mapFileInfo.filePtr, mapFileInfo.name, FS_MODEREAD);
+        mapFileInfo.fileStatus = (RET_OK == retVal) ? APP_FILE_OPENED : APP_FILE_ERROR;
+
+
+        retVal |= FS_CloseFile((FS_File_T**)&mapFileInfo.filePtr);
+        mapFileInfo.fileStatus = (RET_OK == retVal) ? APP_FILE_CLOSED : APP_FILE_ERROR;
+    }
+
+    view.ChangeMapDescription(fileDisplayPath, APP_MAP_FILENAME_DISPLAY_LEN, distance);
+
+}
+
+
 /* Method called to show user previous map. */
 void AppActivityScreenPresenter::DisplayPreviousMap(void)
 {
-
+    mapIndex.current = (mapIndex.current > 0u) ? (mapIndex.current - 1u) : mapIndex.max;
+    GetMapInfo();
 }
 
 /* Method called to show user next map. */
 void AppActivityScreenPresenter::DisplayNextMap(void)
 {
-
+    mapIndex.current = (mapIndex.current < mapIndex.max) ? (mapIndex.current + 1u) : 0u;
+    GetMapInfo();
 }
 
 

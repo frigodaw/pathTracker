@@ -28,14 +28,14 @@
 #include <gui/appmenuscreen_screen/AppMenuScreenPresenter.hpp>
 #include <gui/appactivityscreen_screen/AppActivityScreenView.hpp>
 #include <gui/appactivityscreen_screen/AppActivityScreenPresenter.hpp>
+#include <gui/appsettingsscreen_screen/AppSettingsScreenView.hpp>
+#include <gui/appsettingsscreen_screen/AppSettingsScreenPresenter.hpp>
 #include <gui/debuggpsdatascreen_screen/DebugGpsDataScreenView.hpp>
 #include <gui/debuggpsdatascreen_screen/DebugGpsDataScreenPresenter.hpp>
 #include <gui/debugsdcardscreen_screen/DebugSdCardScreenView.hpp>
 #include <gui/debugsdcardscreen_screen/DebugSdCardScreenPresenter.hpp>
 #include <gui/debugenvsensorsscreen_screen/DebugEnvSensorsScreenView.hpp>
 #include <gui/debugenvsensorsscreen_screen/DebugEnvSensorsScreenPresenter.hpp>
-#include <gui/appsettingsscreen_screen/AppSettingsScreenView.hpp>
-#include <gui/appsettingsscreen_screen/AppSettingsScreenPresenter.hpp>
 
 
 /**
@@ -61,10 +61,10 @@ public:
     typedef touchgfx::meta::TypeList< StartScreenView,
             touchgfx::meta::TypeList< AppMenuScreenView,
             touchgfx::meta::TypeList< AppActivityScreenView,
+            touchgfx::meta::TypeList< AppSettingsScreenView,
             touchgfx::meta::TypeList< DebugGpsDataScreenView,
             touchgfx::meta::TypeList< DebugSdCardScreenView,
             touchgfx::meta::TypeList< DebugEnvSensorsScreenView,
-            touchgfx::meta::TypeList< AppSettingsScreenView,
             touchgfx::meta::Nil > > > > > >
             > GeneratedViewTypes;
 
@@ -80,10 +80,10 @@ public:
     typedef touchgfx::meta::TypeList< StartScreenPresenter,
             touchgfx::meta::TypeList< AppMenuScreenPresenter,
             touchgfx::meta::TypeList< AppActivityScreenPresenter,
+            touchgfx::meta::TypeList< AppSettingsScreenPresenter,
             touchgfx::meta::TypeList< DebugGpsDataScreenPresenter,
             touchgfx::meta::TypeList< DebugSdCardScreenPresenter,
             touchgfx::meta::TypeList< DebugEnvSensorsScreenPresenter,
-            touchgfx::meta::TypeList< AppSettingsScreenPresenter,
             touchgfx::meta::Nil > > > > > >
             > GeneratedPresenterTypes;
 
