@@ -17,15 +17,15 @@ void ActivityDataContainter_Map::initialize()
 }
 
 
-void ActivityDataContainter_Map::FlushTrackList(void)
+void ActivityDataContainter_Map::FlushRouteList(void)
 {
-    Map.FlushTrackList();
+    Map.FlushRouteList();
 }
 
 
-void ActivityDataContainter_Map::SetTrackScale(uint32_t scaleVal)
+void ActivityDataContainter_Map::SetRouteScale(uint32_t scaleVal)
 {
-    Map.SetTrackScale(scaleVal);
+    Map.SetRouteScale(scaleVal);
 
     Unicode::UnicodeChar unit[SCALETEXTBOXBUFFER2_SIZE] = {0u};
 
@@ -58,9 +58,9 @@ void ActivityDataContainter_Map::SetTrackScale(uint32_t scaleVal)
 }
 
 
-bool ActivityDataContainter_Map::AddCoordsToTrackList(uint8_t x, uint8_t y)
+bool ActivityDataContainter_Map::AddCoordsToRouteList(uint8_t x, uint8_t y, Map_DrawRoute_T route)
 {
-    bool newPoint = Map.AddCoordsToTrackList(x, y);
+    bool newPoint = Map.AddCoordsToRouteList(x, y, route);
     return newPoint;
 }
 
@@ -69,4 +69,9 @@ void ActivityDataContainter_Map::TrackRedraw(void)
 {
     Map.invalidate();
     ScaleTextBox.invalidate();
+}
+
+void ActivityDataContainter_Map::IncrementRouteIdx(Map_DrawRoute_T route, uint8_t addedPoints)
+{
+    Map.IncrementRouteIdx(route, addedPoints);
 }

@@ -8,10 +8,12 @@
 
 
 /* START OF THE DEFINE AREA */
-#define MAP_TRACK_DRAWABLE_ELEMENTS         200u
+#define MAP_ROUTE_DRAWABLE_ELEMENTS         200u
 #define MAP_EMPTYSLOT_VALUE                 255u
-#define MAP_TRACK_A_COEFF_LIMIT             1.f
-#define MAP_TRACK_COLOR_CHANGE_INTERVAL     128u
+#define MAP_ROUTE_A_COEFF_LIMIT             1.f
+#define MAP_ROUTE_COLOR_CHANGE_INTERVAL     128u
+#define MAP_MIN_POINTS_TO_DRAW              1u
+#define MAP_MIN_POINTS_OFFSET               MAP_MIN_POINTS_TO_DRAW
 
 #define MAP_SCALE_LINE_LENGTH_PX            100u
 #define MAP_SCALE_LINE_HEIGTH_PX            5u
@@ -19,6 +21,10 @@
 #define MAP_SCALE_INNER_LINE_HEIGTH_PX      3u
 #define MAP_SCALE_LINE_DIV_COEFF            2u
 #define MAP_SCALE_LOCATION_ABOVE_BOTTOM_PX  0u
+
+#define MAP_COLOR_BLACK                     0x0000u
+#define MAP_COLOR_GREEN                     0x6666u
+#define MAP_COLOR_WHITE                     0xFFFFu
 /* END OF THE DEFINE AREA */
 
 
@@ -29,6 +35,12 @@ typedef enum
     MAP_FUNCTION_Y_FX,
     MAP_FUNCTION_X_FY
 }Map_FunctionType_T;
+
+typedef enum
+{
+    MAP_DRAWROUTE_MAP,
+    MAP_DRAWROUTE_TRACK
+}Map_DrawRoute_T;
 /* END OF THE ENUM AREA */
 
 
@@ -47,9 +59,11 @@ typedef struct
 
 typedef struct
 {
-    Map_CoordinatesXY_T coords[MAP_TRACK_DRAWABLE_ELEMENTS];
-    uint8_t idx;
-}Map_TrackList_T;
+    Map_CoordinatesXY_T coords[MAP_ROUTE_DRAWABLE_ELEMENTS];
+    uint8_t idxMap;
+    uint8_t idxTrack;
+    Map_DrawRoute_T prevRoute;
+}Map_RouteList_T;
 
 typedef struct
 {
@@ -69,9 +83,10 @@ public:
     virtual void draw(const touchgfx::Rect& invalidatedArea) const;
     virtual touchgfx::Rect getSolidRect() const;
 
-    void FlushTrackList(void);
-    bool AddCoordsToTrackList(uint8_t x, uint8_t y);
-    void SetTrackScale(uint32_t scaleVal);
+    void FlushRouteList(void);
+    bool AddCoordsToRouteList(uint8_t x, uint8_t y, Map_DrawRoute_T route);
+    void SetRouteScale(uint32_t scaleVal);
+    void IncrementRouteIdx(Map_DrawRoute_T route, uint8_t addedPoints);
 
     void SetMesh(void);
     Map_CoordinatesXY_T MapCoordsToMesh(uint8_t x, uint8_t y);
@@ -79,12 +94,14 @@ public:
 
 
 private:
-    Map_TrackList_T trackList;
+    Map_RouteList_T routeList;
     Map_MeshInfo_T meshInfo;
     uint32_t scale;
     uint16_t backgroundColor;
-    uint16_t trackColor;
-    uint16_t lineColor;
+    uint16_t mapDotColor;
+    uint16_t mapLineColor;
+    uint16_t trackDotColor;
+    uint16_t trackLineColor;
     uint8_t size;
 
 };

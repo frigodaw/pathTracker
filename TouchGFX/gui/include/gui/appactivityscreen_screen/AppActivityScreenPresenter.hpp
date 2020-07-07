@@ -52,60 +52,59 @@ using namespace touchgfx;
 #define APP_MAX_FILE_COUNTER        60u
 #define APP_TIMER_COEFF_TOSEC       APP_MAX_CALL_COUNTER
 
-#define APP_TRACK_WINDOW_WIDTH_PX       240u
-#define APP_TRACK_WINDOW_HEIGHT_PX      205u
-#define APP_TRACK_WINDOW_MID_X          ((uint8_t)((APP_TRACK_WINDOW_WIDTH_PX)/(2u)))
-#define APP_TRACK_WINDOW_MID_Y          ((uint8_t)((APP_TRACK_WINDOW_HEIGHT_PX)/(2u)))
-#define APP_TRACK_WINDOW_UPLEFT_X       0u
-#define APP_TRACK_WINDOW_UPLEFT_Y       0u
-#define APP_TRACK_WINDOW_UPRIGHT_X      (APP_TRACK_WINDOW_WIDTH_PX-1u)
-#define APP_TRACK_WINDOW_UPRIGHT_Y      0u
-#define APP_TRACK_WINDOW_BOTTOMLEFT_X   0u
-#define APP_TRACK_WINDOW_BOTTOMLEFT_Y   (APP_TRACK_WINDOW_HEIGHT_PX-1u)
-#define APP_TRACK_WINDOW_BOTTOMRIGHT_X  (APP_TRACK_WINDOW_WIDTH_PX-1u)
-#define APP_TRACK_WINDOW_BOTTOMRIGHT_Y  (APP_TRACK_WINDOW_HEIGHT_PX-1u)
-#define APP_TRACK_FLOATBUFF_SIZE        32u
-#define APP_TRACK_FLOATBUFF_HALF        ((APP_TRACK_FLOATBUFF_SIZE)/(2u))
-#define APP_TRACK_MEANTWO_COEEF         2.f
-#define APP_TRACK_SCALE_WIDTH_PX        100u
-#define APP_TRACK_SCALE_COEFF_M_IN_KM   1000uL
+#define APP_ROUTE_WINDOW_WIDTH_PX       240u
+#define APP_ROUTE_WINDOW_HEIGHT_PX      205u
+#define APP_ROUTE_WINDOW_MID_X          ((uint8_t)((APP_ROUTE_WINDOW_WIDTH_PX)/(2u)))
+#define APP_ROUTE_WINDOW_MID_Y          ((uint8_t)((APP_ROUTE_WINDOW_HEIGHT_PX)/(2u)))
+#define APP_ROUTE_WINDOW_UPLEFT_X       0u
+#define APP_ROUTE_WINDOW_UPLEFT_Y       0u
+#define APP_ROUTE_WINDOW_UPRIGHT_X      (APP_ROUTE_WINDOW_WIDTH_PX-1u)
+#define APP_ROUTE_WINDOW_UPRIGHT_Y      0u
+#define APP_ROUTE_WINDOW_BOTTOMLEFT_X   0u
+#define APP_ROUTE_WINDOW_BOTTOMLEFT_Y   (APP_ROUTE_WINDOW_HEIGHT_PX-1u)
+#define APP_ROUTE_WINDOW_BOTTOMRIGHT_X  (APP_ROUTE_WINDOW_WIDTH_PX-1u)
+#define APP_ROUTE_WINDOW_BOTTOMRIGHT_Y  (APP_ROUTE_WINDOW_HEIGHT_PX-1u)
+#define APP_ROUTE_FLOATBUFF_SIZE        32u
+#define APP_ROUTE_MEANTWO_COEEF         2.f
+#define APP_ROUTE_SCALE_WIDTH_PX        100u
+#define APP_ROUTE_SCALE_COEFF_M_IN_KM   1000uL
 
-#define APP_TRACK_SCALE_MIN             1u
-#define APP_TRACK_SCALE_50              50u
-#define APP_TRACK_SCALE_100             100u
-#define APP_TRACK_SCALE_500             500u
-#define APP_TRACK_SCALE_1000            1000uL
-#define APP_TRACK_SCALE_5000            5000uL
-#define APP_TRACK_SCALE_10000           10000uL
-#define APP_TRACK_SCALE_FULL_COEFFVIEW  1.75f
-#define APP_TRACK_SCALE_FULL_COEFFROUND 1000uL
-#define APP_TRACK_SCALE_ERROR           0u
+#define APP_ROUTE_SCALE_MIN             1u
+#define APP_ROUTE_SCALE_50              50u
+#define APP_ROUTE_SCALE_100             100u
+#define APP_ROUTE_SCALE_500             500u
+#define APP_ROUTE_SCALE_1000            1000uL
+#define APP_ROUTE_SCALE_5000            5000uL
+#define APP_ROUTE_SCALE_10000           10000uL
+#define APP_ROUTE_SCALE_FULL_COEFFVIEW  1.75f
+#define APP_ROUTE_SCALE_FULL_COEFFROUND 1000uL
+#define APP_ROUTE_SCALE_ERROR           0u
 
-#define APP_TRACK_SKIPPED_COORDS_50     0u
-#define APP_TRACK_SKIPPED_COORDS_100    0u
-#define APP_TRACK_SKIPPED_COORDS_500    1u
-#define APP_TRACK_SKIPPED_COORDS_1000   2u
-#define APP_TRACK_SKIPPED_COORDS_5000   5u
-#define APP_TRACK_SKIPPED_COORDS_10000  10u
-#define APP_TRACK_SKIP_DRAWN_POINTS_BOTTOM_LIMIT    120u
-#define APP_TRACK_SKIP_DRAWN_POINTS_UPPER_LIMIT     190u
-#define APP_TRACK_SKIP_MAX_VALUE        255u
+#define APP_ROUTE_SKIPPED_COORDS_50     0u
+#define APP_ROUTE_SKIPPED_COORDS_100    0u
+#define APP_ROUTE_SKIPPED_COORDS_500    1u
+#define APP_ROUTE_SKIPPED_COORDS_1000   2u
+#define APP_ROUTE_SKIPPED_COORDS_5000   5u
+#define APP_ROUTE_SKIPPED_COORDS_10000  10u
+#define APP_ROUTE_SKIP_DRAWN_POINTS_BOTTOM_LIMIT    120u
+#define APP_ROUTE_SKIP_DRAWN_POINTS_UPPER_LIMIT     190u
+#define APP_ROUTE_SKIP_MAX_VALUE        255u
 
-#define APP_TRACK_FILE_HEADEROFFSET     180u
-#define APP_TRACK_FILE_DATAOFFSET       101u
-#define APP_TRACK_FILE_READLINES        32u
+#define APP_ROUTE_FILE_HEADEROFFSET     180u
+#define APP_ROUTE_FILE_DATAOFFSET       101u
+#define APP_ROUTE_FILE_READLINES        32u
 
 #define APP_FILEERROR_NOERROR           0x00u
 #define APP_FILEERROR_OPENFILE          0x01u
 #define APP_FILEERROR_WRITEDATA         0x02u
 #define APP_FILEERROR_FINISHACTIVITY    0x04u
 
-#define APP_TRACK_MAP_ELEMENTS          200u
-#define APP_TRACK_COMMONARRAY_LENGTH    8192uL
-#define APP_TRACK_TRACK_FIRST_ELEMENT   0u
-#define APP_TRACK_MAP_FIRST_ELEMENT     (APP_TRACK_COMMONARRAY_LENGTH - 1uL)
-#define APP_TRACK_SKIP_BOTTOM_LIMIT     1u
-#define APP_TRACK_MAP_OFFSET_FOR_TRACK  1u
+#define APP_ROUTE_MAP_ELEMENTS          200u
+#define APP_ROUTE_COMMONARRAY_LENGTH    8192uL
+#define APP_ROUTE_TRACK_FIRST_ELEMENT   0u
+#define APP_ROUTE_MAP_FIRST_ELEMENT     (APP_ROUTE_COMMONARRAY_LENGTH - 1uL)
+#define APP_ROUTE_SKIP_BOTTOM_LIMIT     1u
+#define APP_ROUTE_MAP_OFFSET_FOR_TRACK  1u
 
 #define APP_COORDS_FILTER_ARR_SIZE      3u
 
@@ -176,24 +175,15 @@ typedef enum
 
 typedef enum
 {
-    APP_TRACK_SCALE50,
-    APP_TRACK_SCALE100,
-    APP_TRACK_SCALE500,
-    APP_TRACK_SCALE1000,
-    APP_TRACK_SCALE5000,
-    APP_TRACK_SCALE10000,
-    APP_TRACK_SCALEFULL,
-    APP_TRACK_MAX_SCALE
-}AppActivity_trackScale_T;
-
-typedef enum
-{
-    APP_TRACK_LATSTART,
-    APP_TRACK_LATEND,
-    APP_TRACK_LONSTART,
-    APP_TRACK_LONEND,
-    APP_TRACK_FOUNDALL
-}AppActivity_trackCoordsFromBuffer_T;
+    APP_ROUTE_SCALE50,
+    APP_ROUTE_SCALE100,
+    APP_ROUTE_SCALE500,
+    APP_ROUTE_SCALE1000,
+    APP_ROUTE_SCALE5000,
+    APP_ROUTE_SCALE10000,
+    APP_ROUTE_SCALEFULL,
+    APP_ROUTE_MAX_SCALE
+}AppActivity_routeScale_T;
 
 typedef enum
 {
@@ -207,6 +197,12 @@ typedef enum
     APP_TIMEZONE_DECREMENT_DAY,
     APP_TIMEZONE_INCREMENT_DAY
 }AppActivity_timezoneDateChange_T;
+
+typedef enum
+{
+    APP_DRAWROUTE_MAP,
+    APP_DRAWROUTE_TRACK
+}AppActivity_drawRoute_T;
 /* END OF THE ENUM AREA */
 
 
@@ -340,13 +336,19 @@ typedef struct
 
 typedef struct
 {
-    AppActivity_mapCoordsGPS_T mapCoordsGPS;
-    AppActivity_maxCoordsGPS_T maxCoordsGPS;
-    AppActivity_mapCoordsXY_T  *mapCoordsXY;
-    AppActivity_trackScale_T   scale;
-    uint8_t                    addedPoints;
-    uint8_t                    skip;
-}AppActivity_trackData_T;
+    uint8_t addedPoints;
+    uint8_t skip;
+}AppActivity_routeDetailedData_T;
+
+typedef struct
+{
+    AppActivity_mapCoordsGPS_T          mapCoordsGPS;
+    AppActivity_maxCoordsGPS_T          maxCoordsGPS;
+    AppActivity_mapCoordsXY_T           *mapCoordsXY;
+    AppActivity_routeScale_T            scale;
+    AppActivity_routeDetailedData_T     map;
+    AppActivity_routeDetailedData_T     track;
+}AppActivity_routeData_T;
 
 typedef struct
 {
@@ -354,7 +356,7 @@ typedef struct
     uint16_t idxTrack;
     uint16_t idxMap;
     bool     overflow;
-}AppActivity_trackPointsData_T;
+}AppActivity_routePointsData_T;
 
 typedef struct
 {
@@ -381,6 +383,16 @@ typedef struct
     uint8_t current;
     uint8_t max;
 }AppActivity_mapIndex_T;
+
+typedef struct
+{
+    uint16_t startIdx;
+    uint16_t endIdx;
+    uint16_t idxRoute;
+    uint16_t fileInfoPoints;
+    uint8_t  *skip;
+    uint8_t  *addedPoints;
+}AppActivity_drawRouteData_T;
 /* END OF THE STRUCT AREA */
 
 
@@ -418,20 +430,22 @@ public:
     void UpdateAltitude(void);
     template <typename T> T MedianFromArray(T* array, const uint8_t size);
     float MeanFromArray(float* array, const uint8_t size);
-    void DrawTrack(void);
+    void DrawRoute(AppActivity_drawRoute_T route);
+    bool CanRouteBeSkipped(AppActivity_drawRoute_T route, uint16_t idx, uint8_t skip);
     void MapCenterCoordinates(void);
     uint32_t GetScaleValue(void);
     uint32_t CalculateFullScale(void);
     float MapScaleToDistance(void);
-    void CalculateSkippedCoords(void);
+    void CalculateSkippedCoords(AppActivity_drawRoute_T route);
     AppActivity_coordinatesGPS_T MapXYCoordsToGPS(AppActivity_coordinatesXY_T coords, float scaleCoeff);
-    AppActivity_coordinatesGPS_T GetCoordsGPSFromBuffer(uint8_t* buffer, uint8_t size);
+    AppActivity_coordinatesGPS_T GetCoordsGPSFromBuffer(uint8_t* buffer, uint8_t size, bool &foundCoords);
     bool CoordsInView(AppActivity_coordinatesGPS_T coords);
     AppActivity_coordinatesXY_T MapGPSCoordsToXY(AppActivity_coordinatesGPS_T coords);
     float MapPointToLinearFunction(float x1, float y1, float x2, float y2, float X);
     uint32_t CalculateFileOffset(uint16_t points);
     void SaveCoordsInCcmRam(float lat, float lon);
     void FindMaxCoords(float lat, float lon);
+    void ClearMaxCoords(void);
     void SaveFile(void);
     void FilterCoords(void);
     void SelectAltitudeSource(void);
@@ -470,8 +484,8 @@ private:
     AppActivity_fileInfo_T          trackFileInfo;
     AppActivity_activityData_T      activityData;
     AppActivity_appInternalData_T   appInternalData;
-    AppActivity_trackData_T         trackData;
-    AppActivity_trackPointsData_T   trackPointsData;
+    AppActivity_routeData_T         routeData;
+    AppActivity_routePointsData_T   routePointsData;
     AppActivity_altitudeInfo_T      altitudeInfo;
     AppActivity_calendar_T          calendar;
     AppActivity_mapIndex_T          mapIndex;

@@ -15,10 +15,11 @@ public:
     ~ActivityDataContainter_Map() {}
     void initialize();
 
-    void FlushTrackList(void);
-    void SetTrackScale(uint32_t scaleVal);
-    bool AddCoordsToTrackList(uint8_t coordsX, uint8_t coordsY);
+    void FlushRouteList(void);
+    void SetRouteScale(uint32_t scaleVal);
+    bool AddCoordsToRouteList(uint8_t coordsX, uint8_t coordsY, Map_DrawRoute_T route);
     void TrackRedraw(void);
+    void IncrementRouteIdx(Map_DrawRoute_T route, uint8_t addedPoints);
 
 private:
     touchgfx::Map Map;

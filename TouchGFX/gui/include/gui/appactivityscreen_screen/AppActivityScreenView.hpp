@@ -25,10 +25,11 @@ public:
     void ShowFixImage(bool isFix);
     void ShowSdCard(bool isSdCard);
 
-    void FlushTrackList(void);
-    void SetTrackScale(uint32_t scaleVal);
-    bool AddCoordsToTrackList(AppActivity_coordinatesXY_T coordsXY);
+    void FlushRouteList(void);
+    void SetRouteScale(uint32_t scaleVal);
+    bool AddCoordsToRouteList(AppActivity_coordinatesXY_T coordsXY, AppActivity_drawRoute_T route);
     void TrackRedraw(void);
+    void IncrementRouteIdx(AppActivity_drawRoute_T route, uint8_t addedPoints);
 
     void ConfirmMapSelection(void);
     void DisplayPreviousMap(void);

@@ -19,13 +19,13 @@ static const uint8_t daysInMon[APP_TIMEZONE_NUMOFMONTHS] = { APP_TIMEZONE_DAYS_J
 /* Common array to store lat and lon coordinates recorded during activity 
    and from preloaded .gpx file. First part is for tracked coords, second one 
    for points to navigate. */
-AppActivity_coordinatesGPS_T trackPoints[APP_TRACK_COMMONARRAY_LENGTH] __attribute__ ((section (".ccm"))) = {0.f};
+AppActivity_coordinatesGPS_T trackPoints[APP_ROUTE_COMMONARRAY_LENGTH] __attribute__ ((section (".ccm"))) = {0.f};
 
-static const AppActivity_mapCoordsXY_T mapCoordsXY = {{APP_TRACK_WINDOW_MID_X, APP_TRACK_WINDOW_MID_Y},
-                                                      {APP_TRACK_WINDOW_UPLEFT_X, APP_TRACK_WINDOW_UPLEFT_Y},
-                                                      {APP_TRACK_WINDOW_UPRIGHT_X, APP_TRACK_WINDOW_UPRIGHT_Y},
-                                                      {APP_TRACK_WINDOW_BOTTOMLEFT_X, APP_TRACK_WINDOW_BOTTOMLEFT_Y},
-                                                      {APP_TRACK_WINDOW_BOTTOMRIGHT_X, APP_TRACK_WINDOW_BOTTOMRIGHT_Y}};
+static const AppActivity_mapCoordsXY_T mapCoordsXY = {{APP_ROUTE_WINDOW_MID_X, APP_ROUTE_WINDOW_MID_Y},
+                                                      {APP_ROUTE_WINDOW_UPLEFT_X, APP_ROUTE_WINDOW_UPLEFT_Y},
+                                                      {APP_ROUTE_WINDOW_UPRIGHT_X, APP_ROUTE_WINDOW_UPRIGHT_Y},
+                                                      {APP_ROUTE_WINDOW_BOTTOMLEFT_X, APP_ROUTE_WINDOW_BOTTOMLEFT_Y},
+                                                      {APP_ROUTE_WINDOW_BOTTOMRIGHT_X, APP_ROUTE_WINDOW_BOTTOMRIGHT_Y}};
 
 AppActivityScreenPresenter::AppActivityScreenPresenter(AppActivityScreenView& v)
     : view(v)
@@ -36,7 +36,7 @@ AppActivityScreenPresenter::AppActivityScreenPresenter(AppActivityScreenView& v)
     memset(&trackFileInfo, 0u, sizeof(trackFileInfo));
     memset(&gpsSignals, 0u, sizeof(gpsSignals));
     memset(&sensorData, 0u, sizeof(sensorData));
-    memset(&trackData, 0u, sizeof(trackData));
+    memset(&routeData, 0u, sizeof(routeData));
     memset(&altitudeInfo, 0u, sizeof(altitudeInfo));
     memset(&calendar, 0u, sizeof(calendar));
     memset(&mapIndex, 0u, sizeof(mapIndex));
@@ -55,12 +55,12 @@ AppActivityScreenPresenter::AppActivityScreenPresenter(AppActivityScreenView& v)
     trackFileInfo.fileStatus = APP_FILE_NOFILE;
     trackFileInfo.errorStatus = APP_FILEERROR_NOERROR;
 
-    trackData.scale = APP_TRACK_SCALE100;
-    trackData.mapCoordsXY = (AppActivity_mapCoordsXY_T*)&mapCoordsXY;
+    routeData.scale = APP_ROUTE_SCALEFULL;
+    routeData.mapCoordsXY = (AppActivity_mapCoordsXY_T*)&mapCoordsXY;
 
-    trackPointsData.coords = trackPoints;
-    trackPointsData.idxTrack = APP_TRACK_TRACK_FIRST_ELEMENT;
-    trackPointsData.idxMap = APP_TRACK_MAP_FIRST_ELEMENT;
+    routePointsData.coords = trackPoints;
+    routePointsData.idxTrack = APP_ROUTE_TRACK_FIRST_ELEMENT;
+    routePointsData.idxMap = APP_ROUTE_MAP_FIRST_ELEMENT;
 
     mapIndex.max = DC_get_fileSystem_dirInfo_in_filesNum();
 
@@ -71,7 +71,7 @@ AppActivityScreenPresenter::AppActivityScreenPresenter(AppActivityScreenView& v)
 void AppActivityScreenPresenter::activate()
 {
     uint32_t scaleVal = GetScaleValue();
-    view.SetTrackScale(scaleVal);
+    view.SetRouteScale(scaleVal);
 
     appInternalData.screen = APP_SCREEN_SELECTMAP;
     view.SetActivityDataScreen(appInternalData.screen);
@@ -239,7 +239,8 @@ void AppActivityScreenPresenter::Main(void)
 
                 CalculateAltitude();
 
-                DrawTrack();
+                DrawRoute(APP_DRAWROUTE_MAP);
+                DrawRoute(APP_DRAWROUTE_TRACK);
             }
 
             if(appInternalData.fileCounter >= APP_MAX_FILE_COUNTER)
@@ -735,29 +736,53 @@ void AppActivityScreenPresenter::UpdateAltitude(void)
 }
 
 
-/* Method called to draw track from points recorded and
-   saved in gpx file. */
-void AppActivityScreenPresenter::DrawTrack(void)
+/* Method called to draw route: map or track depending
+   on input arguments. */
+void AppActivityScreenPresenter::DrawRoute(AppActivity_drawRoute_T route)
 {
-    if(APP_SCREEN_MAP == appInternalData.screen)
+    if((APP_SCREEN_SELECTMAP == appInternalData.screen) || (APP_SCREEN_MAP == appInternalData.screen))
     {
+        AppActivity_drawRouteData_T drawRouteData = {0u};
+
+        switch(route)
+        {
+            case APP_DRAWROUTE_MAP:
+                drawRouteData.startIdx = APP_ROUTE_MAP_FIRST_ELEMENT;
+                drawRouteData.endIdx = routePointsData.idxMap;
+                drawRouteData.idxRoute = routePointsData.idxMap;
+                drawRouteData.fileInfoPoints = mapFileInfo.points;
+                drawRouteData.skip = &routeData.map.skip;
+                drawRouteData.addedPoints = &routeData.map.addedPoints;
+                view.FlushRouteList();
+                break;
+            case APP_DRAWROUTE_TRACK:
+                drawRouteData.startIdx = routePointsData.idxTrack;
+                drawRouteData.endIdx = 0u;
+                drawRouteData.idxRoute = routePointsData.idxTrack;
+                drawRouteData.fileInfoPoints = trackFileInfo.points;
+                drawRouteData.skip = &routeData.track.skip;
+                drawRouteData.addedPoints = &routeData.track.addedPoints;
+                break;
+            default:
+                break;
+        }
+
         bool firstCycle = true;
         uint8_t addedPoints = 0u;
         uint32_t scaleVal = GetScaleValue();
-        view.SetTrackScale(scaleVal);
-        view.FlushTrackList();
+        view.SetRouteScale(scaleVal);
 
-        CalculateSkippedCoords();
+        CalculateSkippedCoords(route);
         MapCenterCoordinates();
 
-        for (uint16_t idx = trackPointsData.idxTrack; ((idx > 0u) && (APP_TRACK_MAP_ELEMENTS > addedPoints)) ; idx--)
+        for (uint16_t idx = drawRouteData.startIdx; ((idx > drawRouteData.endIdx) && (APP_ROUTE_MAP_ELEMENTS > addedPoints)) ; idx--)
         {
-            bool coordsInView = CoordsInView(trackPointsData.coords[idx]);
+            bool coordsInView = CoordsInView(routePointsData.coords[idx]);
 
             if(true == coordsInView)
             {
-                AppActivity_coordinatesXY_T coordsXY = MapGPSCoordsToXY(trackPointsData.coords[idx]);
-                bool newPoint = view.AddCoordsToTrackList(coordsXY);
+                AppActivity_coordinatesXY_T coordsXY = MapGPSCoordsToXY(routePointsData.coords[idx]);
+                bool newPoint = view.AddCoordsToRouteList(coordsXY, route);
 
                 if(true == newPoint)
                 {
@@ -766,83 +791,132 @@ void AppActivityScreenPresenter::DrawTrack(void)
             }
 
             /* Set index to 0 if array was overflowed */
-            if((APP_TRACK_SKIP_BOTTOM_LIMIT >= idx) && (true == trackPointsData.overflow) && (true == firstCycle))
+            if((APP_ROUTE_SKIP_BOTTOM_LIMIT >= idx) && (true == routePointsData.overflow) && (true == firstCycle))
             {
-                idx = trackPointsData.idxMap - APP_TRACK_MAP_OFFSET_FOR_TRACK;
+                idx = routePointsData.idxTrack - APP_ROUTE_MAP_OFFSET_FOR_TRACK;
                 firstCycle = false;
             }
             /* Skip some points depending on selected scale */
-            else if((idx > trackData.skip) && ((uint16_t)(idx - trackData.skip) > APP_TRACK_SKIP_BOTTOM_LIMIT))
+            else if(true == CanRouteBeSkipped(route, idx, *drawRouteData.skip))
             {
-                idx -= trackData.skip;
+                idx -= *drawRouteData.skip;
             }
         }
 
-        trackData.addedPoints = addedPoints;
+        *drawRouteData.addedPoints = addedPoints;
+        //view.IncrementRouteIdx(route, addedPoints);
         view.TrackRedraw();
     }
 }
 
 
+bool AppActivityScreenPresenter::CanRouteBeSkipped(AppActivity_drawRoute_T route, uint16_t idx, uint8_t skip)
+{
+    bool retVal = false;
+
+    if(route == APP_DRAWROUTE_MAP)
+    {
+        if((idx - skip) > routePointsData.idxMap)
+        {
+            retVal = true;
+        }
+    }
+    else if(route == APP_DRAWROUTE_TRACK)
+    {
+        if((idx > skip) && ((uint16_t)(idx - skip) > APP_ROUTE_SKIP_BOTTOM_LIMIT))
+        {
+            retVal = true;
+        }
+    }
+    else
+    {
+        /* Should not be here */
+        retVal = false;
+    }
+
+    return retVal;
+}
+
+
 /* Function called to calculate number of coords to skip during
    selecting points to draw. */
-void AppActivityScreenPresenter::CalculateSkippedCoords(void)
+void AppActivityScreenPresenter::CalculateSkippedCoords(AppActivity_drawRoute_T route)
 {
-    if(APP_TRACK_MAP_ELEMENTS > trackFileInfo.points)   /* Do not skip when there is less points than maximum possible to draw */
+    uint16_t fileInfoPoints = 0u;
+    uint8_t addedPoints = 0u;
+    uint8_t *skip = NULL;
+
+    switch(route)
     {
-        trackData.skip = 0u;
+        case APP_DRAWROUTE_MAP:
+            fileInfoPoints = mapFileInfo.points;
+            addedPoints = routeData.map.addedPoints;
+            skip = &routeData.map.skip;
+            break;
+        case APP_DRAWROUTE_TRACK:
+            fileInfoPoints = trackFileInfo.points;
+            addedPoints = routeData.track.addedPoints;
+            skip = &routeData.track.skip;
+            break;
+        default:
+            break;
+    }
+
+    if(APP_ROUTE_MAP_ELEMENTS > fileInfoPoints)   /* Do not skip when there is less points than maximum possible to draw */
+    {
+        *skip = 0u;
     }
     else /* Calculate skip value based on previous results */
     {
         /* Small amount of points */
-        if (trackData.addedPoints < APP_TRACK_SKIP_DRAWN_POINTS_BOTTOM_LIMIT)
+        if (addedPoints < APP_ROUTE_SKIP_DRAWN_POINTS_BOTTOM_LIMIT)
         {
-            if(trackData.skip == 0u)
+            if(*skip == 0u)
             {
                 /* Select default skip value */
-                switch(trackData.scale)
+                switch(routeData.scale)
                 {
-                    case APP_TRACK_SCALE50:
-                        trackData.skip = APP_TRACK_SKIPPED_COORDS_50;
+                    case APP_ROUTE_SCALE50:
+                        *skip = APP_ROUTE_SKIPPED_COORDS_50;
                         break;
-                    case APP_TRACK_SCALE100:
-                        trackData.skip = APP_TRACK_SKIPPED_COORDS_100;
+                    case APP_ROUTE_SCALE100:
+                        *skip = APP_ROUTE_SKIPPED_COORDS_100;
                         break;
-                    case APP_TRACK_SCALE500:
-                        trackData.skip = APP_TRACK_SKIPPED_COORDS_500;
+                    case APP_ROUTE_SCALE500:
+                        *skip = APP_ROUTE_SKIPPED_COORDS_500;
                         break;
-                    case APP_TRACK_SCALE1000:
-                        trackData.skip = APP_TRACK_SKIPPED_COORDS_1000;
+                    case APP_ROUTE_SCALE1000:
+                        *skip = APP_ROUTE_SKIPPED_COORDS_1000;
                         break;
-                    case APP_TRACK_SCALE5000:
-                        trackData.skip = APP_TRACK_SKIPPED_COORDS_5000;
+                    case APP_ROUTE_SCALE5000:
+                        *skip = APP_ROUTE_SKIPPED_COORDS_5000;
                         break;
-                    case APP_TRACK_SCALE10000:
-                        trackData.skip = APP_TRACK_SKIPPED_COORDS_10000;
+                    case APP_ROUTE_SCALE10000:
+                        *skip = APP_ROUTE_SKIPPED_COORDS_10000;
                         break;
-                    case APP_TRACK_SCALEFULL:
-                        trackData.skip = (uint8_t)(trackFileInfo.points / APP_TRACK_MAP_ELEMENTS);
+                    case APP_ROUTE_SCALEFULL:
+                        *skip = (uint8_t)(fileInfoPoints / APP_ROUTE_MAP_ELEMENTS);
                         break;
                     default:
-                        trackData.skip = 0u;
+                        *skip = 0u;
                         break;
                 }
             }
             else
             {
-                trackData.skip -= 1u;
+                *skip -= 1u;
             }
-            trackData.skip = (trackData.skip != 0u) ? (trackData.skip - 1u) : 0u;
+            *skip = (*skip != 0u) ? (*skip - 1u) : 0u;      //TODO check this
         }
         /* Enough points */
-        else if((trackData.addedPoints >= APP_TRACK_SKIP_DRAWN_POINTS_BOTTOM_LIMIT) && (trackData.addedPoints < APP_TRACK_SKIP_DRAWN_POINTS_UPPER_LIMIT))
+        else if((addedPoints >= APP_ROUTE_SKIP_DRAWN_POINTS_BOTTOM_LIMIT) && (addedPoints < APP_ROUTE_SKIP_DRAWN_POINTS_UPPER_LIMIT))
         {
 
         }
         /* Too much points */
         else
         {
-            trackData.skip = (trackData.skip != APP_TRACK_SKIP_MAX_VALUE) ? (trackData.skip + 1u) : 0u;
+            *skip = (*skip != APP_ROUTE_SKIP_MAX_VALUE) ? (*skip + 1u) : 0u;
         }
     }
 }
@@ -850,53 +924,36 @@ void AppActivityScreenPresenter::CalculateSkippedCoords(void)
 
 /* Function called to find gps coordinates
    from file buffer. */
-AppActivity_coordinatesGPS_T AppActivityScreenPresenter::GetCoordsGPSFromBuffer(uint8_t* buffer, uint8_t size)
+AppActivity_coordinatesGPS_T AppActivityScreenPresenter::GetCoordsGPSFromBuffer(uint8_t* buffer, uint8_t size, bool &foundCoords)
 {
+    uint8_t floatBuff[APP_ROUTE_FLOATBUFF_SIZE] = {0u};
     AppActivity_coordinatesGPS_T coords = {0.f};
-    const char* wantedChar = "\"";
+    const char *latChar = "<trkpt lat=\"";
+    const char *lonChar = "\" lon=\"";
+    const char *endChar = "\">";
 
-    uint8_t latStart = 0u;
-    uint8_t latEnd   = 0u;
-    uint8_t lonStart = 0u;
-    uint8_t lonEnd   = 0u;
-    AppActivity_trackCoordsFromBuffer_T cnt = APP_TRACK_LATSTART;
+    char *startLatPtr = strstr((char*)buffer, latChar) + strlen(latChar);
+    char *endLatPtr = strstr((char*)buffer, lonChar);
+    size_t latLen = endLatPtr - startLatPtr;
 
-    for(uint8_t i=0u; i < size; i++)
+    char *startLonPtr = strstr((char*)buffer, lonChar) + strlen(lonChar);
+    char *endLonPtr = strstr((char*)buffer, endChar);
+    size_t lonLen = endLonPtr - startLonPtr;
+
+    if((NULL != startLatPtr) && (NULL != endLatPtr) && (NULL != startLonPtr) && (NULL != endLonPtr))
     {
-        if(buffer[i] == *wantedChar)
-        {
-            switch (cnt)
-            {
-                case APP_TRACK_LATSTART:
-                    latStart = i+1u;
-                    break;
-                case APP_TRACK_LATEND:
-                    latEnd = i-1u;
-                    break;
-                case APP_TRACK_LONSTART:
-                    lonStart = i+1u;
-                    break;
-                case APP_TRACK_LONEND:
-                    lonEnd = i-1u;
-                    break;
-                default:
-                    break;
-            }
-            cnt = (AppActivity_trackCoordsFromBuffer_T)(cnt + 1u);
-        }
-        if(APP_TRACK_FOUNDALL == cnt)
-        {
-            break;
-        }
-    }
-
-    if(APP_TRACK_FOUNDALL == cnt)
-    {
-        uint8_t floatBuff[APP_TRACK_FLOATBUFF_SIZE] = {0u};
-        memcpy (floatBuff, &buffer[latStart], latEnd-latStart+1u);
-        memcpy (&floatBuff[APP_TRACK_FLOATBUFF_HALF], &buffer[lonStart], lonEnd-lonStart+1u);
+        memcpy(floatBuff, startLatPtr, latLen);
         coords.lat = strtof((const char*)floatBuff, NULL);
-        coords.lon = strtof((const char*)&floatBuff[APP_TRACK_FLOATBUFF_HALF], NULL);
+
+        memset(floatBuff, 0u, APP_ROUTE_FLOATBUFF_SIZE);
+        memcpy(floatBuff, startLonPtr, lonLen);
+        coords.lon = strtof((const char*)floatBuff, NULL);
+
+        foundCoords = true;
+    }
+    else
+    {
+        foundCoords = false;
     }
 
     return coords;
@@ -909,12 +966,20 @@ bool AppActivityScreenPresenter::CoordsInView(AppActivity_coordinatesGPS_T coord
 {
     bool isInView = false;
 
-    if((coords.lat < trackData.mapCoordsGPS.upLeft.lat)      && (coords.lon > trackData.mapCoordsGPS.upLeft.lon) &&
-       (coords.lat < trackData.mapCoordsGPS.upRight.lat)     && (coords.lon < trackData.mapCoordsGPS.upRight.lon) &&
-       (coords.lat > trackData.mapCoordsGPS.bottomLeft.lat)  && (coords.lon > trackData.mapCoordsGPS.bottomLeft.lon) &&
-       (coords.lat > trackData.mapCoordsGPS.bottomRight.lat) && (coords.lon < trackData.mapCoordsGPS.bottomRight.lon))
+    if((coords.lat < routeData.mapCoordsGPS.upLeft.lat)      && (coords.lon > routeData.mapCoordsGPS.upLeft.lon) &&
+       (coords.lat < routeData.mapCoordsGPS.upRight.lat)     && (coords.lon < routeData.mapCoordsGPS.upRight.lon) &&
+       (coords.lat > routeData.mapCoordsGPS.bottomLeft.lat)  && (coords.lon > routeData.mapCoordsGPS.bottomLeft.lon) &&
+       (coords.lat > routeData.mapCoordsGPS.bottomRight.lat) && (coords.lon < routeData.mapCoordsGPS.bottomRight.lon))
     {
         isInView = true;
+    }
+    else if(APP_ROUTE_SCALEFULL == routeData.scale)
+    {
+        isInView = true;
+    }
+    else
+    {
+        isInView = false;
     }
 
     return isInView;
@@ -927,21 +992,21 @@ void AppActivityScreenPresenter::MapCenterCoordinates(void)
 {
     float scaleDistCoeff = MapScaleToDistance();
 
-    if(APP_TRACK_SCALEFULL == trackData.scale)
+    if(APP_ROUTE_SCALEFULL == routeData.scale)
     {
-        trackData.mapCoordsGPS.center.lat = trackData.maxCoordsGPS.center.lat;
-        trackData.mapCoordsGPS.center.lon = trackData.maxCoordsGPS.center.lon;
+        routeData.mapCoordsGPS.center.lat = routeData.maxCoordsGPS.center.lat;
+        routeData.mapCoordsGPS.center.lon = routeData.maxCoordsGPS.center.lon;
     }
     else
     {
-        trackData.mapCoordsGPS.center.lat = gpsSignals.latitude;
-        trackData.mapCoordsGPS.center.lon = gpsSignals.longitude;
+        routeData.mapCoordsGPS.center.lat = gpsSignals.latitude;
+        routeData.mapCoordsGPS.center.lon = gpsSignals.longitude;
     }
 
-    trackData.mapCoordsGPS.upLeft = MapXYCoordsToGPS(trackData.mapCoordsXY->upLeft, scaleDistCoeff);
-    trackData.mapCoordsGPS.upRight = MapXYCoordsToGPS(trackData.mapCoordsXY->upRight, scaleDistCoeff);
-    trackData.mapCoordsGPS.bottomLeft = MapXYCoordsToGPS(trackData.mapCoordsXY->bottomLeft, scaleDistCoeff);
-    trackData.mapCoordsGPS.bottomRight = MapXYCoordsToGPS(trackData.mapCoordsXY->bottomRight, scaleDistCoeff);
+    routeData.mapCoordsGPS.upLeft = MapXYCoordsToGPS(routeData.mapCoordsXY->upLeft, scaleDistCoeff);
+    routeData.mapCoordsGPS.upRight = MapXYCoordsToGPS(routeData.mapCoordsXY->upRight, scaleDistCoeff);
+    routeData.mapCoordsGPS.bottomLeft = MapXYCoordsToGPS(routeData.mapCoordsXY->bottomLeft, scaleDistCoeff);
+    routeData.mapCoordsGPS.bottomRight = MapXYCoordsToGPS(routeData.mapCoordsXY->bottomRight, scaleDistCoeff);
 }
 
 
@@ -950,31 +1015,31 @@ uint32_t AppActivityScreenPresenter::GetScaleValue(void)
 {
     uint32_t scaleVal = 0u;
 
-    switch (trackData.scale)
+    switch (routeData.scale)
     {
-        case APP_TRACK_SCALE50:
-            scaleVal = APP_TRACK_SCALE_50;
+        case APP_ROUTE_SCALE50:
+            scaleVal = APP_ROUTE_SCALE_50;
             break;
-        case APP_TRACK_SCALE100:
-            scaleVal = APP_TRACK_SCALE_100;
+        case APP_ROUTE_SCALE100:
+            scaleVal = APP_ROUTE_SCALE_100;
             break;
-        case APP_TRACK_SCALE500:
-            scaleVal = APP_TRACK_SCALE_500;
+        case APP_ROUTE_SCALE500:
+            scaleVal = APP_ROUTE_SCALE_500;
             break;
-        case APP_TRACK_SCALE1000:
-            scaleVal = APP_TRACK_SCALE_1000;
+        case APP_ROUTE_SCALE1000:
+            scaleVal = APP_ROUTE_SCALE_1000;
             break;
-        case APP_TRACK_SCALE5000:
-            scaleVal = APP_TRACK_SCALE_5000;
+        case APP_ROUTE_SCALE5000:
+            scaleVal = APP_ROUTE_SCALE_5000;
             break;
-        case APP_TRACK_SCALE10000:
-            scaleVal = APP_TRACK_SCALE_10000;
+        case APP_ROUTE_SCALE10000:
+            scaleVal = APP_ROUTE_SCALE_10000;
             break;
-        case APP_TRACK_SCALEFULL:
+        case APP_ROUTE_SCALEFULL:
             scaleVal = CalculateFullScale();
             break;
         default:
-            scaleVal = APP_TRACK_SCALE_ERROR;
+            scaleVal = APP_ROUTE_SCALE_ERROR;
             break;
     }
 
@@ -990,18 +1055,18 @@ uint32_t AppActivityScreenPresenter::CalculateFullScale(void)
     float maxDist = 0.f;
 
     /* Calculate maximum width and heigth of track in meters */
-    float maxHeigth = CalculateDistance(trackData.maxCoordsGPS.N.lat, trackData.maxCoordsGPS.N.lon, trackData.maxCoordsGPS.S.lat, trackData.maxCoordsGPS.S.lon);
-    float maxWidth  = CalculateDistance(trackData.maxCoordsGPS.E.lat, trackData.maxCoordsGPS.E.lon, trackData.maxCoordsGPS.W.lat, trackData.maxCoordsGPS.W.lon);
+    float maxHeigth = CalculateDistance(routeData.maxCoordsGPS.N.lat, routeData.maxCoordsGPS.N.lon, routeData.maxCoordsGPS.S.lat, routeData.maxCoordsGPS.S.lon);
+    float maxWidth  = CalculateDistance(routeData.maxCoordsGPS.E.lat, routeData.maxCoordsGPS.E.lon, routeData.maxCoordsGPS.W.lat, routeData.maxCoordsGPS.W.lon);
 
     maxDist = (maxHeigth > maxWidth) ? maxHeigth : maxWidth;
 
     if(maxDist > 0.f)
     {
-        scaleVal = (uint32_t)(maxDist * (float)APP_TRACK_SCALE_COEFF_M_IN_KM / APP_TRACK_SCALE_FULL_COEFFVIEW);
+        scaleVal = (uint32_t)(maxDist * (float)APP_ROUTE_SCALE_COEFF_M_IN_KM / APP_ROUTE_SCALE_FULL_COEFFVIEW);
     }
     else
     {
-        scaleVal = APP_TRACK_SCALE_MIN;
+        scaleVal = APP_ROUTE_SCALE_MIN;
     }
 
     return scaleVal;
@@ -1015,7 +1080,7 @@ float AppActivityScreenPresenter::MapScaleToDistance(void)
     float scaleDist = (float)GetScaleValue();
 
     /* Scale to 1px per x km */
-    scaleDist /= (float)(APP_TRACK_SCALE_WIDTH_PX * APP_TRACK_SCALE_COEFF_M_IN_KM);
+    scaleDist /= (float)(APP_ROUTE_SCALE_WIDTH_PX * APP_ROUTE_SCALE_COEFF_M_IN_KM);
 
     return scaleDist;
 }
@@ -1026,11 +1091,11 @@ AppActivity_coordinatesGPS_T AppActivityScreenPresenter::MapXYCoordsToGPS(AppAct
 {
     AppActivity_coordinatesGPS_T coordsGPS = {0.f};
 
-    float distX = ((trackData.mapCoordsXY->center.X - coords.X) * scaleCoeff) / (APP_DISTANCE_COEFF_TONUM * cosf(trackData.mapCoordsGPS.center.lat * APP_DISTANCE_COEFF_TORAD));
-    float distY = ((trackData.mapCoordsXY->center.Y - coords.Y) * scaleCoeff) / (APP_DISTANCE_COEFF_TONUM);
+    float distX = ((routeData.mapCoordsXY->center.X - coords.X) * scaleCoeff) / (APP_DISTANCE_COEFF_TONUM * cosf(routeData.mapCoordsGPS.center.lat * APP_DISTANCE_COEFF_TORAD));
+    float distY = ((routeData.mapCoordsXY->center.Y - coords.Y) * scaleCoeff) / (APP_DISTANCE_COEFF_TONUM);
 
-    coordsGPS.lat = trackData.mapCoordsGPS.center.lat + distY;
-    coordsGPS.lon = trackData.mapCoordsGPS.center.lon - distX;
+    coordsGPS.lat = routeData.mapCoordsGPS.center.lat + distY;
+    coordsGPS.lon = routeData.mapCoordsGPS.center.lon - distX;
 
     return coordsGPS;
 }
@@ -1041,12 +1106,12 @@ AppActivity_coordinatesXY_T AppActivityScreenPresenter::MapGPSCoordsToXY(AppActi
 {
     AppActivity_coordinatesXY_T coordsXY = {0u};
 
-    coordsXY.X = MapPointToLinearFunction(trackData.mapCoordsGPS.upLeft.lon,  trackData.mapCoordsXY->upLeft.X,
-                                          trackData.mapCoordsGPS.upRight.lon, trackData.mapCoordsXY->upRight.X,
+    coordsXY.X = MapPointToLinearFunction(routeData.mapCoordsGPS.upLeft.lon,  routeData.mapCoordsXY->upLeft.X,
+                                          routeData.mapCoordsGPS.upRight.lon, routeData.mapCoordsXY->upRight.X,
                                           coords.lon);
 
-    coordsXY.Y = MapPointToLinearFunction(trackData.mapCoordsGPS.upLeft.lat,     trackData.mapCoordsXY->upLeft.Y,
-                                          trackData.mapCoordsGPS.bottomLeft.lat, trackData.mapCoordsXY->bottomLeft.Y,
+    coordsXY.Y = MapPointToLinearFunction(routeData.mapCoordsGPS.upLeft.lat,     routeData.mapCoordsXY->upLeft.Y,
+                                          routeData.mapCoordsGPS.bottomLeft.lat, routeData.mapCoordsXY->bottomLeft.Y,
                                           coords.lat);
 
     return coordsXY;
@@ -1068,14 +1133,15 @@ float AppActivityScreenPresenter::MapPointToLinearFunction(float x1, float y1, f
 /* Method called to change scale on map to zoom in. */
 void AppActivityScreenPresenter::ZoomIn(void)
 {
-    if(trackData.scale > APP_TRACK_SCALE50)
+    if(routeData.scale > APP_ROUTE_SCALE50)
     {
-        trackData.scale = (AppActivity_trackScale_T)(trackData.scale - 1u);
-        DrawTrack();
+        routeData.scale = (AppActivity_routeScale_T)(routeData.scale - 1u);
+        DrawRoute(APP_DRAWROUTE_MAP);
+        DrawRoute(APP_DRAWROUTE_TRACK);
     }
     else
     {
-        trackData.scale = APP_TRACK_SCALE50;
+        routeData.scale = APP_ROUTE_SCALE50;
     }
 }
 
@@ -1083,14 +1149,15 @@ void AppActivityScreenPresenter::ZoomIn(void)
 /* Method called to change scale on map to zoom out. */
 void AppActivityScreenPresenter::ZoomOut(void)
 {
-    if((trackData.scale + 1u) < APP_TRACK_MAX_SCALE)
+    if((routeData.scale + 1u) < APP_ROUTE_MAX_SCALE)
     {
-        trackData.scale = (AppActivity_trackScale_T)(trackData.scale + 1u);
-        DrawTrack();
+        routeData.scale = (AppActivity_routeScale_T)(routeData.scale + 1u);
+        DrawRoute(APP_DRAWROUTE_MAP);
+        DrawRoute(APP_DRAWROUTE_TRACK);
     }
     else
     {
-        trackData.scale = (AppActivity_trackScale_T)(APP_TRACK_MAX_SCALE - 1u);
+        routeData.scale = (AppActivity_routeScale_T)(APP_ROUTE_MAX_SCALE - 1u);
     }
 }
 
@@ -1098,11 +1165,11 @@ void AppActivityScreenPresenter::ZoomOut(void)
 /* Method called to calculate a number of bytes to move track file pointer. */
 uint32_t AppActivityScreenPresenter::CalculateFileOffset(uint16_t points)
 {
-    uint32_t offset = APP_TRACK_FILE_HEADEROFFSET;
+    uint32_t offset = APP_ROUTE_FILE_HEADEROFFSET;
 
-    if(points > APP_TRACK_FILE_READLINES)
+    if(points > APP_ROUTE_FILE_READLINES)
     {
-        offset += (points - APP_TRACK_FILE_READLINES) * APP_TRACK_FILE_DATAOFFSET;
+        offset += (points - APP_ROUTE_FILE_READLINES) * APP_ROUTE_FILE_DATAOFFSET;
     }
 
     return offset;
@@ -1112,26 +1179,26 @@ uint32_t AppActivityScreenPresenter::CalculateFileOffset(uint16_t points)
 /* Method called to save new coords to track list safely. */
 void AppActivityScreenPresenter::SaveCoordsInCcmRam(float lat, float lon)
 {
-    if((trackPointsData.idxTrack + 1u) < trackPointsData.idxMap)
+    if((routePointsData.idxTrack + 1u) < routePointsData.idxMap)
     {
-        if((0u == trackPointsData.idxTrack) && (0.f == trackPointsData.coords[0u].lat) && (0.f == trackPointsData.coords[0u].lon))
+        if((0u == routePointsData.idxTrack) && (0.f == routePointsData.coords[0u].lat) && (0.f == routePointsData.coords[0u].lon))
         {
-            trackPointsData.coords[0u].lat = lat;
-            trackPointsData.coords[0u].lon = lon;
+            routePointsData.coords[0u].lat = lat;
+            routePointsData.coords[0u].lon = lon;
         }
         else
         {
-            trackPointsData.idxTrack++;
-            trackPointsData.coords[trackPointsData.idxTrack].lat = lat;
-            trackPointsData.coords[trackPointsData.idxTrack].lon = lon;
+            routePointsData.idxTrack++;
+            routePointsData.coords[routePointsData.idxTrack].lat = lat;
+            routePointsData.coords[routePointsData.idxTrack].lon = lon;
         }
     }
     else
     {
-        trackPointsData.overflow = true;
-        trackPointsData.idxTrack = 0u;
-        trackPointsData.coords[0u].lat = 0.f;
-        trackPointsData.coords[0u].lon = 0.f;
+        routePointsData.overflow = true;
+        routePointsData.idxTrack = 0u;
+        routePointsData.coords[0u].lat = 0.f;
+        routePointsData.coords[0u].lon = 0.f;
     }
 }
 
@@ -1141,53 +1208,67 @@ void AppActivityScreenPresenter::FindMaxCoords(float lat, float lon)
 {
     bool calcNewCenter = false;
 
-    if((0.f == trackData.maxCoordsGPS.N.lat) && (0.f == trackData.maxCoordsGPS.E.lon) && 
-       (0.f == trackData.maxCoordsGPS.W.lon) && (0.f == trackData.maxCoordsGPS.S.lat))
+    if((0.f == routeData.maxCoordsGPS.N.lat) && (0.f == routeData.maxCoordsGPS.E.lon) && 
+       (0.f == routeData.maxCoordsGPS.W.lon) && (0.f == routeData.maxCoordsGPS.S.lat))
     {
         /* Assign current coords to all maxs during first call */
-        trackData.maxCoordsGPS.N.lat = lat;
-        trackData.maxCoordsGPS.N.lon = lon;
-        trackData.maxCoordsGPS.E.lat = lat;
-        trackData.maxCoordsGPS.E.lon = lon;
-        trackData.maxCoordsGPS.W.lat = lat;
-        trackData.maxCoordsGPS.W.lon = lon;
-        trackData.maxCoordsGPS.S.lat = lat;
-        trackData.maxCoordsGPS.S.lon = lon;
+        routeData.maxCoordsGPS.N.lat = lat;
+        routeData.maxCoordsGPS.N.lon = lon;
+        routeData.maxCoordsGPS.E.lat = lat;
+        routeData.maxCoordsGPS.E.lon = lon;
+        routeData.maxCoordsGPS.W.lat = lat;
+        routeData.maxCoordsGPS.W.lon = lon;
+        routeData.maxCoordsGPS.S.lat = lat;
+        routeData.maxCoordsGPS.S.lon = lon;
         calcNewCenter = true;
     }
     else
     {
-        if(lat > trackData.maxCoordsGPS.N.lat)
+        if(lat > routeData.maxCoordsGPS.N.lat)
         {
-            trackData.maxCoordsGPS.N.lat = lat;
-            trackData.maxCoordsGPS.N.lon = lon;
+            routeData.maxCoordsGPS.N.lat = lat;
+            routeData.maxCoordsGPS.N.lon = lon;
             calcNewCenter = true;
         }
-        else if(lon > trackData.maxCoordsGPS.E.lon)
+        else if(lon > routeData.maxCoordsGPS.E.lon)
         {
-            trackData.maxCoordsGPS.E.lat = lat;
-            trackData.maxCoordsGPS.E.lon = lon;
+            routeData.maxCoordsGPS.E.lat = lat;
+            routeData.maxCoordsGPS.E.lon = lon;
             calcNewCenter = true;
         }
-        else if(lon < trackData.maxCoordsGPS.W.lon)
+        else if(lon < routeData.maxCoordsGPS.W.lon)
         {
-            trackData.maxCoordsGPS.W.lat = lat;
-            trackData.maxCoordsGPS.W.lon = lon;
+            routeData.maxCoordsGPS.W.lat = lat;
+            routeData.maxCoordsGPS.W.lon = lon;
             calcNewCenter = true;
         }
-        else if(lat < trackData.maxCoordsGPS.S.lat)
+        else if(lat < routeData.maxCoordsGPS.S.lat)
         {
-            trackData.maxCoordsGPS.S.lat = lat;
-            trackData.maxCoordsGPS.S.lon = lon;
+            routeData.maxCoordsGPS.S.lat = lat;
+            routeData.maxCoordsGPS.S.lon = lon;
             calcNewCenter = true;
         }
     }
 
     if(true == calcNewCenter)
     {
-        trackData.maxCoordsGPS.center.lat = (trackData.maxCoordsGPS.N.lat + trackData.maxCoordsGPS.S.lat) / APP_TRACK_MEANTWO_COEEF;
-        trackData.maxCoordsGPS.center.lon = (trackData.maxCoordsGPS.E.lon + trackData.maxCoordsGPS.W.lon) / APP_TRACK_MEANTWO_COEEF;
+        routeData.maxCoordsGPS.center.lat = (routeData.maxCoordsGPS.N.lat + routeData.maxCoordsGPS.S.lat) / APP_ROUTE_MEANTWO_COEEF;
+        routeData.maxCoordsGPS.center.lon = (routeData.maxCoordsGPS.E.lon + routeData.maxCoordsGPS.W.lon) / APP_ROUTE_MEANTWO_COEEF;
     }
+}
+
+
+/* Method called to clear extreme locations. */
+void AppActivityScreenPresenter::ClearMaxCoords(void)
+{
+    routeData.maxCoordsGPS.N.lat = 0.f;
+    routeData.maxCoordsGPS.N.lon = 0.f;
+    routeData.maxCoordsGPS.E.lat = 0.f;
+    routeData.maxCoordsGPS.E.lon = 0.f;
+    routeData.maxCoordsGPS.W.lat = 0.f;
+    routeData.maxCoordsGPS.W.lon = 0.f;
+    routeData.maxCoordsGPS.S.lat = 0.f;
+    routeData.maxCoordsGPS.S.lon = 0.f;
 }
 
 
@@ -1280,10 +1361,23 @@ void AppActivityScreenPresenter::FindMapsOnSdCard(void)
    information about it. */
 void AppActivityScreenPresenter::GetMapInfo(void)
 {
-    //FS_FullPathType filePath = {0u};
+    uint8_t buffer[APP_MAXFILEBUFFERSIZE] = {0u};
     uint8_t fileDisplayPath[APP_MAP_FILENAME_DISPLAY_LEN] = {APP_MAP_DEFAULT_LABEL};
+    AppActivity_coordinatesGPS_T newCoordsGPS = {0.f};
+    AppActivity_coordinatesGPS_T prevCoordsGPS = {0.f};
     float distance = 0.f;
     uint8_t retVal = RET_OK;
+    bool isMoreLines = true;
+    bool foundCoords = false;
+
+    /* Clear map data */
+    size_t len = sizeof(AppActivity_coordinatesGPS_T) * (APP_ROUTE_COMMONARRAY_LENGTH - routePointsData.idxMap);
+    memset(&trackPoints[routePointsData.idxMap], 0u, len);
+    routePointsData.idxMap = APP_ROUTE_MAP_FIRST_ELEMENT;
+    mapFileInfo.points = 0u;
+    routeData.map.addedPoints = 0u;
+    routeData.map.skip = 0u;
+    ClearMaxCoords();
 
     if(mapIndex.current > APP_MAP_NOFILE)
     {
@@ -1291,13 +1385,37 @@ void AppActivityScreenPresenter::GetMapInfo(void)
         retVal |= FS_OpenFile((FS_File_T**)&mapFileInfo.filePtr, mapFileInfo.name, FS_MODEREAD);
         mapFileInfo.fileStatus = (RET_OK == retVal) ? APP_FILE_OPENED : APP_FILE_ERROR;
 
+        if(APP_FILE_OPENED == mapFileInfo.fileStatus)
+        {
+            while((true == isMoreLines) && (RET_OK == retVal))
+            {
+                retVal = FS_ReadFile((FS_File_T*)mapFileInfo.filePtr, (uint8_t*)buffer, APP_MAXFILEBUFFERSIZE, (boolean*)&isMoreLines);
+                newCoordsGPS = GetCoordsGPSFromBuffer(buffer, APP_MAXFILEBUFFERSIZE, foundCoords);
 
+                if(true == foundCoords)
+                {
+                    trackPoints[routePointsData.idxMap] = newCoordsGPS;
+                    routePointsData.idxMap = (routePointsData.idxMap > 0u) ? (routePointsData.idxMap - 1u) : 0u;
+                    mapFileInfo.points++;
+
+                    FindMaxCoords(newCoordsGPS.lat, newCoordsGPS.lon);
+
+                    if(mapFileInfo.points > APP_DISTANCE_MIN_POINTS_NUM)
+                    {
+                        distance += CalculateDistance(newCoordsGPS.lat, newCoordsGPS.lon, prevCoordsGPS.lat, prevCoordsGPS.lon);
+                    }
+
+                    prevCoordsGPS = newCoordsGPS;
+                }
+            }
+        }
         retVal |= FS_CloseFile((FS_File_T**)&mapFileInfo.filePtr);
         mapFileInfo.fileStatus = (RET_OK == retVal) ? APP_FILE_CLOSED : APP_FILE_ERROR;
     }
 
-    view.ChangeMapDescription(fileDisplayPath, APP_MAP_FILENAME_DISPLAY_LEN, distance);
+    DrawRoute(APP_DRAWROUTE_MAP);
 
+    view.ChangeMapDescription(fileDisplayPath, APP_MAP_FILENAME_DISPLAY_LEN, distance);
 }
 
 
@@ -1320,7 +1438,17 @@ void AppActivityScreenPresenter::DisplayNextMap(void)
    widgets visible. */
 void AppActivityScreenPresenter::ConfirmMapSelection(void)
 {
+    if(routeData.map.addedPoints > 0u)
+    {
+        routeData.scale = APP_ROUTE_SCALEFULL;
+    }
+    else
+    {
+        routeData.scale = APP_ROUTE_SCALE100;
+    }
+
     appInternalData.screen = APP_SCREEN_MAIN;
+
     view.SetActivityDataScreen(appInternalData.screen);
     view.NotifySignalChanged_activityData_time(activityData.time);
 }

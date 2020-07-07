@@ -62,6 +62,7 @@ void AppActivityScreenView::SetActivityDataScreen(AppActivity_activeScreen_T scr
             break;
         case APP_SCREEN_SELECTMAP:
             ActivityDataCC_MapSelector.setVisible(true);
+            ActivityDataCC_Map.setVisible(true);
             PrevMapButton.setVisible(true);
             ConfirmMapButton.setVisible(true);
             NextMapButton.setVisible(true);
@@ -80,6 +81,8 @@ void AppActivityScreenView::SetActivityDataScreen(AppActivity_activeScreen_T scr
             ActivityDataCC_Map.setVisible(true);
             ZoomInButton.setVisible(true);
             ZoomOutButton.setVisible(true);
+            presenter->DrawRoute(APP_DRAWROUTE_MAP);
+            presenter->DrawRoute(APP_DRAWROUTE_TRACK);
             break;
         default:
             ActivityDataCC_Main.setVisible(true);
@@ -135,21 +138,21 @@ void AppActivityScreenView::ShowSdCard(bool isSdCard)
 }
 
 
-void AppActivityScreenView::FlushTrackList(void)
+void AppActivityScreenView::FlushRouteList(void)
 {
-    ActivityDataCC_Map.FlushTrackList();
+    ActivityDataCC_Map.FlushRouteList();
 }
 
 
-void AppActivityScreenView::SetTrackScale(uint32_t scaleVal)
+void AppActivityScreenView::SetRouteScale(uint32_t scaleVal)
 {
-    ActivityDataCC_Map.SetTrackScale(scaleVal);
+    ActivityDataCC_Map.SetRouteScale(scaleVal);
 }
 
 
-bool AppActivityScreenView::AddCoordsToTrackList(AppActivity_coordinatesXY_T coordsXY)
+bool AppActivityScreenView::AddCoordsToRouteList(AppActivity_coordinatesXY_T coordsXY, AppActivity_drawRoute_T route)
 {
-    bool newPoint = ActivityDataCC_Map.AddCoordsToTrackList(coordsXY.X, coordsXY.Y);
+    bool newPoint = ActivityDataCC_Map.AddCoordsToRouteList(coordsXY.X, coordsXY.Y, (Map_DrawRoute_T)route);
     ActivityDataCC_Map.invalidate();
     return newPoint;
 }
@@ -157,6 +160,12 @@ bool AppActivityScreenView::AddCoordsToTrackList(AppActivity_coordinatesXY_T coo
 void AppActivityScreenView::TrackRedraw(void)
 {
     ActivityDataCC_Map.TrackRedraw();
+}
+
+
+void AppActivityScreenView::IncrementRouteIdx(AppActivity_drawRoute_T route, uint8_t addedPoints)
+{
+    ActivityDataCC_Map.IncrementRouteIdx((Map_DrawRoute_T)route, addedPoints);
 }
 
 void AppActivityScreenView::ConfirmMapSelection(void)

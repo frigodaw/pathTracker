@@ -8,13 +8,15 @@ namespace touchgfx
 
 Map::Map() :
       Box(),
-      meshInfo({0}),
-      backgroundColor(0xFFFF),
-      trackColor(0),
-      lineColor(0x8888),
-      size(3)
+      meshInfo({0u}),
+      backgroundColor(MAP_COLOR_WHITE),
+      mapDotColor(MAP_COLOR_GREEN),
+      mapLineColor(MAP_COLOR_GREEN),
+      trackDotColor(MAP_COLOR_BLACK),
+      trackLineColor(MAP_COLOR_BLACK),
+      size(3u)
 {
-    FlushTrackList();
+    FlushRouteList();
 }
 
 
@@ -36,70 +38,97 @@ void Map::draw(const touchgfx::Rect& invalidatedArea) const
         }
     }
 
-    /* Connect dots and create line path */
-    if(trackList.idx > 1u)
+    for (uint8_t route = MAP_DRAWROUTE_MAP; route <= MAP_DRAWROUTE_TRACK; route++)
     {
-        Map_CoordinatesXY_T prev = {0u};
-        Map_CoordinatesXY_T curr = {0u};
-        Map_CoordinatesXY_U16_T lineCoords = {0u};
-        Map_FunctionType_T funcType = MAP_FUNCTION_INVALID;
-        float a = 0.f;
-        float b = 0.f;
+        uint16_t dotColor = 0u;
+        uint16_t lineColor = 0u;
+        uint8_t idxStart = 0u;
+        uint8_t idxEnd = 0u;
 
-        for (uint8_t i = 1u; i < trackList.idx; i++)
+        switch(route)
         {
-            /* Get points to connect */
-            prev.X = trackList.coords[i-1u].X * meshInfo.elementDimension.X;
-            prev.Y = trackList.coords[i-1u].Y * meshInfo.elementDimension.Y;
-            curr.X = trackList.coords[i].X * meshInfo.elementDimension.X;
-            curr.Y = trackList.coords[i].Y * meshInfo.elementDimension.Y;
+            case MAP_DRAWROUTE_MAP:
+                dotColor = mapDotColor;
+                lineColor = mapLineColor;
+                idxStart = 0u;
+                idxEnd = routeList.idxMap;
+                break;
 
-            uint16_t xStart = (curr.X < prev.X) ? curr.X : prev.X;
-            uint16_t xEnd = (curr.X > prev.X) ? curr.X : prev.X;
-            uint16_t yStart = (curr.Y < prev.Y) ? curr.Y : prev.Y;
-            uint16_t yEnd = (curr.Y > prev.Y) ? curr.Y : prev.Y;
+            case MAP_DRAWROUTE_TRACK:
+                dotColor = trackDotColor;
+                lineColor = trackLineColor;
+                idxStart = routeList.idxMap;
+                idxEnd = routeList.idxTrack;
+                break;
+            default:
+                break;
+        }
 
-            funcType = MapCoordsToLinearFunction(curr, prev, a, b);
+        /* Connect dots and create line path */
+        if( (idxEnd >= idxStart) && ((idxEnd - idxStart) > (uint8_t)MAP_MIN_POINTS_TO_DRAW) )
+        {
+            Map_CoordinatesXY_T prev = {0u};
+            Map_CoordinatesXY_T curr = {0u};
+            Map_CoordinatesXY_U16_T lineCoords = {0u};
+            Map_FunctionType_T funcType = MAP_FUNCTION_INVALID;
+            float a = 0.f;
+            float b = 0.f;
 
-            /* Linear function y=f(x) */
-            if(MAP_FUNCTION_Y_FX == funcType)
+            for (uint8_t i = idxStart + MAP_MIN_POINTS_OFFSET; i < idxEnd; i++)
             {
-                for (uint16_t x = xStart; x < xEnd; x++)
+                /* Get points to connect */
+                prev.X = routeList.coords[i-MAP_MIN_POINTS_OFFSET].X * meshInfo.elementDimension.X;
+                prev.Y = routeList.coords[i-MAP_MIN_POINTS_OFFSET].Y * meshInfo.elementDimension.Y;
+                curr.X = routeList.coords[i].X * meshInfo.elementDimension.X;
+                curr.Y = routeList.coords[i].Y * meshInfo.elementDimension.Y;
+
+                uint16_t xStart = (curr.X < prev.X) ? curr.X : prev.X;
+                uint16_t xEnd = (curr.X > prev.X) ? curr.X : prev.X;
+                uint16_t yStart = (curr.Y < prev.Y) ? curr.Y : prev.Y;
+                uint16_t yEnd = (curr.Y > prev.Y) ? curr.Y : prev.Y;
+
+                funcType = MapCoordsToLinearFunction(curr, prev, a, b);
+
+                /* Linear function y=f(x) */
+                if(MAP_FUNCTION_Y_FX == funcType)
                 {
-                    lineCoords.X = absolute.x + x;
-                    for (uint16_t dy = 0u; dy < meshInfo.elementDimension.Y; dy++)
+                    for (uint16_t x = xStart; x < xEnd; x++)
                     {
-                        lineCoords.Y = absolute.y + (float)(a*x) + b + dy;
-                        framebuffer[lineCoords.X + (lineCoords.Y) * touchgfx::HAL::DISPLAY_WIDTH] = lineColor;
+                        lineCoords.X = absolute.x + x;
+                        for (uint16_t dy = 0u; dy < meshInfo.elementDimension.Y; dy++)
+                        {
+                            lineCoords.Y = absolute.y + (float)(a*x) + b + dy;
+                            framebuffer[lineCoords.X + (lineCoords.Y) * touchgfx::HAL::DISPLAY_WIDTH] = lineColor;
+                        }
                     }
                 }
-            }
-            /* Linear function x=f(y) */
-            else if(MAP_FUNCTION_X_FY == funcType)
-            {
-                for (uint16_t y = yStart; y < yEnd; y++)
+                /* Linear function x=f(y) */
+                else if(MAP_FUNCTION_X_FY == funcType)
                 {
-                    lineCoords.Y = absolute.y + y;
-                    for (uint16_t dx = 0u; dx < meshInfo.elementDimension.X; dx++)
+                    for (uint16_t y = yStart; y < yEnd; y++)
                     {
-                        lineCoords.X = absolute.x + (float)(a*y) + b + dx;
-                        framebuffer[lineCoords.X + (lineCoords.Y) * touchgfx::HAL::DISPLAY_WIDTH] = lineColor;
+                        lineCoords.Y = absolute.y + y;
+                        for (uint16_t dx = 0u; dx < meshInfo.elementDimension.X; dx++)
+                        {
+                            lineCoords.X = absolute.x + (float)(a*y) + b + dx;
+                            framebuffer[lineCoords.X + (lineCoords.Y) * touchgfx::HAL::DISPLAY_WIDTH] = lineColor;
+                        }
                     }
                 }
             }
         }
-    }
 
-    /* Draw dots on a track points */
-    for (uint8_t i = 0u; i < trackList.idx; i++)
-    {
-        for (int y = 0u; y < meshInfo.elementDimension.Y; y++)
+        /* Draw dots on a route points */
+        for (uint8_t i = idxStart; i < idxEnd; i++)
         {
-            for (int x = 0u; x < meshInfo.elementDimension.X; x++)
+            for (int y = 0u; y < meshInfo.elementDimension.Y; y++)
             {
-                xVal = absolute.x + (uint16_t)(trackList.coords[i].X * meshInfo.elementDimension.X) + x;
-                yVal = absolute.y + (uint16_t)(trackList.coords[i].Y * meshInfo.elementDimension.Y) + y;
-                framebuffer[xVal + (yVal) * touchgfx::HAL::DISPLAY_WIDTH] = trackColor;
+                for (int x = 0u; x < meshInfo.elementDimension.X; x++)
+                {
+                    xVal = absolute.x + (uint16_t)(routeList.coords[i].X * meshInfo.elementDimension.X) + x;
+                    yVal = absolute.y + (uint16_t)(routeList.coords[i].Y * meshInfo.elementDimension.Y) + y;
+                    framebuffer[xVal + (yVal) * touchgfx::HAL::DISPLAY_WIDTH] = dotColor;
+                }
             }
         }
     }
@@ -114,7 +143,7 @@ void Map::draw(const touchgfx::Rect& invalidatedArea) const
     {
         for (uint16_t x = xStart; x < xEnd; x++)
         {
-            framebuffer[x + (y) * touchgfx::HAL::DISPLAY_WIDTH] = trackColor;
+            framebuffer[x + (y) * touchgfx::HAL::DISPLAY_WIDTH] = trackDotColor;
         }
     }
 
@@ -143,30 +172,59 @@ Rect Map::getSolidRect() const
 
 
 /* Method called to clear list with track coordinates. */
-void Map::FlushTrackList(void)
+void Map::FlushRouteList(void)
 {
-    memset(&trackList, 255u, sizeof(trackList));
-    trackList.idx = 0u;
-    lineColor += MAP_TRACK_COLOR_CHANGE_INTERVAL;
+    memset(&routeList, 255u, sizeof(routeList));
+    routeList.idxMap = 0u;
+    routeList.idxTrack = 0u;
+    routeList.prevRoute = MAP_DRAWROUTE_MAP;
 }
 
 
 /* Method called to set scale on a map */
-void Map::SetTrackScale(uint32_t scaleVal)
+void Map::SetRouteScale(uint32_t scaleVal)
 {
     scale = scaleVal;
 }
 
 
 /* Method called to add coordinates to track list. */
-bool Map::AddCoordsToTrackList(uint8_t x, uint8_t y)
+bool Map::AddCoordsToRouteList(uint8_t x, uint8_t y, Map_DrawRoute_T route)
 {
     Map_CoordinatesXY_T meshCoords = MapCoordsToMesh(x,y);
     bool newPoint = true;
+    uint8_t idxStart = 0u;
+    uint8_t idxEnd = 0u;
+    uint8_t *idxCurr = NULL;
 
-    for(uint8_t i=0u; i<trackList.idx; i++)
+    if((MAP_DRAWROUTE_MAP == routeList.prevRoute) && (MAP_DRAWROUTE_TRACK == route))
     {
-        if((meshCoords.X == trackList.coords[i].X) && (meshCoords.Y == trackList.coords[i].Y))
+        /* Change from MAP to TRACK, set idxTrack */
+        routeList.idxTrack = routeList.idxMap;
+        routeList.prevRoute = MAP_DRAWROUTE_TRACK;
+    }
+
+    switch(route)
+    {
+        case MAP_DRAWROUTE_MAP:
+            idxStart = 0u;
+            idxEnd = routeList.idxMap;
+            idxCurr = &routeList.idxMap;
+            break;
+
+        case MAP_DRAWROUTE_TRACK:
+            idxStart = routeList.idxMap;
+            idxEnd = routeList.idxTrack;
+            idxCurr = &routeList.idxTrack;
+            break;
+
+        default:
+            break;
+    }
+
+    for(uint8_t i = idxStart; i < idxEnd; i++)
+    {
+        if((meshCoords.X == routeList.coords[i].X) && (meshCoords.Y == routeList.coords[i].Y))
         {
             newPoint = false;
             break;
@@ -175,13 +233,40 @@ bool Map::AddCoordsToTrackList(uint8_t x, uint8_t y)
 
     if(true == newPoint)
     {
-        if(trackList.idx < (MAP_TRACK_DRAWABLE_ELEMENTS - 1u))
+        if( (routeList.idxMap < (MAP_ROUTE_DRAWABLE_ELEMENTS - 1u)) && (routeList.idxTrack < (MAP_ROUTE_DRAWABLE_ELEMENTS - 1u)) )
         {
-            trackList.coords[trackList.idx].X = meshCoords.X;
-            trackList.coords[trackList.idx].Y = meshCoords.Y;
-            trackList.idx++;
+            routeList.coords[*idxCurr].X = meshCoords.X;
+            routeList.coords[*idxCurr].Y = meshCoords.Y;
+            (*idxCurr)++;
         }
     }
+
+
+    //if( (routeList.idxMap < (MAP_ROUTE_DRAWABLE_ELEMENTS - 1u)) && (routeList.idxTrack < (MAP_ROUTE_DRAWABLE_ELEMENTS - 1u)) )
+    //{
+    //    /* Only if there is a space for new coords in a buffer */
+    //    if(0xFFu == *idxCurr)
+    //    {
+    //        /* No points saved before */
+    //        newPoint = true;
+    //        *idxCurr = routeList.idxMap + 1u;
+    //    }
+    //    else
+    //    {
+    //        for(uint8_t i = idxStart; i < idxEnd; i++)
+    //        {
+    //            if((meshCoords.X == routeList.coords[i].X) && (meshCoords.Y == routeList.coords[i].Y))
+    //            {
+    //                newPoint = false;
+    //                break;
+    //            }
+    //        }
+    //    }
+    //}
+    //else
+    //{
+    //    newPoint = false;
+    //}
 
     return newPoint;
 }
@@ -220,12 +305,12 @@ Map_FunctionType_T Map::MapCoordsToLinearFunction(Map_CoordinatesXY_T curr, Map_
     if(curr.X != prev.X)
     {
         a = ((float)(curr.Y-prev.Y)) / ((float)(curr.X-prev.X));
-        type = (abs(a) <= MAP_TRACK_A_COEFF_LIMIT) ? MAP_FUNCTION_Y_FX : MAP_FUNCTION_X_FY;
+        type = (abs(a) <= MAP_ROUTE_A_COEFF_LIMIT) ? MAP_FUNCTION_Y_FX : MAP_FUNCTION_X_FY;
     }
     else if(curr.Y != prev.Y)
     {
         a = ((float)(curr.X-prev.X)) / ((float)(curr.Y-prev.Y));
-        type = (abs(a) <= MAP_TRACK_A_COEFF_LIMIT) ? MAP_FUNCTION_X_FY : MAP_FUNCTION_Y_FX;
+        type = (abs(a) <= MAP_ROUTE_A_COEFF_LIMIT) ? MAP_FUNCTION_X_FY : MAP_FUNCTION_Y_FX;
     }
 
     switch (type)
@@ -245,6 +330,22 @@ Map_FunctionType_T Map::MapCoordsToLinearFunction(Map_CoordinatesXY_T curr, Map_
     }
 
     return type;
+}
+
+
+/* Method called to set map or track index to
+   route structure to distunguish which points
+   belong to whom. */
+void Map::IncrementRouteIdx(Map_DrawRoute_T route, uint8_t addedPoints)
+{
+    if(MAP_DRAWROUTE_MAP == route)
+    {
+        routeList.idxMap = addedPoints;
+    }
+    else if(MAP_DRAWROUTE_TRACK == route)
+    {
+        routeList.idxTrack = routeList.idxMap + addedPoints;
+    }
 }
 
 
