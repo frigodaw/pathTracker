@@ -63,10 +63,13 @@ I2C_HandleTypeDef hi2c3;
 
 LTDC_HandleTypeDef hltdc;
 
+RTC_HandleTypeDef hrtc;
+
 SPI_HandleTypeDef hspi4;
 SPI_HandleTypeDef hspi5;
 
 TIM_HandleTypeDef htim1;
+TIM_HandleTypeDef htim7;
 TIM_HandleTypeDef htim10;
 
 UART_HandleTypeDef huart5;
@@ -79,10 +82,17 @@ osThreadId defaultTaskHandle;
 osThreadId ltdcTaskHandle;
 osThreadId gpsTaskHandle;
 /* USER CODE BEGIN PV */
-TimerTypeT tim = {0u};
+volatile uint32_t freertosTimer100us = 0uL;
+volatile CpuLoadType_T cpuLoad = {0uL};
+volatile TimerTypeT tim = {0u};
 CounterTypeT cnt = {0u};
-static FMC_SDRAM_CommandTypeDef Command;
-BMP280_HandleTypedef bmp280;
+BMP280_HandleTypedef bmp280 = {0u};
+
+static RTC_TimeTypeDef RtcTime = {0u};
+static RTC_DateTypeDef RtcDate = {0u};
+static FMC_SDRAM_CommandTypeDef Command = {0u};
+
+extern TCB_t * volatile pxCurrentTCB;
 //static float gyro_xyz[3];
 /* USER CODE END PV */
 
@@ -101,6 +111,8 @@ static void MX_USART1_UART_Init(void);
 static void MX_TIM10_Init(void);
 static void MX_UART5_Init(void);
 static void MX_SPI4_Init(void);
+static void MX_RTC_Init(void);
+static void MX_TIM7_Init(void);
 void DefaultTask(void const * argument);
 void LtdcTask(void const * argument);
 void GpsTask(void const * argument);
@@ -110,6 +122,8 @@ void Main_Init(void);
 void Main_SensorsInit(void);
 void Main_WriteReg(uint8_t);
 void Main_WriteData(uint8_t);
+void Main_SetupRunTimeStatsTimer(void);
+void Main_CalculateCpuLoad(void);
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
@@ -170,6 +184,8 @@ int main(void)
   MX_UART5_Init();
   MX_SPI4_Init();
   MX_FATFS_Init();
+  MX_RTC_Init();
+  MX_TIM7_Init();
   MX_TouchGFX_Init();
   /* USER CODE BEGIN 2 */
   Gps_Init();
@@ -243,8 +259,9 @@ void SystemClock_Config(void)
   __HAL_PWR_VOLTAGESCALING_CONFIG(PWR_REGULATOR_VOLTAGE_SCALE3);
   /** Initializes the CPU, AHB and APB busses clocks 
   */
-  RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSE;
+  RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_LSI|RCC_OSCILLATORTYPE_HSE;
   RCC_OscInitStruct.HSEState = RCC_HSE_ON;
+  RCC_OscInitStruct.LSIState = RCC_LSI_ON;
   RCC_OscInitStruct.PLL.PLLState = RCC_PLL_ON;
   RCC_OscInitStruct.PLL.PLLSource = RCC_PLLSOURCE_HSE;
   RCC_OscInitStruct.PLL.PLLM = 4;
@@ -268,10 +285,11 @@ void SystemClock_Config(void)
   {
     Error_Handler();
   }
-  PeriphClkInitStruct.PeriphClockSelection = RCC_PERIPHCLK_LTDC;
+  PeriphClkInitStruct.PeriphClockSelection = RCC_PERIPHCLK_LTDC|RCC_PERIPHCLK_RTC;
   PeriphClkInitStruct.PLLSAI.PLLSAIN = 60;
   PeriphClkInitStruct.PLLSAI.PLLSAIR = 5;
   PeriphClkInitStruct.PLLSAIDivR = RCC_PLLSAIDIVR_4;
+  PeriphClkInitStruct.RTCClockSelection = RCC_RTCCLKSOURCE_LSI;
   if (HAL_RCCEx_PeriphCLKConfig(&PeriphClkInitStruct) != HAL_OK)
   {
     Error_Handler();
@@ -446,6 +464,68 @@ static void MX_LTDC_Init(void)
   /* USER CODE BEGIN LTDC_Init 2 */
 
   /* USER CODE END LTDC_Init 2 */
+
+}
+
+/**
+  * @brief RTC Initialization Function
+  * @param None
+  * @retval None
+  */
+static void MX_RTC_Init(void)
+{
+
+  /* USER CODE BEGIN RTC_Init 0 */
+
+  /* USER CODE END RTC_Init 0 */
+
+  RTC_TimeTypeDef sTime = {0};
+  RTC_DateTypeDef sDate = {0};
+
+  /* USER CODE BEGIN RTC_Init 1 */
+
+  /* USER CODE END RTC_Init 1 */
+  /** Initialize RTC Only 
+  */
+  hrtc.Instance = RTC;
+  hrtc.Init.HourFormat = RTC_HOURFORMAT_24;
+  hrtc.Init.AsynchPrediv = 127;
+  hrtc.Init.SynchPrediv = 255;
+  hrtc.Init.OutPut = RTC_OUTPUT_DISABLE;
+  hrtc.Init.OutPutPolarity = RTC_OUTPUT_POLARITY_HIGH;
+  hrtc.Init.OutPutType = RTC_OUTPUT_TYPE_OPENDRAIN;
+  if (HAL_RTC_Init(&hrtc) != HAL_OK)
+  {
+    Error_Handler();
+  }
+
+  /* USER CODE BEGIN Check_RTC_BKUP */
+    
+  /* USER CODE END Check_RTC_BKUP */
+
+  /** Initialize RTC and set the Time and Date 
+  */
+  sTime.Hours = 0;
+  sTime.Minutes = 0;
+  sTime.Seconds = 0;
+  sTime.DayLightSaving = RTC_DAYLIGHTSAVING_NONE;
+  sTime.StoreOperation = RTC_STOREOPERATION_RESET;
+  if (HAL_RTC_SetTime(&hrtc, &sTime, RTC_FORMAT_BIN) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  sDate.WeekDay = RTC_WEEKDAY_MONDAY;
+  sDate.Month = RTC_MONTH_JANUARY;
+  sDate.Date = 1;
+  sDate.Year = 20;
+
+  if (HAL_RTC_SetDate(&hrtc, &sDate, RTC_FORMAT_BIN) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  /* USER CODE BEGIN RTC_Init 2 */
+
+  /* USER CODE END RTC_Init 2 */
 
 }
 
@@ -683,6 +763,44 @@ static void MX_TIM1_Init(void)
   /* USER CODE BEGIN TIM1_Init 2 */
 
   /* USER CODE END TIM1_Init 2 */
+
+}
+
+/**
+  * @brief TIM7 Initialization Function
+  * @param None
+  * @retval None
+  */
+static void MX_TIM7_Init(void)
+{
+
+  /* USER CODE BEGIN TIM7_Init 0 */
+
+  /* USER CODE END TIM7_Init 0 */
+
+  TIM_MasterConfigTypeDef sMasterConfig = {0};
+
+  /* USER CODE BEGIN TIM7_Init 1 */
+
+  /* USER CODE END TIM7_Init 1 */
+  htim7.Instance = TIM7;
+  htim7.Init.Prescaler = 89;
+  htim7.Init.CounterMode = TIM_COUNTERMODE_UP;
+  htim7.Init.Period = 79;
+  htim7.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_DISABLE;
+  if (HAL_TIM_Base_Init(&htim7) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  sMasterConfig.MasterOutputTrigger = TIM_TRGO_RESET;
+  sMasterConfig.MasterSlaveMode = TIM_MASTERSLAVEMODE_DISABLE;
+  if (HAL_TIMEx_MasterConfigSynchronization(&htim7, &sMasterConfig) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  /* USER CODE BEGIN TIM7_Init 2 */
+
+  /* USER CODE END TIM7_Init 2 */
 
 }
 
@@ -994,7 +1112,8 @@ static void MX_GPIO_Init(void)
 /* USER CODE BEGIN 4 */
 void Main_Init(void)
 {
-  /* Start timer 10 -> 1s */
+  /* Start timers */
+  HAL_TIM_Base_Start_IT(&htim7);
   HAL_TIM_Base_Start_IT(&htim10);
 
   /* Start gps uart */
@@ -1032,6 +1151,32 @@ void Main_WriteData(uint8_t data)
   HAL_SPI_Transmit(&hspi5, &data, 1, 10);
   HAL_GPIO_WritePin(CSX_GPIO_Port, CSX_Pin, GPIO_PIN_SET);
 }
+
+
+void Main_SetupRunTimeStatsTimer(void)
+{
+  freertosTimer100us = 0uL;
+}
+
+
+void Main_CalculateCpuLoad(void)
+{
+  if( (pxCurrentTCB != NULL) &&
+      (pxCurrentTCB->pcTaskName[0u] == 'I') &&
+      (pxCurrentTCB->pcTaskName[1u] == 'D') &&
+      (pxCurrentTCB->pcTaskName[2u] == 'L') &&
+      (pxCurrentTCB->pcTaskName[3u] == 'E') )
+  {
+    cpuLoad.idleTickCount++;
+  }
+
+  if(CPULOAD_TIMER_CYCLES <= cpuLoad.totalTickCount)
+  {
+    cpuLoad.percentValue = (float)( (float)((CPULOAD_TIMER_CYCLES - cpuLoad.idleTickCount) * CPULOAD_ONEHUNDRED_PERCENT) / (float)(CPULOAD_TIMER_CYCLES) );
+    cpuLoad.totalTickCount = 0uL;
+    cpuLoad.idleTickCount = 0uL;
+  }
+}
 /* USER CODE END 4 */
 
 /* USER CODE BEGIN Header_DefaultTask */
@@ -1051,6 +1196,8 @@ void DefaultTask(void const * argument)
   {
     FS_Main();
     EnvSensors_Main();
+    HAL_RTC_GetTime(&hrtc, &RtcTime, RTC_FORMAT_BIN);
+    HAL_RTC_GetDate(&hrtc, &RtcDate, RTC_FORMAT_BIN);
     DC_inc_main_cnt_c_defaultTask();
     osDelay(1000);
   }
@@ -1118,6 +1265,14 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
     HAL_SYSTICK_IRQHandler();
   }
 
+  if (htim->Instance == TIM7)
+  {
+    freertosTimer100us++;
+    cpuLoad.totalTickCount++;
+
+    Main_CalculateCpuLoad();
+  }
+
   if (htim->Instance == TIM10)
   {
     DC_inc_main_tim_t_100ms();
@@ -1125,7 +1280,6 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
     {
       DC_inc_main_tim_t_1s();
     }
-    //CDC_Transmit_HS(gpsDebug.buffer, gpsDebug.size);
   }
 
   /* USER CODE END Callback 1 */

@@ -48,12 +48,19 @@ typedef struct
    uint32_t c_gpsTask;
    uint32_t c_defaultTask;
 } CounterTypeT;
+
+typedef struct
+{
+   uint32_t totalTickCount;
+   uint32_t idleTickCount;
+   float    percentValue;
+} CpuLoadType_T;
 /* USER CODE END ET */
 
 /* Exported constants --------------------------------------------------------*/
 /* USER CODE BEGIN EC */
 extern UART_HandleTypeDef huart5;
-extern TimerTypeT tim;
+extern volatile TimerTypeT tim;
 extern CounterTypeT cnt;
 /* USER CODE END EC */
 
@@ -271,6 +278,8 @@ void Error_Handler(void);
 #define SDRAM_MODEREG_WRITEBURST_MODE_PROGRAMMED ((uint16_t)0x0000)
 #define SDRAM_MODEREG_WRITEBURST_MODE_SINGLE     ((uint16_t)0x0200)
 #define SENSORS_INIT_TIME_INTERVAL_MS            100u
+#define CPULOAD_TIMER_CYCLES                     10000uL
+#define CPULOAD_ONEHUNDRED_PERCENT               100uL
 /* USER CODE END Private defines */
 
 #ifdef __cplusplus
