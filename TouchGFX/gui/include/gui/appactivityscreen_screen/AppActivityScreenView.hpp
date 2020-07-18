@@ -24,6 +24,8 @@ public:
     void SetBitmapButton(const uint16_t bitmapId);
     void ShowFixImage(bool isFix);
     void ShowSdCard(bool isSdCard);
+    void SetArrowVisibilityStatus(bool visibilityStatus);
+    void SetArrowAngle(float angle);
 
     void FlushRouteList(void);
     void SetRouteScale(uint32_t scaleVal);

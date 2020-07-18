@@ -20,6 +20,8 @@ public:
     bool AddCoordsToRouteList(uint8_t coordsX, uint8_t coordsY, Map_DrawRoute_T route);
     void TrackRedraw(void);
     void IncrementRouteIdx(Map_DrawRoute_T route, uint8_t addedPoints);
+    void SetArrowVisibilityStatus(bool visibilityStatus);
+    void SetArrowAngle(float angle);
 
 private:
     touchgfx::Map Map;

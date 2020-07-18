@@ -140,6 +140,7 @@ using namespace touchgfx;
 #define APP_MAP_FILENUM_OFFSET          1u
 #define APP_MAP_NOFILE                  0u
 #define APP_MAP_DEFAULT_LABEL           "No map"
+#define APP_MAP_ARROW_CALC_POINTS       3u
 /* END OF THE DEFINE AREA */
 
 
@@ -285,6 +286,7 @@ typedef struct
     AppActivity_activeScreen_T screen;
     AppActivity_activityState_T state;
     bool     sensorEnabled;
+    bool     wasFix;
     int8_t   timezone;
     AppActivity_initFunctions_T initFunc;
 }AppActivity_appInternalData_T;
@@ -451,6 +453,7 @@ public:
     void SelectAltitudeSource(void);
     void ApplyDate(AppActivity_timezoneDateChange_T dateChange);
     bool IsLeapYear(uint16_t year);
+    void CalculateArrowAngle(void);
 
     void FindMapsOnSdCard(void);
     void GetMapInfo(void);

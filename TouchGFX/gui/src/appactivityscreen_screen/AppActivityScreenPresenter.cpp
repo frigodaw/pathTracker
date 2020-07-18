@@ -19,7 +19,7 @@ static const uint8_t daysInMon[APP_TIMEZONE_NUMOFMONTHS] = { APP_TIMEZONE_DAYS_J
 /* Common array to store lat and lon coordinates recorded during activity 
    and from preloaded .gpx file. First part is for tracked coords, second one 
    for points to navigate. */
-AppActivity_coordinatesGPS_T trackPoints[APP_ROUTE_COMMONARRAY_LENGTH] __attribute__ ((section (".ccm"))) = {0.f};
+AppActivity_coordinatesGPS_T routePoints[APP_ROUTE_COMMONARRAY_LENGTH] __attribute__ ((section (".ccm"))) = {0.f};
 
 static const AppActivity_mapCoordsXY_T mapCoordsXY = {{APP_ROUTE_WINDOW_MID_X, APP_ROUTE_WINDOW_MID_Y},
                                                       {APP_ROUTE_WINDOW_UPLEFT_X, APP_ROUTE_WINDOW_UPLEFT_Y},
@@ -58,7 +58,7 @@ AppActivityScreenPresenter::AppActivityScreenPresenter(AppActivityScreenView& v)
     routeData.scale = APP_ROUTE_SCALEFULL;
     routeData.mapCoordsXY = (AppActivity_mapCoordsXY_T*)&mapCoordsXY;
 
-    routePointsData.coords = trackPoints;
+    routePointsData.coords = routePoints;
     routePointsData.idxTrack = APP_ROUTE_TRACK_FIRST_ELEMENT;
     routePointsData.idxMap = APP_ROUTE_MAP_FIRST_ELEMENT;
 
@@ -125,6 +125,8 @@ void AppActivityScreenPresenter::InitActivity(void)
         snprintf(trackFileInfo.name, APP_FILENAMEMAXLEN, "%s/20%.2d%.2d%.2d_%.2d%.2d%.2d.gpx",
                 FS_OUTPUTPATH, calendar.date.year, calendar.date.mon, calendar.date.day,
                 calendar.time.hr, calendar.time.min, calendar.time.sec);
+
+        view.SetArrowVisibilityStatus(true);
 
         uint8_t retVal = FS_OpenFile((FS_File_T**)&trackFileInfo.filePtr, trackFileInfo.name, FS_MODEWRITE);
         if(RET_OK == retVal)
@@ -365,6 +367,7 @@ bool AppActivityScreenPresenter::IsFix(void)
     if(0u != gpsSignals.fixQuality)
     {
         retVal = true;
+        appInternalData.wasFix = true;
     }
     else
     {
@@ -771,6 +774,7 @@ void AppActivityScreenPresenter::DrawRoute(AppActivity_drawRoute_T route)
         uint8_t addedPoints = 0u;
         uint32_t scaleVal = GetScaleValue();
         view.SetRouteScale(scaleVal);
+        CalculateArrowAngle();
 
         CalculateSkippedCoords(route);
         MapCenterCoordinates();
@@ -994,13 +998,33 @@ void AppActivityScreenPresenter::MapCenterCoordinates(void)
 
     if(APP_ROUTE_SCALEFULL == routeData.scale)
     {
+        /* Set center from max coords */
         routeData.mapCoordsGPS.center.lat = routeData.maxCoordsGPS.center.lat;
         routeData.mapCoordsGPS.center.lon = routeData.maxCoordsGPS.center.lon;
     }
     else
     {
-        routeData.mapCoordsGPS.center.lat = gpsSignals.latitude;
-        routeData.mapCoordsGPS.center.lon = gpsSignals.longitude;
+        if(true == appInternalData.wasFix)
+        {
+            /* Gps signal was fixed, set center from last gps value */
+            routeData.mapCoordsGPS.center.lat = gpsSignals.latitude;
+            routeData.mapCoordsGPS.center.lon = gpsSignals.longitude;
+        }
+        else
+        {
+            if(APP_ROUTE_MAP_FIRST_ELEMENT != routePointsData.idxMap)
+            {
+                /* Map is present, set center from the first coords from map */
+                routeData.mapCoordsGPS.center.lat = routePoints[APP_ROUTE_MAP_FIRST_ELEMENT].lat;
+                routeData.mapCoordsGPS.center.lon = routePoints[APP_ROUTE_MAP_FIRST_ELEMENT].lon;
+            }
+            else
+            {
+                /* No map, no fix before, there should be zeros */
+                routeData.mapCoordsGPS.center.lat = routeData.maxCoordsGPS.center.lat;
+                routeData.mapCoordsGPS.center.lon = routeData.maxCoordsGPS.center.lon;
+            }
+        }
     }
 
     routeData.mapCoordsGPS.upLeft = MapXYCoordsToGPS(routeData.mapCoordsXY->upLeft, scaleDistCoeff);
@@ -1372,7 +1396,7 @@ void AppActivityScreenPresenter::GetMapInfo(void)
 
     /* Clear map data */
     size_t len = sizeof(AppActivity_coordinatesGPS_T) * (APP_ROUTE_COMMONARRAY_LENGTH - routePointsData.idxMap);
-    memset(&trackPoints[routePointsData.idxMap], 0u, len);
+    memset(&routePoints[routePointsData.idxMap], 0u, len);
     routePointsData.idxMap = APP_ROUTE_MAP_FIRST_ELEMENT;
     mapFileInfo.points = 0u;
     routeData.map.addedPoints = 0u;
@@ -1394,7 +1418,7 @@ void AppActivityScreenPresenter::GetMapInfo(void)
 
                 if(true == foundCoords)
                 {
-                    trackPoints[routePointsData.idxMap] = newCoordsGPS;
+                    routePoints[routePointsData.idxMap] = newCoordsGPS;
                     routePointsData.idxMap = (routePointsData.idxMap > 0u) ? (routePointsData.idxMap - 1u) : 0u;
                     mapFileInfo.points++;
 
@@ -1451,6 +1475,51 @@ void AppActivityScreenPresenter::ConfirmMapSelection(void)
 
     view.SetActivityDataScreen(appInternalData.screen);
     view.NotifySignalChanged_activityData_time(activityData.time);
+}
+
+
+/* Method called to calculate angle of an arrow
+   on a screen to follow currect direction. */
+void AppActivityScreenPresenter::CalculateArrowAngle(void)
+{
+    AppActivity_coordinatesGPS_T coordsMean = {0.f};
+    AppActivity_coordinatesGPS_T coordsCurr = {0.f};
+    float a = 0.f;
+    float a_nom = 0.f;
+    float a_denom = 0.f;
+    float angle = 0.f;
+
+    if((trackFileInfo.points > APP_MAP_ARROW_CALC_POINTS) && (routePointsData.idxTrack > APP_MAP_ARROW_CALC_POINTS))
+    {
+        /* Calculate mean from last points. */
+        uint16_t currTrackIdx = routePointsData.idxTrack;
+        for(uint8_t i = 0u; i < APP_MAP_ARROW_CALC_POINTS; i++)
+        {
+            coordsMean.lat += routePointsData.coords[currTrackIdx].lat;
+            coordsMean.lon += routePointsData.coords[currTrackIdx].lon;
+            currTrackIdx--;
+        }
+        coordsMean.lat /= APP_MAP_ARROW_CALC_POINTS;
+        coordsMean.lon /= APP_MAP_ARROW_CALC_POINTS;
+
+        /* Linear regression. */
+        currTrackIdx = routePointsData.idxTrack;
+        for(uint8_t i = 0u; i < APP_MAP_ARROW_CALC_POINTS; i++)
+        {
+            coordsCurr = routePointsData.coords[currTrackIdx];
+            a_nom += (coordsCurr.lon - coordsMean.lon)*(coordsCurr.lat - coordsMean.lat);
+            a_denom += POW2( coordsCurr.lon - coordsMean.lon );
+            currTrackIdx--;
+        }
+
+        if(a_denom > 0.f)
+        {
+            a = a_nom / a_denom;
+            angle = tanf(a);
+        }
+    }
+
+    view.SetArrowAngle(angle);
 }
 
 

@@ -83,6 +83,8 @@ public:
     virtual void draw(const touchgfx::Rect& invalidatedArea) const;
     virtual touchgfx::Rect getSolidRect() const;
 
+    bool IsInvalidatedArea(uint8_t right, uint8_t bottom, Map_CoordinatesXY_U16_T coordsCurr) const;
+
     void FlushRouteList(void);
     bool AddCoordsToRouteList(uint8_t x, uint8_t y, Map_DrawRoute_T route);
     void SetRouteScale(uint32_t scaleVal);

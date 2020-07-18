@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <projectDescription>
 	<name>pathTracker</name>
-	<comment></comment>
+	<comment/>
 	<projects>
 	</projects>
 	<buildSpec>
@@ -832,6 +832,11 @@
 			<name>Application/User/TouchGFX/target/generated/TouchGFXGeneratedHAL.cpp</name>
 			<type>1</type>
 			<locationURI>$%7BPARENT-1-PROJECT_LOC%7D/TouchGFX/target/generated/TouchGFXGeneratedHAL.cpp</locationURI>
+		</link>
+		<link>
+			<name>Application/User/generated/Arrow.cpp</name>
+			<type>1</type>
+			<locationURI>$%7BPARENT-1-PROJECT_LOC%7D/TouchGFX/generated/images/src/Arrow.cpp</locationURI>
 		</link>
 	</linkedResources>
 </projectDescription>

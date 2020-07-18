@@ -6,6 +6,7 @@
 
 #include <gui/common/FrontendApplication.hpp>
 #include <touchgfx/containers/Container.hpp>
+#include <touchgfx/widgets/TextureMapper.hpp>
 #include <touchgfx/widgets/TextAreaWithWildcard.hpp>
 
 class ActivityDataContainter_MapBase : public touchgfx::Container
@@ -23,6 +24,7 @@ protected:
     /*
      * Member Declarations
      */
+    touchgfx::TextureMapper ArrowIcon;
     touchgfx::TextAreaWithTwoWildcards ScaleTextBox;
 
     /*

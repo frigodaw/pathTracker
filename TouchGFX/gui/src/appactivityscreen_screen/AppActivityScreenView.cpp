@@ -194,6 +194,16 @@ void AppActivityScreenView::ChangeMapDescription(uint8_t *fileName, uint8_t name
     ActivityDataCC_MapSelector.ChangeMapDistance(distance);
 }
 
+void AppActivityScreenView::SetArrowVisibilityStatus(bool visibilityStatus)
+{
+    ActivityDataCC_Map.SetArrowVisibilityStatus(visibilityStatus);
+}
+
+void AppActivityScreenView::SetArrowAngle(float angle)
+{
+    ActivityDataCC_Map.SetArrowAngle(angle);
+}
+
 
 void AppActivityScreenView::NotifySignalChanged_activityData_timer(uint32_t newTimer)
 {

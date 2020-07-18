@@ -7,7 +7,9 @@ ActivityDataContainter_Map::ActivityDataContainter_Map()
     Map.setColor(touchgfx::Color::getColorFrom24BitRGB(255, 255, 255));
     Map.SetMesh();
 
-    /* Map widget have to be placed before ScaleTextBox to prevent overwrite */
+    ArrowIcon.setVisible(false);
+
+    /* Map widget have to be placed as a first element in Drawable list to prevent overwrite scale text */
     insert(0, Map);
 }
 
@@ -69,9 +71,22 @@ void ActivityDataContainter_Map::TrackRedraw(void)
 {
     Map.invalidate();
     ScaleTextBox.invalidate();
+    ArrowIcon.invalidate();
 }
 
 void ActivityDataContainter_Map::IncrementRouteIdx(Map_DrawRoute_T route, uint8_t addedPoints)
 {
     Map.IncrementRouteIdx(route, addedPoints);
+}
+
+void ActivityDataContainter_Map::SetArrowVisibilityStatus(bool visibilityStatus)
+{
+    ArrowIcon.setVisible(visibilityStatus);
+    ArrowIcon.invalidate();
+}
+
+void ActivityDataContainter_Map::SetArrowAngle(float angle)
+{
+    ArrowIcon.updateZAngle(angle);
+    ArrowIcon.invalidate();
 }

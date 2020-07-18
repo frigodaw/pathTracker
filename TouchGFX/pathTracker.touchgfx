@@ -2967,6 +2967,35 @@
       {
         "Components": [
           {
+            "UseAnimation": false,
+            "RenderingAlgorithm": "Nearest-neighbor",
+            "FileNameImage": "Arrow.png",
+            "LockBitmapToCenter": true,
+            "XBitmapPosition": 103.5,
+            "YBitmapPosition": 86.0,
+            "XAngle": 0.0,
+            "YAngle": 0.0,
+            "ZAngle": 0.0,
+            "Scale": 0.7,
+            "LockOrigoToCenter": true,
+            "XOrigo": 120.0,
+            "YOrigo": 102.5,
+            "ZOrigo": 1000.0,
+            "CameraDistance": 1000.0,
+            "Alpha": 255,
+            "Name": "ArrowIcon",
+            "X": 0,
+            "Y": 0,
+            "Width": 240,
+            "Height": 205,
+            "Type": "TextureMapper",
+            "Visible": true,
+            "Draggable": false,
+            "Clickable": false,
+            "Fadeable": false,
+            "Moveable": false
+          },
+          {
             "TextId": "SingleUseId220",
             "TextRotation": "0",
             "Color": {

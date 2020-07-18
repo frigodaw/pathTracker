@@ -26,13 +26,14 @@ void Map::draw(const touchgfx::Rect& invalidatedArea) const
 
     uint16_t* framebuffer = touchgfx::HAL::getInstance()->lockFrameBuffer();
 
-    uint16_t xVal = 0u;
-    uint16_t yVal = 0u;
+    Map_CoordinatesXY_U16_T coords = {0u};
+    uint8_t invalidatedAreaRight = (uint8_t)invalidatedArea.right();
+    uint8_t invalidatedAreaBottom = (uint8_t)invalidatedArea.bottom();
 
     /* Draw background */
-    for (int y = invalidatedArea.y; y < invalidatedArea.bottom(); y++)
+    for (int y = invalidatedArea.y; y < invalidatedAreaBottom; y++)
     {
-        for (int x = invalidatedArea.x; x < invalidatedArea.right(); x++)
+        for (int x = invalidatedArea.x; x < invalidatedAreaRight; x++)
         {
             framebuffer[absolute.x + x + (absolute.y + y) * touchgfx::HAL::DISPLAY_WIDTH] = backgroundColor;
         }
@@ -69,7 +70,6 @@ void Map::draw(const touchgfx::Rect& invalidatedArea) const
         {
             Map_CoordinatesXY_T prev = {0u};
             Map_CoordinatesXY_T curr = {0u};
-            Map_CoordinatesXY_U16_T lineCoords = {0u};
             Map_FunctionType_T funcType = MAP_FUNCTION_INVALID;
             float a = 0.f;
             float b = 0.f;
@@ -94,11 +94,14 @@ void Map::draw(const touchgfx::Rect& invalidatedArea) const
                 {
                     for (uint16_t x = xStart; x < xEnd; x++)
                     {
-                        lineCoords.X = absolute.x + x;
+                        coords.X = absolute.x + x;
                         for (uint16_t dy = 0u; dy < meshInfo.elementDimension.Y; dy++)
                         {
-                            lineCoords.Y = absolute.y + (float)(a*x) + b + dy;
-                            framebuffer[lineCoords.X + (lineCoords.Y) * touchgfx::HAL::DISPLAY_WIDTH] = lineColor;
+                            coords.Y = absolute.y + (float)(a*x) + b + dy;
+                            if(true == IsInvalidatedArea(invalidatedAreaRight, invalidatedAreaBottom, coords))
+                            {
+                                framebuffer[coords.X + (coords.Y) * touchgfx::HAL::DISPLAY_WIDTH] = lineColor;
+                            }
                         }
                     }
                 }
@@ -107,11 +110,14 @@ void Map::draw(const touchgfx::Rect& invalidatedArea) const
                 {
                     for (uint16_t y = yStart; y < yEnd; y++)
                     {
-                        lineCoords.Y = absolute.y + y;
+                        coords.Y = absolute.y + y;
                         for (uint16_t dx = 0u; dx < meshInfo.elementDimension.X; dx++)
                         {
-                            lineCoords.X = absolute.x + (float)(a*y) + b + dx;
-                            framebuffer[lineCoords.X + (lineCoords.Y) * touchgfx::HAL::DISPLAY_WIDTH] = lineColor;
+                            coords.X = absolute.x + (float)(a*y) + b + dx;
+                            if(true == IsInvalidatedArea(invalidatedAreaRight, invalidatedAreaBottom, coords))
+                            {
+                                framebuffer[coords.X + (coords.Y) * touchgfx::HAL::DISPLAY_WIDTH] = lineColor;
+                            }
                         }
                     }
                 }
@@ -125,9 +131,12 @@ void Map::draw(const touchgfx::Rect& invalidatedArea) const
             {
                 for (int x = 0u; x < meshInfo.elementDimension.X; x++)
                 {
-                    xVal = absolute.x + (uint16_t)(routeList.coords[i].X * meshInfo.elementDimension.X) + x;
-                    yVal = absolute.y + (uint16_t)(routeList.coords[i].Y * meshInfo.elementDimension.Y) + y;
-                    framebuffer[xVal + (yVal) * touchgfx::HAL::DISPLAY_WIDTH] = dotColor;
+                    coords.X = absolute.x + (uint16_t)(routeList.coords[i].X * meshInfo.elementDimension.X) + x;
+                    coords.Y = absolute.y + (uint16_t)(routeList.coords[i].Y * meshInfo.elementDimension.Y) + y;
+                    if(true == IsInvalidatedArea(invalidatedAreaRight, invalidatedAreaBottom, coords))
+                    {
+                        framebuffer[coords.X + (coords.Y) * touchgfx::HAL::DISPLAY_WIDTH] = dotColor;
+                    }
                 }
             }
         }
@@ -143,7 +152,12 @@ void Map::draw(const touchgfx::Rect& invalidatedArea) const
     {
         for (uint16_t x = xStart; x < xEnd; x++)
         {
-            framebuffer[x + (y) * touchgfx::HAL::DISPLAY_WIDTH] = trackDotColor;
+            coords.X = x;
+            coords.Y = y;
+            //if(true == IsInvalidatedArea(invalidatedAreaRight, invalidatedAreaBottom, coords))
+            {
+                framebuffer[coords.X + (coords.Y) * touchgfx::HAL::DISPLAY_WIDTH] = trackDotColor;
+            }
         }
     }
 
@@ -156,7 +170,12 @@ void Map::draw(const touchgfx::Rect& invalidatedArea) const
     {
         for (uint16_t x = xStart; x < xEnd; x++)
         {
-            framebuffer[x + (y) * touchgfx::HAL::DISPLAY_WIDTH] = backgroundColor;
+            coords.X = x;
+            coords.Y = y;
+            //if(true == IsInvalidatedArea(invalidatedAreaRight, invalidatedAreaBottom, coords))
+            {
+                framebuffer[coords.X + (coords.Y) * touchgfx::HAL::DISPLAY_WIDTH] = backgroundColor;
+            }
         }
     }
 
@@ -241,33 +260,6 @@ bool Map::AddCoordsToRouteList(uint8_t x, uint8_t y, Map_DrawRoute_T route)
         }
     }
 
-
-    //if( (routeList.idxMap < (MAP_ROUTE_DRAWABLE_ELEMENTS - 1u)) && (routeList.idxTrack < (MAP_ROUTE_DRAWABLE_ELEMENTS - 1u)) )
-    //{
-    //    /* Only if there is a space for new coords in a buffer */
-    //    if(0xFFu == *idxCurr)
-    //    {
-    //        /* No points saved before */
-    //        newPoint = true;
-    //        *idxCurr = routeList.idxMap + 1u;
-    //    }
-    //    else
-    //    {
-    //        for(uint8_t i = idxStart; i < idxEnd; i++)
-    //        {
-    //            if((meshCoords.X == routeList.coords[i].X) && (meshCoords.Y == routeList.coords[i].Y))
-    //            {
-    //                newPoint = false;
-    //                break;
-    //            }
-    //        }
-    //    }
-    //}
-    //else
-    //{
-    //    newPoint = false;
-    //}
-
     return newPoint;
 }
 
@@ -348,5 +340,23 @@ void Map::IncrementRouteIdx(Map_DrawRoute_T route, uint8_t addedPoints)
     }
 }
 
+
+/* Method called to check whether given coords are in
+   in invalidated area. */
+bool Map::IsInvalidatedArea(uint8_t right, uint8_t bottom, Map_CoordinatesXY_U16_T coordsCurr) const
+{
+    bool retVal = false;
+
+    if( (coordsCurr.X < right) && (coordsCurr.Y < bottom) )
+    {
+        retVal = true;
+    }
+    else
+    {
+        retVal = false;
+    }
+
+    return retVal;
+}
 
 } // namespace touchgfx
