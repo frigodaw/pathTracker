@@ -206,9 +206,10 @@ void Map::SetRouteScale(uint32_t scaleVal)
     scale = scaleVal;
 }
 
+uint8_t TEST = 0u;
 
 /* Method called to add coordinates to track list. */
-bool Map::AddCoordsToRouteList(uint8_t x, uint8_t y, Map_DrawRoute_T route)
+bool Map::AddCoordsToRouteList(uint8_t x, uint8_t y, Map_DrawRoute_T route, bool add)
 {
     Map_CoordinatesXY_T meshCoords = MapCoordsToMesh(x,y);
     bool newPoint = true;
@@ -241,6 +242,17 @@ bool Map::AddCoordsToRouteList(uint8_t x, uint8_t y, Map_DrawRoute_T route)
             break;
     }
 
+    /* This method do not accept new point if it is the same like the one before */
+    if(idxEnd != idxStart)
+    {
+        if((meshCoords.X == routeList.coords[idxEnd].X) && (meshCoords.Y == routeList.coords[idxEnd].Y))
+        {
+            newPoint = false;
+        }
+    }
+
+#if 0
+    /* This method do not accept two same coordinates in whole routeList */
     for(uint8_t i = idxStart; i < idxEnd; i++)
     {
         if((meshCoords.X == routeList.coords[i].X) && (meshCoords.Y == routeList.coords[i].Y))
@@ -249,8 +261,9 @@ bool Map::AddCoordsToRouteList(uint8_t x, uint8_t y, Map_DrawRoute_T route)
             break;
         }
     }
+#endif
 
-    if(true == newPoint)
+    if((true == newPoint) && (true == add))
     {
         if( (routeList.idxMap < (MAP_ROUTE_DRAWABLE_ELEMENTS - 1u)) && (routeList.idxTrack < (MAP_ROUTE_DRAWABLE_ELEMENTS - 1u)) )
         {

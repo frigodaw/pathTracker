@@ -14,8 +14,11 @@
 /* Variable to store transformed signals read from sensors. */
 ES_SensorData_T sensorData = {0.f};
 
-
+/* Variable responsible for activation or deactivation of a sensor. */
 ES_ActivationFlags_T sensorActivationFlags = {(uint8_t)SETTINGS_DEFAULT_SENSORS};
+
+/* Variable which stores all kalman filter related data. */
+ES_KalmanData_T kalmanData = {0.f, 0.f, 0.f, TRUE};
 
 /* Main function for EnvSensors component. It is called from default task. */
 void EnvSensors_Main(void)
@@ -42,30 +45,28 @@ float EnvSensors_CalculateAltitude(float temperature, float pressure)
 /* Function called to filter altitude with kalman filter. */
 float EnvSensors_FilterAltitude(float calcAltitude)
 {
-    static float xpost = 0.f;
-    static float Ppost = 0.f;
-    static uint8_t firstCall = TRUE;
+    float xpri, Ppri, eps;
+    float S, K;
 
-    static float xpri, Ppri, eps;
-    static float S, K;
+    calcAltitude += kalmanData.offset;
 
-    if(TRUE == firstCall)
+    if(TRUE == kalmanData.firstCall)
     {
         /* Local init */
-        xpost = calcAltitude;
-        Ppost = calcAltitude;
-        firstCall = FALSE;
+        kalmanData.xpost = calcAltitude;
+        kalmanData.Ppost = 0.f;
+        kalmanData.firstCall = FALSE;
     }
 
-    xpri = xpost;
-    Ppri = Ppost + ES_ALTIKALMAN_V;
+    xpri = kalmanData.xpost;
+    Ppri = kalmanData.Ppost + ES_ALTIKALMAN_V;
     eps = calcAltitude - xpri;
     S = Ppri + ES_ALTIKALMAN_W;
     K = Ppri/S;
-    xpost = xpri + K*eps;
-    Ppost = Ppri - K*S*K;
+    kalmanData.xpost = xpri + K*eps;
+    kalmanData.Ppost = Ppri - K*S*K;
 
-    return xpost;
+    return kalmanData.xpost;
 }
 
 
@@ -75,4 +76,13 @@ uint8_t EnvSensors_CheckStartConditions(void)
 {
     uint8_t enableFlag = (TRUE == sensorActivationFlags.enabled) ? TRUE : FALSE;
     return enableFlag;
+}
+
+
+/* Function called to set the offset and to modify altitude
+   with new user defined value. */
+void Env_Sensors_CalibrateAltitude(float newAlti)
+{
+    kalmanData.offset = newAlti;
+    kalmanData.firstCall = TRUE;
 }

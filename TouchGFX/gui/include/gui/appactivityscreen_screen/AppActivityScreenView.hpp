@@ -25,11 +25,12 @@ public:
     void ShowFixImage(bool isFix);
     void ShowSdCard(bool isSdCard);
     void SetArrowVisibilityStatus(bool visibilityStatus);
+    void SetArrowLocation(AppActivity_coordinatesXY_T coordsXY);
     void SetArrowAngle(float angle);
 
     void FlushRouteList(void);
     void SetRouteScale(uint32_t scaleVal);
-    bool AddCoordsToRouteList(AppActivity_coordinatesXY_T coordsXY, AppActivity_drawRoute_T route);
+    bool AddCoordsToRouteList(AppActivity_coordinatesXY_T coordsXY, AppActivity_drawRoute_T route, bool add);
     void TrackRedraw(void);
     void IncrementRouteIdx(AppActivity_drawRoute_T route, uint8_t addedPoints);
 

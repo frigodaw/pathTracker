@@ -25,7 +25,7 @@ using namespace touchgfx;
 #define APP_ALTI_FIRSTCALL          255u
 #define APP_ALTI_INTERVAL           10u
 #define APP_ALTI_EVEN               2u
-#define APP_ALTI_DIST_THRESHOLD     1.f
+#define APP_ALTI_DIST_THRESHOLD     0.05f
 #define APP_SLOPE_100PERCENT        100.f
 #define APP_SLOPE_MTOKM             1000.f
 #define APP_LOCATION_COEFF_DIV      100.f
@@ -44,6 +44,7 @@ using namespace touchgfx;
 #define APP_SLOPE_MAXVALUE_PERSEC       60.f
 #define APP_DISTNACE_COEFF_POWER_TWO    2.f
 #define APP_SPEED_COEFF_PERIOD          1.f
+#define APP_SPEED_INTERVAL              3u
 
 #define APP_MAINPERIOD_MS           100u
 #define APP_MS_IN_SEC               1000uL
@@ -68,6 +69,8 @@ using namespace touchgfx;
 #define APP_ROUTE_MEANTWO_COEEF         2.f
 #define APP_ROUTE_SCALE_WIDTH_PX        100u
 #define APP_ROUTE_SCALE_COEFF_M_IN_KM   1000uL
+#define APP_ROUTE_DONT_DRAW_PATH        false
+#define APP_ROUTE_DRAW_PATH             true
 
 #define APP_ROUTE_SCALE_MIN             1u
 #define APP_ROUTE_SCALE_50              50u
@@ -100,6 +103,7 @@ using namespace touchgfx;
 #define APP_FILEERROR_FINISHACTIVITY    0x04u
 
 #define APP_ROUTE_MAP_ELEMENTS          200u
+#define APP_ROUTE_MAP_POINTS_LIMIT      125u
 #define APP_ROUTE_COMMONARRAY_LENGTH    8192uL
 #define APP_ROUTE_TRACK_FIRST_ELEMENT   0u
 #define APP_ROUTE_MAP_FIRST_ELEMENT     (APP_ROUTE_COMMONARRAY_LENGTH - 1uL)
@@ -140,7 +144,13 @@ using namespace touchgfx;
 #define APP_MAP_FILENUM_OFFSET          1u
 #define APP_MAP_NOFILE                  0u
 #define APP_MAP_DEFAULT_LABEL           "No map"
+#define APP_MAP_LINEAR_F_BOTTOM_LIMIT   0.f
+#define APP_MAP_LINEAR_F_UPPER_LIMIT    255.f
+
 #define APP_MAP_ARROW_CALC_POINTS       3u
+#define APP_MAP_PI_CONST                3.14159f
+#define APP_MAP_ARROW_COEFF_DIV         2.f
+#define APP_MAP_ARROW_ANGLE_OFFSET_RAD  ( (APP_MAP_PI_CONST) / (APP_MAP_ARROW_COEFF_DIV) )
 /* END OF THE DEFINE AREA */
 
 
@@ -273,6 +283,7 @@ typedef struct
 {
     bool Initialized_CalculateAltitude;
     bool Initialized_FilterCoords;
+    bool Initialized_CalculateSpeed;
 }AppActivity_initFunctions_T;
 
 typedef struct
@@ -392,6 +403,8 @@ typedef struct
     uint16_t endIdx;
     uint16_t idxRoute;
     uint16_t fileInfoPoints;
+    uint8_t  route;
+    uint8_t  pointsLimit;
     uint8_t  *skip;
     uint8_t  *addedPoints;
 }AppActivity_drawRouteData_T;
@@ -425,6 +438,7 @@ public:
     void UpdateSignalSdCard(void);
     void CalculateSpeedAndDistance(void);
     float CalculateDistance(float lat, float lon, float lastLat, float lastLon);
+    float CalculateSpeed(float newDistance);
     void CalculateAltitude(void);
     void IncrementTimer(void);
     void ApplyTimezone(void);
@@ -433,6 +447,7 @@ public:
     template <typename T> T MedianFromArray(T* array, const uint8_t size);
     float MeanFromArray(float* array, const uint8_t size);
     void DrawRoute(AppActivity_drawRoute_T route);
+    void SelectRoutePoints(AppActivity_drawRoute_T route, AppActivity_drawRouteData_T *drawRouteData, bool draw);
     bool CanRouteBeSkipped(AppActivity_drawRoute_T route, uint16_t idx, uint8_t skip);
     void MapCenterCoordinates(void);
     uint32_t GetScaleValue(void);
@@ -440,7 +455,7 @@ public:
     float MapScaleToDistance(void);
     void CalculateSkippedCoords(AppActivity_drawRoute_T route);
     AppActivity_coordinatesGPS_T MapXYCoordsToGPS(AppActivity_coordinatesXY_T coords, float scaleCoeff);
-    AppActivity_coordinatesGPS_T GetCoordsGPSFromBuffer(uint8_t* buffer, uint8_t size, bool &foundCoords);
+    AppActivity_coordinatesGPS_T GetCoordsGPSFromBuffer(uint8_t *buffer, uint8_t size, bool &foundCoords);
     bool CoordsInView(AppActivity_coordinatesGPS_T coords);
     AppActivity_coordinatesXY_T MapGPSCoordsToXY(AppActivity_coordinatesGPS_T coords);
     float MapPointToLinearFunction(float x1, float y1, float x2, float y2, float X);
@@ -453,7 +468,8 @@ public:
     void SelectAltitudeSource(void);
     void ApplyDate(AppActivity_timezoneDateChange_T dateChange);
     bool IsLeapYear(uint16_t year);
-    void CalculateArrowAngle(void);
+    void SetArrowLocation(void);
+    void SetArrowAngle(void);
 
     void FindMapsOnSdCard(void);
     void GetMapInfo(void);

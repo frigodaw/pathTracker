@@ -10,6 +10,8 @@
 uint32_t timeDiff = 0u;
 uint32_t timeMaxDiff = 0u;
 
+static volatile float arrAngle = 0.f;
+
 /* Const array containg number of days per each month. */
 static const uint8_t daysInMon[APP_TIMEZONE_NUMOFMONTHS] = { APP_TIMEZONE_DAYS_JAN, APP_TIMEZONE_DAYS_FEB, APP_TIMEZONE_DAYS_MAR,
                                                      APP_TIMEZONE_DAYS_APR, APP_TIMEZONE_DAYS_MAY, APP_TIMEZONE_DAYS_JUN,
@@ -241,6 +243,7 @@ void AppActivityScreenPresenter::Main(void)
 
                 CalculateAltitude();
 
+                /* TODO: Move this calls to IsFix section */
                 DrawRoute(APP_DRAWROUTE_MAP);
                 DrawRoute(APP_DRAWROUTE_TRACK);
             }
@@ -415,6 +418,7 @@ void AppActivityScreenPresenter::UpdateSignalSdCard(void)
 }
 
 
+/* Method called to calculate distance between two points. */
 float AppActivityScreenPresenter::CalculateDistance(float lat, float lon, float lastLat, float lastLon)
 {
     float distance = sqrtf( POW2( (lat - lastLat) ) + 
@@ -422,6 +426,33 @@ float AppActivityScreenPresenter::CalculateDistance(float lat, float lon, float 
                           ) * APP_DISTANCE_COEFF_TONUM;
 
     return distance;
+}
+
+
+/* Method called to calculate speed based on travelled distance. */
+float AppActivityScreenPresenter::CalculateSpeed(float newDistance)
+{
+    static float lastDist[APP_SPEED_INTERVAL] = {0.f};
+    static uint8_t idx = 0u;
+
+    if(false == appInternalData.initFunc.Initialized_CalculateSpeed)
+    {
+        /* Local init */
+        for(uint8_t i=0u; i < APP_SPEED_INTERVAL; i++)
+        {
+            lastDist[i] = 0.f;
+        }
+        idx = 0u;
+        appInternalData.initFunc.Initialized_CalculateSpeed = true;
+    }
+
+    lastDist[idx] = newDistance;
+    idx = (idx >= (APP_SPEED_INTERVAL - 1u)) ? 0u : (idx + 1u);
+
+    float speed = MeanFromArray(lastDist, APP_SPEED_INTERVAL);
+    speed *= APP_SEC_IN_HR;
+
+    return speed;
 }
 
 
@@ -438,15 +469,13 @@ void AppActivityScreenPresenter::CalculateSpeedAndDistance(void)
     else
     {
         float distance = CalculateDistance(gpsSignals.latitude, gpsSignals.longitude, lastLat, lastLon);
+        distance = (distance < appInternalData.maxDistancePerSecond) ? distance : appInternalData.maxDistancePerSecond;
+        float speed = CalculateSpeed(distance);
 
-        /* To prevent calculation and data acquisition mistakes */
-        if(appInternalData.maxDistancePerSecond > distance)
-        {
-            activityData.distance += distance;
-            activityData.speed = distance * APP_SEC_IN_HR;
-            activityData.avgSpeed = (float)(activityData.distance / (activityData.timer / APP_SEC_IN_HR / APP_TIMER_COEFF_TOSEC));
-            activityData.maxSpeed = (activityData.speed > activityData.maxSpeed) ? activityData.speed : activityData.maxSpeed;
-        }
+        activityData.distance += distance;
+        activityData.speed = speed;
+        activityData.avgSpeed = (float)(activityData.distance / (activityData.timer / APP_SEC_IN_HR / APP_TIMER_COEFF_TOSEC));
+        activityData.maxSpeed = (activityData.speed > activityData.maxSpeed) ? activityData.speed : activityData.maxSpeed;
     }
 
     if(APP_SCREEN_MAIN == appInternalData.screen)
@@ -466,8 +495,8 @@ void AppActivityScreenPresenter::CalculateSpeedAndDistance(void)
 void AppActivityScreenPresenter::CalculateAltitude(void)
 {
     static uint8_t idx = 0u;
-    static float   lastDist[APP_ALTI_INTERVAL] = {0u};
-    static float   lastAlti[APP_ALTI_INTERVAL] = {0u};
+    static float   lastDist[APP_ALTI_INTERVAL] = {0.f};
+    static float   lastAlti[APP_ALTI_INTERVAL] = {0.f};
     static float   lastDistance = activityData.distance;
     static float   lastAltitude = *altitudeInfo.ptrValue;
 
@@ -508,7 +537,7 @@ void AppActivityScreenPresenter::CalculateAltitude(void)
         activityData.altiDown -= altiDiff;
     }
 
-    if(distDiff > APP_ALTI_DIST_THRESHOLD)
+    if( (distDiff > 0.f) && (distDiff <= APP_ALTI_DIST_THRESHOLD) )
     {
         float slope = ((float)altiDiff / APP_SLOPE_MTOKM) / distDiff * APP_SLOPE_100PERCENT;
         if(appInternalData.maxSlopePerSecond > slope)
@@ -750,19 +779,23 @@ void AppActivityScreenPresenter::DrawRoute(AppActivity_drawRoute_T route)
         switch(route)
         {
             case APP_DRAWROUTE_MAP:
+                drawRouteData.route = APP_DRAWROUTE_MAP;
                 drawRouteData.startIdx = APP_ROUTE_MAP_FIRST_ELEMENT;
                 drawRouteData.endIdx = routePointsData.idxMap;
                 drawRouteData.idxRoute = routePointsData.idxMap;
                 drawRouteData.fileInfoPoints = mapFileInfo.points;
+                drawRouteData.pointsLimit = APP_ROUTE_MAP_POINTS_LIMIT;
                 drawRouteData.skip = &routeData.map.skip;
                 drawRouteData.addedPoints = &routeData.map.addedPoints;
                 view.FlushRouteList();
                 break;
             case APP_DRAWROUTE_TRACK:
+                drawRouteData.route = APP_DRAWROUTE_TRACK;
                 drawRouteData.startIdx = routePointsData.idxTrack;
                 drawRouteData.endIdx = 0u;
                 drawRouteData.idxRoute = routePointsData.idxTrack;
                 drawRouteData.fileInfoPoints = trackFileInfo.points;
+                drawRouteData.pointsLimit = APP_ROUTE_MAP_ELEMENTS - routeData.map.addedPoints;
                 drawRouteData.skip = &routeData.track.skip;
                 drawRouteData.addedPoints = &routeData.track.addedPoints;
                 break;
@@ -770,23 +803,74 @@ void AppActivityScreenPresenter::DrawRoute(AppActivity_drawRoute_T route)
                 break;
         }
 
-        bool firstCycle = true;
-        uint8_t addedPoints = 0u;
+        *drawRouteData.skip = 0u;
         uint32_t scaleVal = GetScaleValue();
         view.SetRouteScale(scaleVal);
-        CalculateArrowAngle();
 
-        CalculateSkippedCoords(route);
         MapCenterCoordinates();
 
-        for (uint16_t idx = drawRouteData.startIdx; ((idx > drawRouteData.endIdx) && (APP_ROUTE_MAP_ELEMENTS > addedPoints)) ; idx--)
+        SetArrowLocation();
+        SetArrowAngle();
+
+        SelectRoutePoints(route, &drawRouteData, APP_ROUTE_DONT_DRAW_PATH);
+        SelectRoutePoints(route, &drawRouteData, APP_ROUTE_DRAW_PATH);
+
+        view.TrackRedraw();
+
+#if 0
+        /* Loop for selecting best skip value */
+        while(startCondition != true)
+        {
+            for (uint16_t idx = drawRouteData.startIdx; ((idx > drawRouteData.endIdx) && (drawRouteData.pointsLimit > addedPoints)) ; idx--)
+            {
+                bool coordsInView = CoordsInView(routePointsData.coords[idx]);
+
+                if(true == coordsInView)
+                {
+                    AppActivity_coordinatesXY_T coordsXY = MapGPSCoordsToXY(routePointsData.coords[idx]);
+                    bool newPoint = view.AddCoordsToRouteList(coordsXY, route, false);
+
+                    if(true == newPoint)
+                    {
+                        addedPoints++;
+                    }
+                }
+
+                /* Set index to 0 if array was overflowed */
+                if((APP_ROUTE_SKIP_BOTTOM_LIMIT >= idx) && (true == routePointsData.overflow) && (true == firstCycle))
+                {
+                    idx = routePointsData.idxTrack - APP_ROUTE_MAP_OFFSET_FOR_TRACK;
+                    firstCycle = false;
+                }
+                /* Skip some points depending on selected scale */
+                else if(true == CanRouteBeSkipped(route, idx, *drawRouteData.skip))
+                {
+                    idx -= *drawRouteData.skip;
+                }
+            }
+
+            if(addedPoints >= drawRouteData.pointsLimit)
+            {
+                startCondition = false;
+                *drawRouteData.skip += 1u;
+            }
+            else
+            {
+                startCondition = true;
+            }
+            addedPoints = 0u;
+        }
+
+
+        /* Loop for adding points draw list */
+        for (uint16_t idx = drawRouteData.startIdx; ((idx > drawRouteData.endIdx) && (drawRouteData.pointsLimit > addedPoints)) ; idx--)
         {
             bool coordsInView = CoordsInView(routePointsData.coords[idx]);
 
             if(true == coordsInView)
             {
                 AppActivity_coordinatesXY_T coordsXY = MapGPSCoordsToXY(routePointsData.coords[idx]);
-                bool newPoint = view.AddCoordsToRouteList(coordsXY, route);
+                bool newPoint = view.AddCoordsToRouteList(coordsXY, route, true);
 
                 if(true == newPoint)
                 {
@@ -806,14 +890,67 @@ void AppActivityScreenPresenter::DrawRoute(AppActivity_drawRoute_T route)
                 idx -= *drawRouteData.skip;
             }
         }
-
-        *drawRouteData.addedPoints = addedPoints;
-        //view.IncrementRouteIdx(route, addedPoints);
-        view.TrackRedraw();
+#endif
     }
 }
 
 
+/* Function called to iterate through route list and pass proper coordinates
+   to view. Path will be drawn only when draw flag is set to true. It can be used
+   to select best skip value before drawing on the screen. */
+void AppActivityScreenPresenter::SelectRoutePoints(AppActivity_drawRoute_T route, AppActivity_drawRouteData_T *drawRouteData, bool draw)
+{
+    uint8_t retVal = RET_NOK;
+    uint8_t addedPoints = 0u;
+    bool firstCycle = true;             //TODO: what is the purpose of this?
+
+    while(retVal != RET_OK)
+    {
+        for (uint16_t idx = drawRouteData->startIdx; ((idx > drawRouteData->endIdx) && (drawRouteData->pointsLimit > addedPoints)) ; idx--)
+        {
+            bool coordsInView = CoordsInView(routePointsData.coords[idx]);
+
+            if(true == coordsInView)
+            {
+                AppActivity_coordinatesXY_T coordsXY = MapGPSCoordsToXY(routePointsData.coords[idx]);
+                bool newPoint = view.AddCoordsToRouteList(coordsXY, route, draw);
+
+                if(true == newPoint)
+                {
+                    addedPoints++;
+                }
+            }
+
+            /* Set index to 0 if array was overflowed */
+            if((APP_ROUTE_SKIP_BOTTOM_LIMIT >= idx) && (true == routePointsData.overflow) && (true == firstCycle))
+            {
+                idx = routePointsData.idxTrack - APP_ROUTE_MAP_OFFSET_FOR_TRACK;
+                firstCycle = false;
+            }
+            /* Skip some points depending on selected scale */
+            else if(true == CanRouteBeSkipped(route, idx, *drawRouteData->skip))
+            {
+                idx -= *drawRouteData->skip;
+            }
+        }
+
+        if( (false == draw) && (addedPoints >= drawRouteData->pointsLimit) )
+        {
+            retVal = RET_NOK;
+            *drawRouteData->skip += 1u;
+            addedPoints = 0u;
+        }
+        else
+        {
+            retVal = RET_OK;
+            *drawRouteData->addedPoints = addedPoints;
+        }
+    }
+}
+
+
+/* Method called to safely skip coordinates in route list
+   to not read outside the range. */
 bool AppActivityScreenPresenter::CanRouteBeSkipped(AppActivity_drawRoute_T route, uint16_t idx, uint8_t skip)
 {
     bool retVal = false;
@@ -842,7 +979,7 @@ bool AppActivityScreenPresenter::CanRouteBeSkipped(AppActivity_drawRoute_T route
 }
 
 
-/* Function called to calculate number of coords to skip during
+/* NOT USED: Function called to calculate number of coords to skip during
    selecting points to draw. */
 void AppActivityScreenPresenter::CalculateSkippedCoords(AppActivity_drawRoute_T route)
 {
@@ -1130,13 +1267,13 @@ AppActivity_coordinatesXY_T AppActivityScreenPresenter::MapGPSCoordsToXY(AppActi
 {
     AppActivity_coordinatesXY_T coordsXY = {0u};
 
-    coordsXY.X = MapPointToLinearFunction(routeData.mapCoordsGPS.upLeft.lon,  routeData.mapCoordsXY->upLeft.X,
-                                          routeData.mapCoordsGPS.upRight.lon, routeData.mapCoordsXY->upRight.X,
-                                          coords.lon);
+    coordsXY.X = (uint8_t)MapPointToLinearFunction(routeData.mapCoordsGPS.upLeft.lon,  routeData.mapCoordsXY->upLeft.X,
+                                                   routeData.mapCoordsGPS.upRight.lon, routeData.mapCoordsXY->upRight.X,
+                                                   coords.lon);
 
-    coordsXY.Y = MapPointToLinearFunction(routeData.mapCoordsGPS.upLeft.lat,     routeData.mapCoordsXY->upLeft.Y,
-                                          routeData.mapCoordsGPS.bottomLeft.lat, routeData.mapCoordsXY->bottomLeft.Y,
-                                          coords.lat);
+    coordsXY.Y = (uint8_t)MapPointToLinearFunction(routeData.mapCoordsGPS.upLeft.lat,     routeData.mapCoordsXY->upLeft.Y,
+                                                   routeData.mapCoordsGPS.bottomLeft.lat, routeData.mapCoordsXY->bottomLeft.Y,
+                                                   coords.lat);
 
     return coordsXY;
 }
@@ -1146,9 +1283,22 @@ AppActivity_coordinatesXY_T AppActivityScreenPresenter::MapGPSCoordsToXY(AppActi
    To given X corresponding Y will be returned. */
 float AppActivityScreenPresenter::MapPointToLinearFunction(float x1, float y1, float x2, float y2, float X)
 {
-    float a = (y2-y1)/(x2-x1);
-    float b = (y1*x2 - x1*y2)/(x2-x1);
-    float Y = a*X + b;
+    float a = 0.f;
+    float b = 0.f;
+    float Y = 0.f;
+
+    if(x2 != x1)
+    {
+        a = (y2-y1)/(x2-x1);
+        b = (y1*x2 - x1*y2)/(x2-x1);
+        Y = a*X + b;
+
+        /* Check range */
+        if((Y < APP_MAP_LINEAR_F_BOTTOM_LIMIT) || (Y > APP_MAP_LINEAR_F_UPPER_LIMIT))
+        {
+            Y = 0.f;
+        }
+    }
 
     return Y;
 }
@@ -1478,9 +1628,19 @@ void AppActivityScreenPresenter::ConfirmMapSelection(void)
 }
 
 
+/* Method called to set arrow position depending
+   on current scale. */
+void AppActivityScreenPresenter::SetArrowLocation(void)
+{
+    AppActivity_coordinatesGPS_T coordsGPS = { gpsSignals.latitude, gpsSignals.longitude };
+    AppActivity_coordinatesXY_T coordsXY = MapGPSCoordsToXY(coordsGPS);
+    view.SetArrowLocation(coordsXY);
+}
+
+
 /* Method called to calculate angle of an arrow
    on a screen to follow currect direction. */
-void AppActivityScreenPresenter::CalculateArrowAngle(void)
+void AppActivityScreenPresenter::SetArrowAngle(void)
 {
     AppActivity_coordinatesGPS_T coordsMean = {0.f};
     AppActivity_coordinatesGPS_T coordsCurr = {0.f};
@@ -1489,6 +1649,7 @@ void AppActivityScreenPresenter::CalculateArrowAngle(void)
     float a_denom = 0.f;
     float angle = 0.f;
 
+    //TODO: add here calulcations where points is less than 3
     if((trackFileInfo.points > APP_MAP_ARROW_CALC_POINTS) && (routePointsData.idxTrack > APP_MAP_ARROW_CALC_POINTS))
     {
         /* Calculate mean from last points. */
@@ -1515,13 +1676,13 @@ void AppActivityScreenPresenter::CalculateArrowAngle(void)
         if(a_denom > 0.f)
         {
             a = a_nom / a_denom;
-            angle = tanf(a);
+            //angle = tanf(a) - APP_MAP_ARROW_ANGLE_OFFSET_RAD;
+            angle = tanf(a) + arrAngle * 3.14159/180.f;
         }
     }
 
     view.SetArrowAngle(angle);
 }
-
 
 
 /* Method called to collect signals from Model:

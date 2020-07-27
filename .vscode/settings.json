@@ -27,6 +27,7 @@
         "system_error": "cpp",
         "xtr1common": "cpp",
         "xlocale": "cpp",
-        "xiosbase": "cpp"
+        "xiosbase": "cpp",
+        "cmath": "cpp"
     }
 }

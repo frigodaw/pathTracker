@@ -12,13 +12,13 @@ ActivityDataContainter_MapBase::ActivityDataContainter_MapBase()
     setHeight(225);
     ArrowIcon.setXY(0, 0);
     ArrowIcon.setBitmap(touchgfx::Bitmap(BITMAP_ARROW_ID));
-    ArrowIcon.setWidth(240);
-    ArrowIcon.setHeight(205);
-    ArrowIcon.setBitmapPosition(103.500f, 86.000f);
+    ArrowIcon.setWidth(14);
+    ArrowIcon.setHeight(18);
+    ArrowIcon.setBitmapPosition(-9.500f, -4.000f);
     ArrowIcon.setScale(0.700f);
     ArrowIcon.setCameraDistance(1000.000f);
-    ArrowIcon.setOrigo(120.000f, 102.500f, 1000.000f);
-    ArrowIcon.setCamera(120.000f, 102.500f);
+    ArrowIcon.setOrigo(7.000f, 9.000f, 1000.000f);
+    ArrowIcon.setCamera(7.000f, 9.000f);
     ArrowIcon.updateAngles(0.000f, 0.000f, 0.000f);
     ArrowIcon.setRenderingAlgorithm(touchgfx::TextureMapper::NEAREST_NEIGHBOR);
 

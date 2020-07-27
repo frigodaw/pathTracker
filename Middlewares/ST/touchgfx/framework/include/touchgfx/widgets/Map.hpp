@@ -86,7 +86,7 @@ public:
     bool IsInvalidatedArea(uint8_t right, uint8_t bottom, Map_CoordinatesXY_U16_T coordsCurr) const;
 
     void FlushRouteList(void);
-    bool AddCoordsToRouteList(uint8_t x, uint8_t y, Map_DrawRoute_T route);
+    bool AddCoordsToRouteList(uint8_t x, uint8_t y, Map_DrawRoute_T route, bool add);
     void SetRouteScale(uint32_t scaleVal);
     void IncrementRouteIdx(Map_DrawRoute_T route, uint8_t addedPoints);
 

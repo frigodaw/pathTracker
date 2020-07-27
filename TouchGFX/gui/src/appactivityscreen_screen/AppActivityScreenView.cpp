@@ -150,9 +150,9 @@ void AppActivityScreenView::SetRouteScale(uint32_t scaleVal)
 }
 
 
-bool AppActivityScreenView::AddCoordsToRouteList(AppActivity_coordinatesXY_T coordsXY, AppActivity_drawRoute_T route)
+bool AppActivityScreenView::AddCoordsToRouteList(AppActivity_coordinatesXY_T coordsXY, AppActivity_drawRoute_T route, bool add)
 {
-    bool newPoint = ActivityDataCC_Map.AddCoordsToRouteList(coordsXY.X, coordsXY.Y, (Map_DrawRoute_T)route);
+    bool newPoint = ActivityDataCC_Map.AddCoordsToRouteList(coordsXY.X, coordsXY.Y, (Map_DrawRoute_T)route, add);
     ActivityDataCC_Map.invalidate();
     return newPoint;
 }
@@ -197,6 +197,11 @@ void AppActivityScreenView::ChangeMapDescription(uint8_t *fileName, uint8_t name
 void AppActivityScreenView::SetArrowVisibilityStatus(bool visibilityStatus)
 {
     ActivityDataCC_Map.SetArrowVisibilityStatus(visibilityStatus);
+}
+
+void AppActivityScreenView::SetArrowLocation(AppActivity_coordinatesXY_T coordsXY)
+{
+    ActivityDataCC_Map.SetArrowLocation(coordsXY.X, coordsXY.Y);
 }
 
 void AppActivityScreenView::SetArrowAngle(float angle)

@@ -60,9 +60,9 @@ void ActivityDataContainter_Map::SetRouteScale(uint32_t scaleVal)
 }
 
 
-bool ActivityDataContainter_Map::AddCoordsToRouteList(uint8_t x, uint8_t y, Map_DrawRoute_T route)
+bool ActivityDataContainter_Map::AddCoordsToRouteList(uint8_t x, uint8_t y, Map_DrawRoute_T route, bool add)
 {
-    bool newPoint = Map.AddCoordsToRouteList(x, y, route);
+    bool newPoint = Map.AddCoordsToRouteList(x, y, route, add);
     return newPoint;
 }
 
@@ -84,6 +84,17 @@ void ActivityDataContainter_Map::SetArrowVisibilityStatus(bool visibilityStatus)
     ArrowIcon.setVisible(visibilityStatus);
     ArrowIcon.invalidate();
 }
+
+
+void ActivityDataContainter_Map::SetArrowLocation(uint8_t X, uint8_t Y)
+{
+    int16_t x = X - (ArrowIcon.getWidth() / MAPDATACONTAINER_ARROW_DIV_HALF_COEFF);
+    int16_t y = Y - (ArrowIcon.getHeight() / MAPDATACONTAINER_ARROW_DIV_HALF_COEFF);
+
+    ArrowIcon.moveTo(x, y);
+    ArrowIcon.invalidate();
+}
+
 
 void ActivityDataContainter_Map::SetArrowAngle(float angle)
 {

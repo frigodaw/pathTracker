@@ -52,6 +52,14 @@ typedef struct
 {
     uint8_t enabled;
 }ES_ActivationFlags_T;
+
+typedef struct x
+{
+    float xpost;
+    float Ppost;
+    float offset;
+    uint8_t firstCall;
+}ES_KalmanData_T;
 /* END OF THE TYPEDEF AREA */
 
 
@@ -67,6 +75,7 @@ void EnvSensors_Main(void);
 float EnvSensors_CalculateAltitude(float temperature, float pressure);
 float EnvSensors_FilterAltitude(float calcAltitude);
 uint8_t EnvSensors_CheckStartConditions(void);
+void Env_Sensors_CalibrateAltitude(float newAlti);
 /* END OF THE FUNCTIONS PROTOTYPES AREA */
 
 
