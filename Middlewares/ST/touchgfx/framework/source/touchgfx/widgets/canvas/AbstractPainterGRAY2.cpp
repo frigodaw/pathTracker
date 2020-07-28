@@ -1,8 +1,8 @@
 /**
   ******************************************************************************
-  * This file is part of the TouchGFX 4.13.0 distribution.
+  * This file is part of the TouchGFX 4.14.0 distribution.
   *
-  * <h2><center>&copy; Copyright (c) 2019 STMicroelectronics.
+  * <h2><center>&copy; Copyright (c) 2020 STMicroelectronics.
   * All rights reserved.</center></h2>
   *
   * This software component is licensed by ST under Ultimate Liberty license
@@ -13,9 +13,9 @@
   ******************************************************************************
   */
 
-#include <touchgfx/widgets/canvas/AbstractPainterGRAY2.hpp>
-#include <touchgfx/Color.hpp>
 #include <platform/driver/lcd/LCD2bpp.hpp>
+#include <touchgfx/Color.hpp>
+#include <touchgfx/widgets/canvas/AbstractPainterGRAY2.hpp>
 
 namespace touchgfx
 {

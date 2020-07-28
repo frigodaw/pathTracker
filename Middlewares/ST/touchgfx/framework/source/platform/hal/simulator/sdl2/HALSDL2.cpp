@@ -1,8 +1,8 @@
 /**
   ******************************************************************************
-  * This file is part of the TouchGFX 4.13.0 distribution.
+  * This file is part of the TouchGFX 4.14.0 distribution.
   *
-  * <h2><center>&copy; Copyright (c) 2019 STMicroelectronics.
+  * <h2><center>&copy; Copyright (c) 2020 STMicroelectronics.
   * All rights reserved.</center></h2>
   *
   * This software component is licensed by ST under Ultimate Liberty license
@@ -26,6 +26,7 @@
 #include <time.h>
 #include <vector>
 #include <touchgfx/Utils.hpp>
+#include <touchgfx/Version.hpp>
 
 #if defined(WIN32) || defined(_WIN32)
 #include <windows.h>
@@ -46,7 +47,7 @@
 namespace touchgfx
 {
 static bool isAlive = true;
-static bool sdl_initialized = false;
+bool sdl_initialized = false;
 static int screenshotcount = 0;
 static uint8_t* rotated = NULL;
 static uint8_t* tft24bpp = NULL;
@@ -219,7 +220,7 @@ bool HALSDL2::sdl_init(int /*argcount*/, char** args)
         return false;
     }
 
-    // Allocate frame buffers
+    // Allocate framebuffers
     uint32_t bufferSizeInWords = (lcd().framebufferStride() * FRAME_BUFFER_HEIGHT + 1) / 2;
     tft = new uint16_t[bufferSizeInWords];
     tft_width = FRAME_BUFFER_WIDTH;
@@ -265,7 +266,6 @@ bool HALSDL2::sdl_init(int /*argcount*/, char** args)
     }
 #endif
 
-    lcd().init();
     lockDMAToFrontPorch(false);
     atexit(sdlCleanup2);
     sdl_initialized = true;
@@ -294,7 +294,9 @@ const char* HALSDL2::getWindowTitle() const
     {
         return customTitle;
     }
-    return "TouchGFX simulator";
+    static char title[100];
+    sprintf_s(title, 100, "TouchGFX simulator v%d.%d.%d", TOUCHGFX_VERSION_MAJOR, TOUCHGFX_VERSION_MINOR, TOUCHGFX_VERSION_PATCH);
+    return title;
 }
 
 void HALSDL2::loadSkin(touchgfx::DisplayOrientation orientation, int x, int y)
@@ -1265,7 +1267,12 @@ void HALSDL2::copyScreenshotToClipboard()
 #endif
 }
 
-#ifndef __linux__
+#ifdef __linux__
+void simulator_printf(const char* format, va_list pArg)
+{
+    vprintf(format, pArg);
+}
+#else
 char** HALSDL2::getArgv(int* argc)
 {
     LPWSTR cmdline = GetCommandLineW();

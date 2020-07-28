@@ -164,7 +164,7 @@ protected:
      *
      * @return In this default implementation, 0xFFFF is returned to signify "not implemented".
      */
-    uint16_t getTFTCurrentLine();
+    virtual uint16_t getTFTCurrentLine();
 };
 #endif // TouchGFXGeneratedHAL_HPP
 

@@ -1,7 +1,7 @@
 ##############################################################################
-# This file is part of the TouchGFX 4.13.0 distribution.
+# This file is part of the TouchGFX 4.14.0 distribution.
 #
-# <h2><center>&copy; Copyright (c) 2019 STMicroelectronics.
+# <h2><center>&copy; Copyright (c) 2020 STMicroelectronics.
 # All rights reserved.</center></h2>
 #
 # This software component is licensed by ST under Ultimate Liberty license
@@ -70,6 +70,7 @@ class FontsCpp
       fallback_char ||= 0
       ellipsis_char = typography[:ellipsis_character]
       ellipsis_char ||= 0
+      byte_align = @data_format.match("A#{typography.bpp}") ? "-ba" : ""
       cmd = "\"#{@@font_convert}\" \
 -f \"#{font_file}\" \
 -i #{font_index} \
@@ -82,8 +83,7 @@ class FontsCpp
 -d #{fallback_char} \
 -e #{ellipsis_char} \
 -bf #{@generate_binary_font_files} \
--#{@data_format}"
-
+#{byte_align}"
       output = `#{cmd}`
       if !$?.success?
         puts cmd

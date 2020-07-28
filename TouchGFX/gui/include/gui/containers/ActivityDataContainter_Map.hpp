@@ -14,7 +14,7 @@ class ActivityDataContainter_Map : public ActivityDataContainter_MapBase
 {
 public:
     ActivityDataContainter_Map();
-    ~ActivityDataContainter_Map() {}
+    ~ActivityDataContainter_Map();
     void initialize();
 
     void FlushRouteList(void);

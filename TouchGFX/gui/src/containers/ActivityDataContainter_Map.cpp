@@ -13,6 +13,10 @@ ActivityDataContainter_Map::ActivityDataContainter_Map()
     insert(0, Map);
 }
 
+
+ActivityDataContainter_Map::~ActivityDataContainter_Map(){}
+
+
 void ActivityDataContainter_Map::initialize()
 {
     ActivityDataContainter_MapBase::initialize();

@@ -1,8 +1,8 @@
 /**
   ******************************************************************************
-  * This file is part of the TouchGFX 4.13.0 distribution.
+  * This file is part of the TouchGFX 4.14.0 distribution.
   *
-  * <h2><center>&copy; Copyright (c) 2019 STMicroelectronics.
+  * <h2><center>&copy; Copyright (c) 2020 STMicroelectronics.
   * All rights reserved.</center></h2>
   *
   * This software component is licensed by ST under Ultimate Liberty license
@@ -31,8 +31,8 @@ Canvas::Canvas(const CanvasWidget* _widget, const Rect& invalidatedArea)
     Rect dirtyAreaAbsolute = dirtyArea;
     widget->translateRectToAbsolute(dirtyAreaAbsolute);
 
-    // Transform rects to match frame buffer coordinates
-    // This is needed if the display is rotated compared to the frame buffer
+    // Transform rects to match framebuffer coordinates
+    // This is needed if the display is rotated compared to the framebuffer
     DisplayTransformation::transformDisplayToFrameBuffer(dirtyArea, widget->getRect());
     DisplayTransformation::transformDisplayToFrameBuffer(dirtyAreaAbsolute);
 

@@ -16,11 +16,14 @@
   */
 
 #include <TouchGFXGeneratedHAL.hpp>
-#include <touchgfx/hal/GPIO.hpp>
 #include <touchgfx/hal/OSWrappers.hpp>
 #include <gui/common/FrontendHeap.hpp>
+#include <touchgfx/hal/GPIO.hpp>
+
 #include "stm32f4xx.h"
 #include "stm32f4xx_hal_ltdc.h"
+
+using namespace touchgfx;
 
 namespace {
     // Use the section "TouchGFX_Framebuffer" in the linker to specify the placement of the buffer
@@ -34,10 +37,9 @@ void TouchGFXGeneratedHAL::initialize()
 {
     HAL::initialize();
 
-    registerEventListener(*(touchgfx::Application::getInstance()));
+    registerEventListener(*(Application::getInstance()));
     registerTaskDelayFunction(&OSWrappers::taskDelay);
     setFrameRefreshStrategy(HAL::REFRESH_STRATEGY_OPTIM_SINGLE_BUFFER_TFT_CTRL);
-
     setFrameBufferStartAddresses((void*)frameBuf, (void*)0, (void*)0);
     /*
      * Set whether the DMA transfers are locked to the TFT update cycle. If
