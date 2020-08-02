@@ -1,4 +1,4 @@
-#include <touchgfx/widgets/Map.hpp>
+#include <gui/common/Map.hpp>
 #include <touchgfx/hal/HAL.hpp>
 #include "dataCollector.h"
 

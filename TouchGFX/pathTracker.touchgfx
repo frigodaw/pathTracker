@@ -960,19 +960,6 @@
         ],
         "Interactions": [
           {
-            "InteractionName": "GoToAppMenuScreen",
-            "HasCompletedTrigger": false,
-            "Trigger": {
-              "TriggerComponent": "ExitButton",
-              "Type": "TriggerClicked"
-            },
-            "Action": {
-              "ScreenTransitionType": "ScreenTransitionNone",
-              "ActionComponent": "AppMenuScreen",
-              "Type": "ActionGotoScreen"
-            }
-          },
-          {
             "InteractionName": "DisplayPreviousSetting",
             "HasCompletedTrigger": false,
             "Trigger": {
@@ -1018,6 +1005,19 @@
             "Action": {
               "FunctionName": "DecrementValue",
               "Type": "ActionCustom"
+            }
+          },
+          {
+            "InteractionName": "GoToAppMenuScreen",
+            "HasCompletedTrigger": false,
+            "Trigger": {
+              "TriggerComponent": "ExitButton",
+              "Type": "TriggerClicked"
+            },
+            "Action": {
+              "ScreenTransitionType": "ScreenTransitionNone",
+              "ActionComponent": "AppMenuScreen",
+              "Type": "ActionGotoScreen"
             }
           }
         ],

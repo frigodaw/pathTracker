@@ -59,6 +59,7 @@
     <ClCompile Include="..\..\generated\gui_generated\src\containers\SettingsContainterBase.cpp"/>
     <ClCompile Include="..\..\gui\src\containers\ActivityDataContainter_MapSelector.cpp"/>
     <ClCompile Include="..\..\generated\gui_generated\src\containers\ActivityDataContainter_MapSelectorBase.cpp"/>
+    <ClCompile Include="..\..\gui\src\common\Map.cpp"/>
   </ItemGroup>
   <ItemGroup>
     <None Include="$(ApplicationRoot)\assets\texts\texts.xlsx"/>
@@ -245,6 +246,7 @@
     <ClInclude Include="..\..\generated\gui_generated\include\gui_generated\containers\SettingsContainterBase.hpp"/>
     <ClInclude Include="..\..\gui\include\gui\containers\ActivityDataContainter_MapSelector.hpp"/>
     <ClInclude Include="..\..\generated\gui_generated\include\gui_generated\containers\ActivityDataContainter_MapSelectorBase.hpp"/>
+    <ClInclude Include="..\..\gui\include\gui\common\Map.hpp"/>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="$(ApplicationRoot)\generated\simulator\touchgfx.rc"/>
