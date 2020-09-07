@@ -80,6 +80,7 @@ float    DC_get_sensorData_pressure(void);
 float    DC_get_sensorData_temperature(void);
 uint8_t  DC_get_sensorActivationFlags_enabled(void);
 void     DC_set_sensorActivationFlags_enabled(uint8_t value);
+void     DC_call_CalibrateAltitude(int16_t newAlti);
 
 /* ---------- settings ---------- */
 uint8_t  DC_get_appSettings_settingsData_value_timezone(void);

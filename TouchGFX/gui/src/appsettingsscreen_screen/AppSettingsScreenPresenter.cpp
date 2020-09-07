@@ -14,8 +14,9 @@ void AppSettingsScreenPresenter::activate()
     settingsData.ID = SETTINGS_ID_TIMEZONE;
     settingsData.ptr = &settingsConstData[SETTINGS_ID_TIMEZONE];
 
+    GetVariableValues();
     UpdateSettingsView();
-    UpdateVariableValues();
+    SetVariableValues();
 
     model->SignalRequestFromPresenter();
     model->MainPeriodFromPresenter(SETTINGS_MAINPERIOD_MS);
@@ -54,6 +55,7 @@ void AppSettingsScreenPresenter::DisplayPreviousSetting(void)
     }
 
     settingsData.ptr = &settingsConstData[settingsData.ID];
+    GetVariableValues();
     UpdateSettingsView();
 }
 
@@ -72,6 +74,7 @@ void AppSettingsScreenPresenter::DisplayNextSetting(void)
     }
 
     settingsData.ptr = &settingsConstData[settingsData.ID];
+    GetVariableValues();
     UpdateSettingsView();
 }
 
@@ -89,7 +92,7 @@ void AppSettingsScreenPresenter::IncrementValue(void)
     }
 
     UpdateSettingsView();
-    UpdateVariableValues();
+    SetVariableValues();
 }
 
 
@@ -106,7 +109,7 @@ void AppSettingsScreenPresenter::DecrementValue(void)
     }
 
     UpdateSettingsView();
-    UpdateVariableValues();
+    SetVariableValues();
 }
 
 
@@ -118,18 +121,48 @@ void AppSettingsScreenPresenter::UpdateSettingsView(void)
 }
 
 
-/* Method called to call DataCollector to set proper
-   variables to given value. */
-void AppSettingsScreenPresenter::UpdateVariableValues(void)
+/* Method called to call DataCollector to get proper
+   variables from original component. */
+void AppSettingsScreenPresenter::GetVariableValues(void)
 {
-    switch(settingsData.ID)
+    Settings_Elements_ID_T valID = settingsData.ID;
+
+    switch(valID)
     {
         case SETTINGS_ID_TIMEZONE:
             break;
         case SETTINGS_ID_MESH_SIZE:
             break;
         case SETTINGS_ID_SENSORS:
-            DC_set_sensorActivationFlags_enabled(settingsData.value[settingsData.ID]);
+            settingsData.value[valID] = DC_get_sensorActivationFlags_enabled();
+            break;
+        case SETTINGS_ID_ALTITUDE:
+            settingsData.value[valID] = (uint16_t)(DC_get_sensorData_altitude() + SETTINGS_FLOAT_TO_UINT_ROUND_COEFF);
+            break;
+
+        default:
+            break;
+    }
+}
+
+
+/* Method called to call DataCollector to set proper
+   variables to given value. */
+void AppSettingsScreenPresenter::SetVariableValues(void)
+{
+    Settings_Elements_ID_T valID = settingsData.ID;
+
+    switch(valID)
+    {
+        case SETTINGS_ID_TIMEZONE:
+            break;
+        case SETTINGS_ID_MESH_SIZE:
+            break;
+        case SETTINGS_ID_SENSORS:
+            DC_set_sensorActivationFlags_enabled(settingsData.value[valID]);
+            break;
+        case SETTINGS_ID_ALTITUDE:
+            DC_call_CalibrateAltitude(settingsData.value[valID]);
             break;
 
         default:

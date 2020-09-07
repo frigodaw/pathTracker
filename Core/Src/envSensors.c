@@ -18,7 +18,7 @@ ES_SensorData_T sensorData = {0.f};
 ES_ActivationFlags_T sensorActivationFlags = {(uint8_t)SETTINGS_DEFAULT_SENSORS};
 
 /* Variable which stores all kalman filter related data. */
-ES_KalmanData_T kalmanData = {0.f, 0.f, 0.f, TRUE};
+ES_KalmanData_T kalmanData = {0.f, 0.f, 0.f, 0u, TRUE};
 
 /* Main function for EnvSensors component. It is called from default task. */
 void EnvSensors_Main(void)
@@ -48,7 +48,8 @@ float EnvSensors_FilterAltitude(float calcAltitude)
     float xpri, Ppri, eps;
     float S, K;
 
-    calcAltitude += kalmanData.offset;
+    kalmanData.rawAlti = calcAltitude;
+    calcAltitude += (float)kalmanData.offset;
 
     if(TRUE == kalmanData.firstCall)
     {
@@ -81,8 +82,8 @@ uint8_t EnvSensors_CheckStartConditions(void)
 
 /* Function called to set the offset and to modify altitude
    with new user defined value. */
-void Env_Sensors_CalibrateAltitude(float newAlti)
+void Env_Sensors_CalibrateAltitude(int16_t newAlti)
 {
-    kalmanData.offset = newAlti;
+    kalmanData.offset = (newAlti - (int16_t)kalmanData.rawAlti);
     kalmanData.firstCall = TRUE;
 }

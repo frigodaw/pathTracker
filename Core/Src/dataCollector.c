@@ -389,6 +389,16 @@ void DC_set_sensorActivationFlags_enabled(uint8_t value)
 {
     sensorActivationFlags.enabled = value;
 }
+
+
+/*  File: envSensors.c
+    Type: wrapper
+    Function: Env_Sensors_CalibrateAltitude()
+*/
+void DC_call_CalibrateAltitude(int16_t newAlti)
+{
+    Env_Sensors_CalibrateAltitude(newAlti);
+}
 /* -------------------- envSensors -------------------- */
 
 

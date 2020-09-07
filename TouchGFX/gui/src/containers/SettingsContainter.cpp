@@ -18,7 +18,7 @@ void SettingsContainter::UpdateSettingsLabel(char* name, uint8_t len)
     VarNameLabel.invalidate();
 }
 
-void SettingsContainter::UpdateSettingsValue(int8_t value)
+void SettingsContainter::UpdateSettingsValue(int16_t value)
 {
     Unicode::snprintf(VarTextBoxBuffer, VARTEXTBOX_SIZE, "%d", value);
     VarTextBox.invalidate();

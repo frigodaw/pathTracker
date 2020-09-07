@@ -21,6 +21,7 @@ extern "C" {
 /* START OF THE DEFINE AREA */
 #define SETTINGS_NAME_LEN                               16u
 #define SETTINGS_NUMBER_OF_SETTINGS                     ((uint8_t)(SETTINGS_ID_AMOUT_OF_ELEMENTS))
+#define SETTINGS_NO_DEFAULT                             255u
 
 #define SETTINGS_NAME_TIMEZONE                          "Time zone"
 #define SETTINGS_MIN_TIMEZONE                           -12
@@ -31,10 +32,14 @@ extern "C" {
 #define SETTINGS_NAME_SENSORS                           "Sensors"
 #define SETTINGS_MIN_SENSORS                            0
 #define SETTINGS_MAX_SENSORS                            1
+#define SETTINGS_NAME_ALTITUDE                          "Altitude"
+#define SETTINGS_MIN_ALTITUDE                           -16000
+#define SETTINGS_MAX_ALTITUDE                           16000
 
 #define SETTINGS_DEFAULT_TIMEZONE                       2
 #define SETTINGS_DEFAULT_MESHSIZE                       3
 #define SETTINGS_DEFAULT_SENSORS                        1
+#define SETTINGS_DEFAULT_ALTITUDE                       SETTINGS_NO_DEFAULT
 /* END OF THE DEFINE AREA */
 
 
@@ -44,6 +49,7 @@ typedef enum
     SETTINGS_ID_TIMEZONE,
     SETTINGS_ID_MESH_SIZE,
     SETTINGS_ID_SENSORS,
+    SETTINGS_ID_ALTITUDE,
     SETTINGS_ID_AMOUT_OF_ELEMENTS
 }Settings_Elements_ID_T;
 /* END OF THE ENUM AREA */
@@ -54,13 +60,13 @@ typedef struct
 {
     char name[SETTINGS_NAME_LEN];
     Settings_Elements_ID_T ID;
-    int8_t min;
-    int8_t max;
+    int16_t min;
+    int16_t max;
 }Settings_SettingsConstData_T;
 
 typedef struct
 {
-    int8_t value[SETTINGS_NUMBER_OF_SETTINGS];
+    int16_t value[SETTINGS_NUMBER_OF_SETTINGS];
     Settings_Elements_ID_T ID;
     const Settings_SettingsConstData_T *ptr;
 }Settings_SettingsData_T;
@@ -70,7 +76,7 @@ typedef struct
 /* START OF THE EXTERN VARIABLES AREA */
 extern Settings_SettingsData_T settingsData;
 extern const Settings_SettingsConstData_T settingsConstData[SETTINGS_NUMBER_OF_SETTINGS];
-extern const int8_t defaultSettingsValues[SETTINGS_NUMBER_OF_SETTINGS];
+extern const int16_t defaultSettingsValues[SETTINGS_NUMBER_OF_SETTINGS];
 /* END OF THE EXTERN VARIABLES AREA */
 
 

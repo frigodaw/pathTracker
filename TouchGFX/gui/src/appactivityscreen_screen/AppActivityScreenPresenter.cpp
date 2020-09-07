@@ -10,7 +10,6 @@
 uint32_t timeDiff = 0u;
 uint32_t timeMaxDiff = 0u;
 
-static volatile float arrAngle = 0.f;
 
 /* Const array containg number of days per each month. */
 static const uint8_t daysInMon[APP_TIMEZONE_NUMOFMONTHS] = { APP_TIMEZONE_DAYS_JAN, APP_TIMEZONE_DAYS_FEB, APP_TIMEZONE_DAYS_MAR,
@@ -1676,8 +1675,7 @@ void AppActivityScreenPresenter::SetArrowAngle(void)
         if(a_denom > 0.f)
         {
             a = a_nom / a_denom;
-            //angle = tanf(a) - APP_MAP_ARROW_ANGLE_OFFSET_RAD;
-            angle = tanf(a) + arrAngle * 3.14159/180.f;
+            angle = -tanf(a) + APP_MAP_ARROW_ANGLE_OFFSET_RAD;
         }
     }
 

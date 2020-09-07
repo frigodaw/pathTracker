@@ -19,7 +19,7 @@ public:
     void DecrementValue(void);
 
     void UpdateSettingsLabel(char* name, uint8_t len);
-    void UpdateSettingsValue(int8_t value);
+    void UpdateSettingsValue(int16_t value);
 
 protected:
 };

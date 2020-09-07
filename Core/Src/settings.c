@@ -28,14 +28,21 @@ const Settings_SettingsConstData_T settingsConstData[SETTINGS_NUMBER_OF_SETTINGS
         SETTINGS_MIN_SENSORS,
         SETTINGS_MAX_SENSORS
     },
+    {
+        SETTINGS_NAME_ALTITUDE,
+        SETTINGS_ID_ALTITUDE,
+        SETTINGS_MIN_ALTITUDE,
+        SETTINGS_MAX_ALTITUDE
+    },
 };
 
 /* Variable with all defaults parameters for settings. */
-const int8_t defaultSettingsValues[SETTINGS_NUMBER_OF_SETTINGS] = 
+const int16_t defaultSettingsValues[SETTINGS_NUMBER_OF_SETTINGS] = 
 {
     SETTINGS_DEFAULT_TIMEZONE,
     SETTINGS_DEFAULT_MESHSIZE,
-    SETTINGS_DEFAULT_SENSORS
+    SETTINGS_DEFAULT_SENSORS,
+    SETTINGS_DEFAULT_ALTITUDE,
 };
 
 /* Variable which stores current settings values. */
@@ -48,6 +55,20 @@ void Settings_Init(void)
 {
     Settings_SetDefaultValues();
 }
+
+
+/* Function called to get default values of settings variables when they can not be assign
+   from const value. */
+//void Settings_GetDefaultValues(void)
+//{
+//    for(uint8_t i = 0u; i < SETTINGS_NUMBER_OF_SETTINGS; i++)
+//    {
+//        if(SETTINGS_NO_DEFAULT == defaultSettingsValues[i])
+//        {
+//            
+//        }
+//    }
+//}
 
 
 /* Function called to set deafult values all settings parameters. */

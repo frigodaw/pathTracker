@@ -23,7 +23,7 @@ using namespace touchgfx;
 #define APP_LATLON_PRECISION        6u
 #define APP_ALTI_PRECISION          1u
 #define APP_ALTI_FIRSTCALL          255u
-#define APP_ALTI_INTERVAL           10u
+#define APP_ALTI_INTERVAL           5u
 #define APP_ALTI_EVEN               2u
 #define APP_ALTI_DIST_THRESHOLD     0.05f
 #define APP_SLOPE_100PERCENT        100.f
@@ -149,8 +149,11 @@ using namespace touchgfx;
 
 #define APP_MAP_ARROW_CALC_POINTS       3u
 #define APP_MAP_PI_CONST                3.14159f
-#define APP_MAP_ARROW_COEFF_DIV         2.f
-#define APP_MAP_ARROW_ANGLE_OFFSET_RAD  ( (APP_MAP_PI_CONST) / (APP_MAP_ARROW_COEFF_DIV) )
+#define APP_MAP_ARROW_180_DEG_CONST     180.f
+#define APP_MAP_DEG_TO_RAD(deg)         ( (deg) * (APP_MAP_PI_CONST) / (APP_MAP_ARROW_180_DEG_CONST) )
+#define APP_MAP_RAD_TO_DEG(rad)         ( (rad) * (APP_MAP_ARROW_180_DEG_CONST) / (APP_MAP_PI_CONST) )
+#define APP_MAP_ARROW_ANGLE_OFFSET_DEG  90.f
+#define APP_MAP_ARROW_ANGLE_OFFSET_RAD  APP_MAP_DEG_TO_RAD(APP_MAP_ARROW_ANGLE_OFFSET_DEG)
 /* END OF THE DEFINE AREA */
 
 

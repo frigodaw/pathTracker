@@ -40,7 +40,7 @@ void AppSettingsScreenView::UpdateSettingsLabel(char* name, uint8_t len)
     SettingsCC.UpdateSettingsLabel(name, len);
 }
 
-void AppSettingsScreenView::UpdateSettingsValue(int8_t value)
+void AppSettingsScreenView::UpdateSettingsValue(int16_t value)
 {
     SettingsCC.UpdateSettingsValue(value);
 }

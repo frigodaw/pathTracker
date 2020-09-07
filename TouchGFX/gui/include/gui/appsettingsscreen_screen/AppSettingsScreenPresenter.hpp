@@ -11,10 +11,11 @@ using namespace touchgfx;
 
 extern "C" Settings_SettingsData_T settingsData;
 extern "C" const Settings_SettingsConstData_T settingsConstData[SETTINGS_NUMBER_OF_SETTINGS];
-extern "C" const int8_t defaultSettingsValues[SETTINGS_NUMBER_OF_SETTINGS];
+extern "C" const int16_t defaultSettingsValues[SETTINGS_NUMBER_OF_SETTINGS];
 
 /* START OF THE DEFINE AREA */
 #define SETTINGS_MAINPERIOD_MS                          200u
+#define SETTINGS_FLOAT_TO_UINT_ROUND_COEFF              0.5f
 /* END OF THE DEFINE AREA */
 
 
@@ -42,8 +43,9 @@ public:
     void DisplayNextSetting(void);
     void IncrementValue(void);
     void DecrementValue(void);
+    void GetVariableValues(void);
     void UpdateSettingsView(void);
-    void UpdateVariableValues(void);
+    void SetVariableValues(void);
 
 private:
     AppSettingsScreenPresenter();
