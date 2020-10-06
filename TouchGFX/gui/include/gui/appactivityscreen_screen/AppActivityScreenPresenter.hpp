@@ -474,7 +474,6 @@ public:
     void SetArrowLocation(void);
     void SetArrowAngle(void);
 
-    void FindMapsOnSdCard(void);
     void GetMapInfo(void);
     void DisplayPreviousMap(void);
     void ConfirmMapSelection(void);

@@ -98,7 +98,7 @@ typedef struct
     FS_ShortPathType path;
     //FS_FullPathType fileName[FS_SAVEDFILESNUM];
     uint8_t filesNum;
-    FRESULT state;
+    //FRESULT state;
 }FS_Dir_T;
 
 //typedef to store info about given
@@ -152,6 +152,7 @@ FRESULT FS_ReadDir(FS_Dir_T* dir);
 FRESULT FS_GetSDcardCapacity(void);
 FRESULT FS_GetSdCardInfo(void);
 FRESULT FS_ReInit(void);
+FRESULT FS_ClearSdCardData(void);
 /* END OF THE FUNCTIONS PROTOTYPES AREA */
 
 

@@ -41,7 +41,7 @@ void FS_Init(void)
     }
     else
     {
-        sdCardInfo.state = FS_UNINITIALIZED;
+        FS_ClearSdCardData();
     }
 }
 
@@ -64,7 +64,7 @@ void FS_Main(void)
         else if(FR_DISK_ERR == fresult)
         {
             /* Set state to uninitialized. FS_Init will be trigger in the next call. */
-            sdCardInfo.state = FS_UNINITIALIZED;
+            FS_ClearSdCardData();
         }
         else
         {
@@ -74,7 +74,7 @@ void FS_Main(void)
             if(errorCnt >= FS_MAXFAILSNUM)
             {
                 errorCnt = 0u;
-                sdCardInfo.state = FS_UNINITIALIZED;
+                FS_ClearSdCardData();
             }
         }
     }
@@ -415,7 +415,7 @@ FRESULT FS_ReadDir(FS_Dir_T* dir)
     /* Replace local variables with the global ones */
     //memcpy(dir->fileName, name, sizeof(name));
     dir->filesNum = number;
-    dir->state = fresult;
+    //dir->state = fresult;
 
     return fresult;
 }
@@ -429,7 +429,7 @@ FRESULT FS_ReInit(void)
 
     fresult |= f_mount(0u, "", (uint8_t)FS_MOUNTNOW);
     memset(&fs, 0u, sizeof(fs));
-    memset(&sdCardInfo, 0u, sizeof(sdCardInfo));
+    FS_ClearSdCardData();
 
     /* Auto-generated functions */
     MX_FATFS_DeInit();
@@ -438,5 +438,22 @@ FRESULT FS_ReInit(void)
     /* Local Init */
     FS_Init();
 
+    /* Restore SD card data */
+    if(FS_INITIALIZED == sdCardInfo.state)
+    {
+        fresult |= FS_GetSdCardInfo();
+    }
+
     return fresult;
+}
+
+/* Function called to clear all data shown on a screen
+   when sd card is not initialized. */
+FRESULT FS_ClearSdCardData(void)
+{
+    memset(&sdCardInfo, 0u, sizeof(sdCardInfo));
+    memset(&dirInfo, 0u, sizeof(dirInfo));
+    sdCardInfo.state = FS_UNINITIALIZED;
+
+    return FR_OK;
 }

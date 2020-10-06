@@ -14,8 +14,10 @@
 /*  Global variables to store all GPS-related data */
 GpsUartData_T gpsData = {0u};
 
+/*  Static variable to store new coordinates before assignment to gpsData */
+static GpsLocData_T gpsLocData = {0.f};
 
-/* Function called to initialize GPS variables
+/*  Function called to initialize GPS variables
    during uC startup phase. */
 void Gps_Init(void)
 {
@@ -28,7 +30,7 @@ void Gps_Init(void)
 
 
 /*  Function called to set write pointer to proper value
-    every time before HAL_UART_Receive_DMA(). 
+    every time before HAL_UART_Receive_DMA().
 */
 uint8_t Gps_PrepareWrite(void)
 {
@@ -76,7 +78,6 @@ uint8_t Gps_Main(void)
 {
     uint8_t ret = RET_OK;
     GpsMsgInfo_T messageInfo = {0u};
-    uint8_t failCounter = 0u;
 
     /* Read data until read indicator is not equal to write */
     while(gpsData.read != gpsData.write)
@@ -86,26 +87,7 @@ uint8_t Gps_Main(void)
 
         while((gpsData.ringBuff[gpsData.read] != '$') && (gpsData.read != gpsData.write))
         {
-            if( ((gpsData.state == GPS_OK_AHEAD) || (gpsData.state == GPS_FULL)) && (gpsData.read < gpsData.write) )
-            {
-                Gps_IncrementReadIndicator();
-            }
-            else if( ((gpsData.state == GPS_OK_BEHIND) || (gpsData.state == GPS_FULL)) && (gpsData.read > gpsData.write))
-            {
-                Gps_IncrementReadIndicator();
-            }
-            else
-            {
-                /* Refresh state */
-                Gps_PrepareWrite();
-
-                /* Try GPS_FAILCOUNTER_LIMIT times to read. If still fails, increment read indicator and miss one character */
-                failCounter++;
-                if(GPS_FAILCOUNTER_LIMIT <= failCounter)
-                {
-                    Gps_IncrementReadIndicator();
-                }
-            }
+            Gps_IncrementReadIndicator();
         }
 
         /* Only when character was found */
@@ -125,6 +107,7 @@ uint8_t Gps_Main(void)
             else
             {
                 Gps_ReadMessage(&messageInfo);
+                Gps_UpdatePositionData();
             }
         }
         else if(gpsData.read == gpsData.write)
@@ -681,7 +664,8 @@ void Gps_ReadMessageElement_Latitude(uint8_t* fieldBuff)
 
     if( (GPS_LIMIT_LATITUDE_LOWER <= latitude) && (GPS_LIMIT_LATITUDE_UPPER >= latitude) )
     {
-        gpsData.latitude = latitude;
+        //gpsData.latitude = latitude;
+        gpsLocData.latitude = latitude;
     }
 }
 
@@ -696,7 +680,8 @@ void Gps_ReadMessageElement_Longitude(uint8_t* fieldBuff)
 
     if( (GPS_LIMIT_LONGITUDE_LOWER <= longitude) && (GPS_LIMIT_LONGITUDE_UPPER >= longitude) )
     {
-        gpsData.longitude = longitude;
+        //gpsData.longitude = longitude;
+        gpsLocData.longitude = longitude;
     }
 }
 
@@ -950,4 +935,16 @@ uint8_t Gps_IncrementReadIndicator(void)
     }
 
     return RET_OK;
+}
+
+
+/* Function called set gpsData coordinates to new
+   values stored in gpsLocData structure. This method makes
+   assignment more atomic and it can be safely read from
+   other tasks.
+*/
+void Gps_UpdatePositionData(void)
+{
+    gpsData.latitude = gpsLocData.latitude;
+    gpsData.longitude = gpsLocData.longitude;
 }

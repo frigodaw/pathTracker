@@ -26,19 +26,21 @@ extern "C" {
 #define SETTINGS_NAME_TIMEZONE                          "Time zone"
 #define SETTINGS_MIN_TIMEZONE                           -12
 #define SETTINGS_MAX_TIMEZONE                           12
+#define SETTINGS_DEFAULT_TIMEZONE                       2
+
 #define SETTINGS_NAME_MESHSIZE                          "Mesh size"
 #define SETTINGS_MIN_MESHSIZE                           1
 #define SETTINGS_MAX_MESHSIZE                           10
+#define SETTINGS_DEFAULT_MESHSIZE                       3
+
 #define SETTINGS_NAME_SENSORS                           "Sensors"
 #define SETTINGS_MIN_SENSORS                            0
 #define SETTINGS_MAX_SENSORS                            1
+#define SETTINGS_DEFAULT_SENSORS                        1
+
 #define SETTINGS_NAME_ALTITUDE                          "Altitude"
 #define SETTINGS_MIN_ALTITUDE                           -16000
 #define SETTINGS_MAX_ALTITUDE                           16000
-
-#define SETTINGS_DEFAULT_TIMEZONE                       2
-#define SETTINGS_DEFAULT_MESHSIZE                       3
-#define SETTINGS_DEFAULT_SENSORS                        1
 #define SETTINGS_DEFAULT_ALTITUDE                       SETTINGS_NO_DEFAULT
 /* END OF THE DEFINE AREA */
 
@@ -62,6 +64,7 @@ typedef struct
     Settings_Elements_ID_T ID;
     int16_t min;
     int16_t max;
+    int16_t defaultVal;
 }Settings_SettingsConstData_T;
 
 typedef struct
@@ -76,7 +79,6 @@ typedef struct
 /* START OF THE EXTERN VARIABLES AREA */
 extern Settings_SettingsData_T settingsData;
 extern const Settings_SettingsConstData_T settingsConstData[SETTINGS_NUMBER_OF_SETTINGS];
-extern const int16_t defaultSettingsValues[SETTINGS_NUMBER_OF_SETTINGS];
 /* END OF THE EXTERN VARIABLES AREA */
 
 

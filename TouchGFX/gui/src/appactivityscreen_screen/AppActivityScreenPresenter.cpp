@@ -7,9 +7,6 @@
 #include "filesystem.h"
 #include "dataCollector.h"
 
-uint32_t timeDiff = 0u;
-uint32_t timeMaxDiff = 0u;
-
 
 /* Const array containg number of days per each month. */
 static const uint8_t daysInMon[APP_TIMEZONE_NUMOFMONTHS] = { APP_TIMEZONE_DAYS_JAN, APP_TIMEZONE_DAYS_FEB, APP_TIMEZONE_DAYS_MAR,
@@ -627,11 +624,6 @@ float AppActivityScreenPresenter::MeanFromArray(float* array, const uint8_t size
 void AppActivityScreenPresenter::IncrementTimer(void)
 {
     uint32_t newTime = DC_get_main_tim_t_100ms();
-
-    uint32_t diff = newTime - appInternalData.lastTime;
-
-    timeDiff = diff;
-    timeMaxDiff = (diff > timeMaxDiff) ? diff : timeMaxDiff;
 
     activityData.timer += newTime - appInternalData.lastTime;
     appInternalData.lastTime = newTime;
@@ -1519,14 +1511,6 @@ bool AppActivityScreenPresenter::IsLeapYear(uint16_t year)
     }
 
     return isLeap;
-}
-
-
-/* Method called to find maps on SD card
-   and display them on select screen. */
-void AppActivityScreenPresenter::FindMapsOnSdCard(void)
-{
-
 }
 
 

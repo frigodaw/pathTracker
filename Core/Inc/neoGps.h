@@ -41,7 +41,6 @@ extern "C" {
 #define GPS_SIZE_GPGLL              8u      //8     ok
 
 #define GPS_RETRIGGER_TIMEOUT       5u      //time [s] to retrigger gps uart
-#define GPS_FAILCOUNTER_LIMIT       5u      //number of tries until forced read increment
 
 #define GPS_DEBUG                   0u      //disable debug messages
 
@@ -269,6 +268,13 @@ typedef struct GpsMsgInfo_Tag
     uint8_t maxElements;
     uint8_t currentElement;
 }GpsMsgInfo_T;
+
+//typedef to store read location data before assignment to destination structure
+typedef struct GpsLocData_Tag
+{
+    float latitude;
+    float longitude;
+}GpsLocData_T;
 /* END OF THE TYPEDEF AREA */
 
 
@@ -308,6 +314,7 @@ void Gps_ReadMessageElement_ModeTwo(uint8_t* fieldBuff);
 void Gps_ReadMessageElement_ModeIndicator(uint8_t* fieldBuff);
 void Gps_ReadMessageElement_SatellitesNum(uint8_t* fieldBuff);
 void Gps_ReadMessageElement_GroundSpeedKmh(uint8_t* fieldBuff);
+void Gps_UpdatePositionData(void);
 /* END OF THE FUNCTIONS PROTOTYPES AREA */
 
 # ifdef __cplusplus
